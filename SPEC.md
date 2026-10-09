@@ -69,7 +69,7 @@ Todos los datos viven en `src/data/building.ts`, tipados. Ningún dato hardcodea
 ### 5.1 Proyecto
 - Nombre: **Lumen Residencias**
 - Dirección: **Los Aromos 1240** (ficticia)
-- Desarrolladora: **Arce & Molina Desarrollos** (ficticia)
+- Desarrolladora: **Thelucho Desarrollos** (ficticia)
 - Entrega estimada: **diciembre 2027**
 - 14 unidades · 8 pisos + PB + SUM · frente norte
 

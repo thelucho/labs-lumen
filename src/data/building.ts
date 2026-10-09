@@ -75,7 +75,7 @@ export interface CommonSpace {
 export const project: Project = {
   name: "Lumen Residencias",
   address: "Los Aromos 1240",
-  developer: "Arce & Molina Desarrollos",
+  developer: "Thelucho Desarrollos",
   delivery: "diciembre 2027",
   orientation: "Frente norte",
   footprint: { width: 22, depth: 14 },
@@ -331,5 +331,5 @@ export const contact = {
   hours: "Lunes a sábados de 10 a 18 h",
   phone: "+54 11 5555-0123",
   whatsapp: "+54 9 11 5555-0123",
-  email: "ventas@arcemolina.example",
+  email: "ventas@thelucho.example",
 };
