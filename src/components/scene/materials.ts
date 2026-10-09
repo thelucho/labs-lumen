@@ -26,6 +26,12 @@ export const palette3D = {
   sidewalk: "#dcd8cf",
   street: "#b3b0a8",
   cloud: "#f8f7f4",
+  /** Vegetación: verdes desaturados de maqueta, emparentados con el token `sage`. */
+  foliage: "#7e8d68",
+  foliageLight: "#97a37f",
+  foliageDark: "#66745a",
+  shrub: "#8b9874",
+  trunk: "#76695a",
   sun: "#fff1dc",
   sunDisc: "#fff6e6",
   unitLight: "#f2c27b",

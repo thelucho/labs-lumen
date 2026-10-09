@@ -43,7 +43,7 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 - PB: hall vidriado doble altura, marquesina de acceso, número de calle.
 - Azotea: SUM como volumen más liviano (más vidrio), pileta con agua (material azul con algo de reflejo), deck, baranda perimetral, sala de máquinas pequeña.
 - Materiales: hormigón claro, revestimiento cálido (símil madera o porcelanato) en algunos paños, carpintería grafito. Nada saturado.
-- Paleta de materiales 3D: los tokens de §6.3 rigen la UI; el 3D usa su propia paleta desaturada (hormigón, madera, grafito, vidrio, agua, cielo, césped) definida en un único archivo de materiales. La luz de las unidades es cálida (≈ #F2C27B), en línea con `brass`.
+- Paleta de materiales 3D: los tokens de §6.3 rigen la UI; el 3D usa su propia paleta desaturada (hormigón, madera, grafito, vidrio, agua, cielo, césped y vegetación: `foliage`, `foliageLight`, `foliageDark`, `shrub`, `trunk`, verdes emparentados con `sage`) definida en un único archivo de materiales. La luz de las unidades es cálida (≈ #F2C27B), en línea con `brass`.
 - Bordes suaves (bevel leve o `RoundedBox` donde ayude), sombras suaves.
 
 ### 4.3 Entorno
@@ -51,6 +51,7 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 - **Sol** visible desde un costado (noreste), con una `directionalLight` cálida alineada a él que proyecta sombras.
   - *Decisión*: como la cámara inicial mira frente + lateral este (desde el noreste), un sol real al noreste quedaría detrás de la cámara. La luz viene del noreste (frente y balcones iluminados, sombras al sudoeste) y el **disco** del sol se ubica en el cielo para que aparezca arriba, a un costado del edificio, en la vista inicial. No es físicamente coherente al girar; se acepta como licencia de encuadre.
 - 3–5 **nubes** low-poly (sin texturas externas), con movimiento lento.
+- **Vegetación** low-poly, sin exceso: ~14 árboles dispersos (copa redondeada y columnar), alineación de árboles en la vereda solo del lado este (no tapan la fachada ni el texto del hero) y ~24 arbustos. Distribución determinística, fuera del edificio, la vereda y la calle, y a no más de 60 m del centro para no invadir el primer plano.
 - Cielo con gradiente suave (no azul saturado).
 - `ContactShadows` o sombra real bajo el edificio.
 

@@ -8,6 +8,7 @@ import { BuildingDetail, BuildingShell } from "./Building";
 import { FOV, cameraPosition, readAzimuth } from "./camera";
 import { Controls } from "./Controls";
 import { GroundShadows, SceneBackdrop, SceneLights, SkyDecor } from "./Environment";
+import { Vegetation } from "./Vegetation";
 
 /** Cuadros iniciales en los que se recalcula el mapa de sombras. */
 const SHADOW_WARMUP_FRAMES = 4;
@@ -68,7 +69,7 @@ function Precompiled({ children, onReady }: { children: ReactNode; onReady: () =
  * aparte y la siguiente arranca cuando la anterior está lista, en lugar de
  * compilar todo en una sola tarea larga en el primer cuadro.
  */
-const STAGES = [SceneBackdrop, BuildingShell, BuildingDetail, SkyDecor];
+const STAGES = [SceneBackdrop, BuildingShell, BuildingDetail, Vegetation, SkyDecor];
 
 function Stages() {
   const [ready, setReady] = useState(0);
