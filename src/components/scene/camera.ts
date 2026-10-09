@@ -4,6 +4,17 @@ export const TARGET: [number, number, number] = [0, buildingHeight() * 0.5, 0];
 export const DISTANCE = 88;
 export const ELEVATION = 10;
 export const FOV = 30;
+/** Tope de distancia: más lejos el edificio se vuelve un punto en mobile angosto. */
+export const MAX_DISTANCE = 210;
+
+/**
+ * Niebla relativa a la distancia de cámara: empieza un poco detrás del edificio
+ * y termina antes del borde del suelo, así el horizonte se funde igual en
+ * cualquier encuadre.
+ */
+export function fogRange(distance: number): [number, number] {
+  return [distance + 30, distance + 210];
+}
 
 /** Azimut 0 = mirando el frente norte desde el norte; 90 = lateral este. */
 export const INITIAL_AZIMUTH = 35;

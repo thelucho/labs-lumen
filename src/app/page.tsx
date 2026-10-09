@@ -17,8 +17,8 @@ export default function Home() {
     <>
       <main className="flex flex-1 flex-col">
         {/* Hero: en mobile el edificio arriba a todo el ancho y el texto debajo. */}
-        <section aria-label="Edificio interactivo" className="relative md:h-svh md:min-h-[640px]">
-          <div className="relative h-[68svh] min-h-[460px] md:absolute md:inset-0 md:h-auto md:min-h-0">
+        <section aria-label="Edificio interactivo" className="relative lg:h-svh lg:min-h-[640px]">
+          <div className="relative h-[68svh] min-h-[460px] lg:absolute lg:inset-0 lg:h-auto lg:min-h-0">
             <Scene />
             <FloorSelector />
             <UsageHint />

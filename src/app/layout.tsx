@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, Manrope } from "next/font/google";
+import { project, tagline } from "@/data/building";
 import "./globals.css";
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
   subsets: ["latin"],
   weight: "400",
-  style: ["normal", "italic"],
 });
 
 const manrope = Manrope({
@@ -14,10 +14,35 @@ const manrope = Manrope({
   subsets: ["latin"],
 });
 
+/** En Vercel, la URL de producción; en local, el servidor de desarrollo. */
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";
+
+const title = `${project.name} — ${project.address}`;
+const description = `${tagline} Entrega estimada ${project.delivery}.`;
+
 export const metadata: Metadata = {
-  title: "Lumen Residencias — Los Aromos 1240",
-  description:
-    "14 unidades de 3 y 4 ambientes y pisos completos con balcón al este. Entrega estimada diciembre 2027.",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  applicationName: project.name,
+  openGraph: {
+    type: "website",
+    locale: "es_AR",
+    siteName: project.name,
+    title,
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f2efea",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -3,12 +3,12 @@
 import { OrbitControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, type ComponentRef } from "react";
-import { MathUtils, Vector3, type PerspectiveCamera } from "three";
+import { Fog, MathUtils, Vector3, type PerspectiveCamera } from "three";
 import { project } from "@/data/building";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { useUIStore } from "@/lib/store";
-import { MOBILE_BREAKPOINT, PANEL_WIDTH } from "@/lib/ui";
-import { DISTANCE, ELEVATION, FOV, TARGET } from "./camera";
+import { HERO_BREAKPOINT, freeBand } from "@/lib/ui";
+import { DISTANCE, ELEVATION, FOV, MAX_DISTANCE, TARGET, fogRange } from "./camera";
 
 type OrbitControlsImpl = ComponentRef<typeof OrbitControls>;
 
@@ -20,19 +20,17 @@ const POLAR_RANGE = (4 * Math.PI) / 180;
 /** Ancho que tiene que entrar en pantalla: diagonal de la planta más los balcones. */
 const FIT_WIDTH = Math.hypot(project.footprint.width, project.footprint.depth) + 4;
 
-/** En mobile el edificio ocupa este ancho del canvas; el resto es para el selector. */
-const MOBILE_FIT = 0.6;
-
 /** Distancia de cámara para que el edificio entre en `fraction` del ancho. */
 function distanceFor(aspect: number, fraction: number): number {
   const halfH = Math.tan(((FOV / 2) * Math.PI) / 180);
   const fitWidth = FIT_WIDTH / 2 / (halfH * aspect * fraction);
-  return Math.max(Math.hypot(DISTANCE, ELEVATION), fitWidth);
+  return Math.min(MAX_DISTANCE, Math.max(Math.hypot(DISTANCE, ELEVATION), fitWidth));
 }
 
 /**
- * Encuadre según pantalla: en mobile el edificio a la izquierda (selector a la
- * derecha); en escritorio, con el panel abierto, se corre para no quedar tapado.
+ * Encuadre según pantalla: el edificio entra en la franja libre entre el texto
+ * del hero y el selector (o el panel abierto). La distancia usa la franja más
+ * angosta de las dos situaciones, así abrir la ficha no hace zoom: solo desliza.
  * Usa setViewOffset: desplaza la imagen sin mover el centro de rotación.
  */
 function Framing() {
@@ -42,26 +40,33 @@ function Framing() {
   const isPanelOpen = useUIStore((s) => s.isPanelOpen);
   const reducedMotion = usePrefersReducedMotion();
 
-  const narrow = width < MOBILE_BREAKPOINT;
-  const fraction = narrow ? MOBILE_FIT : 1;
-  const targetShift = narrow ? (width * (1 - MOBILE_FIT)) / 2 : isPanelOpen ? PANEL_WIDTH / 2 : 0;
+  const closed = freeBand(width, false);
+  const open = freeBand(width, true);
+  // Por debajo de lg el panel abierto tapa casi todo: la distancia se calcula
+  // solo con la franja cerrada (si no, la cámara se iría demasiado lejos).
+  const closedWidth = closed.right - closed.left;
+  const openWidth = open.right - open.left;
+  const fraction = (width >= HERO_BREAKPOINT ? Math.min(closedWidth, openWidth) : closedWidth) / width;
+  const band = isPanelOpen ? open : closed;
+  const targetShift = width / 2 - (band.left + band.right) / 2;
   const shift = useRef(0);
 
   useEffect(() => {
-    const { camera, controls } = get();
+    const { camera, controls, scene } = get();
     const target = new Vector3(...TARGET);
-    const offset = camera.position.clone().sub(target).setLength(distanceFor(width / height, fraction));
+    const distance = distanceFor(width / height, fraction);
+    const offset = camera.position.clone().sub(target).setLength(distance);
     camera.position.copy(target).add(offset);
+    if (scene.fog instanceof Fog) [scene.fog.near, scene.fog.far] = fogRange(distance);
     (controls as OrbitControlsImpl | null)?.update();
   }, [width, height, fraction, get]);
 
   useFrame((_, delta) => {
     const camera = get().camera as PerspectiveCamera;
     const next = reducedMotion ? targetShift : MathUtils.damp(shift.current, targetShift, 9, delta);
-    const settled = Math.abs(next - targetShift) < 0.25;
-    const value = settled ? targetShift : next;
+    const value = Math.abs(next - targetShift) < 0.25 ? targetShift : next;
     const unchanged = value === shift.current && (camera.view?.enabled ?? false) === (value !== 0);
-    if (unchanged && camera.view?.fullWidth === width) return;
+    if (unchanged && (value === 0 || camera.view?.fullWidth === width)) return;
     shift.current = value;
     if (value === 0) camera.clearViewOffset();
     else camera.setViewOffset(width, height, value, 0, width, height);

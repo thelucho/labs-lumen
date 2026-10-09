@@ -74,11 +74,11 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 **Verificación:** revisión visual contra las reglas anti-slop de SPEC §6.3.
 
 ## Fase 8 — Pulido y deploy
-- [ ] Responsive 360 px → 1920 px.
-- [ ] Performance: `dpr` limitado, instancing/merge, pausar render cuando el hero no está visible.
-- [ ] Accesibilidad: contraste, labels, roles, foco visible.
-- [ ] Metadata, favicon, Open Graph.
-- [ ] Lighthouse ≥ 90 (SPEC §7).
+- [x] Responsive 360 px → 1920 px.
+- [x] Performance: `dpr` limitado, instancing/merge, pausar render cuando el hero no está visible.
+- [x] Accesibilidad: contraste, labels, roles, foco visible. (Contraste: `slate`/`clay` quedan bajo AA por decisión, ver SPEC §6.3.)
+- [x] Metadata, favicon, Open Graph.
+- [x] Lighthouse ≥ 90 (SPEC §7). Escritorio, build de producción: Performance 99, Accesibilidad 96, Buenas prácticas 100, SEO 100.
 - [ ] Deploy en Vercel.
 
 **Verificación:** todos los criterios de aceptación de SPEC §9.

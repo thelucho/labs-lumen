@@ -4,14 +4,14 @@ import { ContactShadows } from "@react-three/drei";
 import { useMemo } from "react";
 import { BackSide, Color, ShaderMaterial } from "three";
 import { project } from "@/data/building";
-import { skyPoint } from "./camera";
+import { DISTANCE, fogRange, skyPoint } from "./camera";
 import { Clouds } from "./Clouds";
 import { palette3D } from "./materials";
 import { Sun } from "./Sun";
+import { UnitLight } from "./unitLight";
 
 const SKY_RADIUS = 600;
 const GROUND_RADIUS = 320;
-const FOG: [number, number] = [120, 300];
 
 /** Luz del sol: desde el noreste, alta, cálida (SPEC §4.3). */
 const SUN_LIGHT = skyPoint(45, 52, 70);
@@ -83,14 +83,14 @@ function Ground() {
   );
 }
 
-export function SceneEnvironment() {
+/**
+ * Niebla y luces. Van siempre montadas y antes que cualquier malla: los
+ * shaders se precompilan con esta configuración de luces.
+ */
+export function SceneLights() {
   return (
     <>
-      <fog attach="fog" args={[palette3D.skyHorizon, ...FOG]} />
-      <Sky />
-      <Sun />
-      <Clouds />
-
+      <fog attach="fog" args={[palette3D.skyHorizon, ...fogRange(DISTANCE)]} />
       <hemisphereLight args={[palette3D.skyFill, palette3D.ground, 2.4]} />
       <directionalLight
         position={SUN_LIGHT}
@@ -107,18 +107,46 @@ export function SceneEnvironment() {
         shadow-camera-near={1}
         shadow-camera-far={160}
       />
-
-      <Ground />
-      <ContactShadows
-        position={[0, SIDEWALK.height + 0.01, 0]}
-        scale={60}
-        resolution={1024}
-        blur={2.4}
-        far={12}
-        opacity={0.4}
-        color={palette3D.frame}
-        frames={1}
-      />
+      <UnitLight />
     </>
+  );
+}
+
+/** Cielo y suelo: la primera etapa visible. */
+export function SceneBackdrop() {
+  return (
+    <>
+      <Sky />
+      <Ground />
+    </>
+  );
+}
+
+/** Sol y nubes: decorado, se suma en una etapa posterior. */
+export function SkyDecor() {
+  return (
+    <>
+      <Sun />
+      <Clouds />
+    </>
+  );
+}
+
+/**
+ * Sombras de contacto: se calculan una sola vez (frames=1), así que se montan
+ * cuando el edificio ya está en escena.
+ */
+export function GroundShadows() {
+  return (
+    <ContactShadows
+      position={[0, SIDEWALK.height + 0.01, 0]}
+      scale={60}
+      resolution={1024}
+      blur={2.4}
+      far={12}
+      opacity={0.4}
+      color={palette3D.frame}
+      frames={1}
+    />
   );
 }

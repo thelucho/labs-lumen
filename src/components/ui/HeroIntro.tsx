@@ -12,7 +12,7 @@ const facts = [
 ];
 
 /**
- * Bloque editorial del hero. En mobile va debajo del edificio; en escritorio
+ * Bloque editorial del hero. Debajo del edificio hasta lg; desde lg
  * a la izquierda, y se oculta mientras el panel de ficha está abierto.
  */
 export function HeroIntro() {
@@ -22,9 +22,9 @@ export function HeroIntro() {
     <div
       className={[
         "px-4 pt-8 pb-14 sm:px-8",
-        "md:pointer-events-none md:absolute md:top-1/2 md:left-8 md:w-[21rem] md:-translate-y-1/2 md:p-0",
-        "md:transition-opacity md:duration-200 motion-reduce:transition-none",
-        isPanelOpen ? "md:opacity-0" : "md:opacity-100",
+        "lg:pointer-events-none lg:absolute lg:top-1/2 lg:left-8 lg:w-[21rem] lg:-translate-y-1/2 lg:p-0",
+        "lg:transition-opacity lg:duration-200 motion-reduce:transition-none",
+        isPanelOpen ? "lg:opacity-0" : "lg:opacity-100",
       ].join(" ")}
     >
       <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate">{project.address}</p>

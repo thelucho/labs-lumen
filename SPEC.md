@@ -177,6 +177,7 @@ Reglas:
 - Sí: líneas finas de 1 px, mucho espacio en blanco, etiquetas en versalitas pequeñas con tracking amplio, cifras grandes en serif, radios chicos (2–4 px) o rectos, animaciones cortas y sobrias.
 - Textos escritos como los de una desarrolladora real: concretos, con datos.
 - El acento `brass` es el mismo color que la luz de las unidades: conecta 3D y UI.
+- *Decisión (fase 8)*: `slate` sobre `paper` (4,42:1) y `clay` sobre `paper` (4,13:1) quedan por debajo del contraste AA (4,5:1) en texto chico. Se mantienen los hex de la tabla a propósito; se evaluó oscurecerlos (`#686C70`, `#975E3B`) y se descartó.
 
 ## 7. Requisitos no funcionales
 - Lighthouse (desktop) ≥ 90 en Performance, Accessibility y Best Practices.
