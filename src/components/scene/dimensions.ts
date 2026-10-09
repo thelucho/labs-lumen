@@ -30,6 +30,12 @@ export const RAIL = 0.05;
 
 /** Retiro de los interiores respecto de la fachada. */
 export const ROOM_INSET = 0.14;
+/**
+ * Separación vertical de los interiores respecto de losas y techos. Sin ella el
+ * piso del interior (que se dibuja por dentro, BackSide) queda en el mismo
+ * plano que la losa y parpadea al girar la cámara (z-fighting).
+ */
+export const ROOM_GAP = 0.03;
 
 const typical = (side: UnitSide) => units.find((u) => u.side === side)!;
 

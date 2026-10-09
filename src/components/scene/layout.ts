@@ -15,6 +15,7 @@ import {
   RAIL,
   RAILING,
   ROOF,
+  ROOM_GAP,
   ROOM_INSET,
   SLAB,
   SLAB_OVERHANG,
@@ -103,7 +104,8 @@ class LayoutBuilder {
         hasGlass = true;
         this.add("glass", this.onFace(f, a, a + bay, f.y0, f.y1, -0.04, GLASS));
       } else {
-        this.add("cladding", this.onFace(f, a, a + bay, f.y0, f.y1, 0.02, PANEL));
+        // Centrado en el plano: los montantes (más profundos) sobresalen y no quedan al ras.
+        this.add("cladding", this.onFace(f, a, a + bay, f.y0, f.y1, 0, PANEL));
       }
     }
     for (let i = 0; i <= n; i++) {
@@ -133,7 +135,7 @@ class LayoutBuilder {
   room(id: SelectableId, x0: number, x1: number, y0: number, y1: number, z0: number, z1: number) {
     this.rooms.push({
       id,
-      box: box(x0 + ROOM_INSET, x1 - ROOM_INSET, y0, y1 - 0.02, z0 + ROOM_INSET, z1 - ROOM_INSET),
+      box: box(x0 + ROOM_INSET, x1 - ROOM_INSET, y0 + ROOM_GAP, y1 - ROOM_GAP, z0 + ROOM_INSET, z1 - ROOM_INSET),
     });
   }
 
@@ -160,7 +162,7 @@ function groundLevel(b: LayoutBuilder, level: Level, y0: number) {
   b.face({ axis: "x", from: -HALF_W, to: HALF_W, at: -HALF_D, normal: -1, y0: yA, y1: yB, pattern: solidWest });
 
   // Portón de cocheras y paño ciego encima.
-  b.add("cladding", box(GROUND.garageX, HALF_W, yA, GROUND.garageHeight, HALF_D - 0.06, HALF_D + 0.04));
+  b.add("cladding", box(GROUND.garageX, HALF_W, yA, GROUND.garageHeight, HALF_D - 0.05, HALF_D + 0.04));
   b.add("concrete", box(GROUND.garageX, HALF_W, GROUND.garageHeight, yB, HALF_D - 0.04, HALF_D + 0.06));
 
   // Marquesina de acceso.
