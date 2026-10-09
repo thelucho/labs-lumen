@@ -1,24 +1,38 @@
 import { Scene } from "@/components/scene/Scene";
 import { FloorSelector } from "@/components/ui/FloorSelector";
+import { HeroIntro } from "@/components/ui/HeroIntro";
 import { InquiryModal } from "@/components/ui/InquiryModal";
+import {
+  AmenitiesSection,
+  LocationSection,
+  ProjectSection,
+  SiteFooter,
+} from "@/components/ui/sections";
+import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { UnitPanel } from "@/components/ui/UnitPanel";
-import { project } from "@/data/building";
+import { UsageHint } from "@/components/ui/UsageHint";
 
 export default function Home() {
   return (
-    <main className="flex flex-1 flex-col">
-      <section className="relative h-svh min-h-[560px] w-full">
-        <Scene />
-        <div className="pointer-events-none absolute left-4 top-6 sm:left-8 sm:top-8">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate">
-            {project.address}
-          </p>
-          <h1 className="mt-2 font-serif text-4xl leading-none sm:text-5xl">{project.name}</h1>
-        </div>
-        <FloorSelector />
-      </section>
+    <>
+      <main className="flex flex-1 flex-col">
+        {/* Hero: en mobile el edificio arriba a todo el ancho y el texto debajo. */}
+        <section aria-label="Edificio interactivo" className="relative md:h-svh md:min-h-[640px]">
+          <div className="relative h-[68svh] min-h-[460px] md:absolute md:inset-0 md:h-auto md:min-h-0">
+            <Scene />
+            <FloorSelector />
+            <UsageHint />
+          </div>
+          <HeroIntro />
+        </section>
+        <ProjectSection />
+        <AmenitiesSection />
+        <LocationSection />
+      </main>
+      <SiteFooter />
       <UnitPanel />
       <InquiryModal />
-    </main>
+      <SmoothScroll />
+    </>
   );
 }

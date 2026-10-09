@@ -95,3 +95,8 @@ export function adjacentSelectable(id: SelectableId, direction: 1 | -1): Selecta
   const sameSide = candidates.find((c) => getUnit(c)?.side === side);
   return sameSide ?? candidates[0] ?? null;
 }
+
+/** Precio más bajo entre las unidades no vendidas ("Desde USD …"). */
+export function minAvailablePrice(): number {
+  return Math.min(...units.filter((u) => u.status !== "sold").map((u) => u.price));
+}

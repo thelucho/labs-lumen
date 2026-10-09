@@ -273,3 +273,63 @@ export const commonSpaces: Record<CommonSpaceId, CommonSpace> = {
     ],
   },
 };
+
+/* ------------------------------------------------------------------------ */
+/* Contenido de la landing (SPEC §3). Ficticio, coherente con los datos.    */
+/* ------------------------------------------------------------------------ */
+
+/** Una línea de propuesta para el hero. */
+export const tagline =
+  "Departamentos de 3 y 4 ambientes y dos pisos completos, frente al norte, con balcón al este y amenities en la azotea.";
+
+/** Texto de la sección "El proyecto". */
+export const about: string[] = [
+  "Un edificio de planta baja, ocho pisos y SUM en la azotea sobre un lote de 22 m de frente. Del piso 2 al 7 hay dos unidades por planta: la A, sobre el lateral este, con balcón de 12 m² y losa radiante; la B, sobre el oeste, de 3 ambientes.",
+  "Los pisos 1 y 8 son completos: 210 m² cubiertos, balcón corrido de 24 m² y ascensor con llegada a palier privado. Todas las unidades tienen cochera en el subsuelo y baulera.",
+];
+
+export type AmenityId = "pool" | "sauna" | "gym" | "sum" | "solarium";
+
+export interface Amenity {
+  id: AmenityId;
+  name: string;
+  detail: string;
+}
+
+/** SPEC §3 y §5.8 */
+export const amenities: Amenity[] = [
+  { id: "pool", name: "Pileta descubierta", detail: "8 × 3,5 m en la terraza del nivel 9." },
+  { id: "solarium", name: "Solárium", detail: "Deck de madera junto a la pileta, sobre una terraza de 180 m²." },
+  { id: "sum", name: "SUM con parrillas", detail: "120 m² cubiertos con cocina, 2 parrillas y vista 360°." },
+  { id: "gym", name: "Gimnasio", detail: "45 m² equipados, con vestuarios." },
+  { id: "sauna", name: "Sauna seco", detail: "Junto al gimnasio y los vestuarios." },
+];
+
+export interface LocationPoint {
+  label: string;
+  distance: string;
+}
+
+/** SPEC §3.4: ubicación ficticia, sin mapas de terceros. */
+export const location = {
+  street: "Los Aromos",
+  neighborhood: "Barrio Parque",
+  summary:
+    "Sobre una calle arbolada de doble mano, a dos cuadras de la plaza y a seis de la estación. Zona residencial de casas bajas: el edificio no tiene vecinos en altura al norte.",
+  points: [
+    { label: "Plaza Los Aromos", distance: "2 cuadras" },
+    { label: "Estación de tren", distance: "6 cuadras" },
+    { label: "Colegios primario y secundario", distance: "4 cuadras" },
+    { label: "Supermercado y comercios", distance: "3 cuadras" },
+    { label: "Acceso a la autopista", distance: "5 min en auto" },
+  ] satisfies LocationPoint[],
+};
+
+/** Datos de contacto ficticios de la desarrolladora. */
+export const contact = {
+  showroom: "Los Aromos 1240, planta baja",
+  hours: "Lunes a sábados de 10 a 18 h",
+  phone: "+54 11 5555-0123",
+  whatsapp: "+54 9 11 5555-0123",
+  email: "ventas@arcemolina.example",
+};

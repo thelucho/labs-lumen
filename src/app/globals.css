@@ -37,3 +37,13 @@ html {
 html:has(dialog[open]) {
   overflow: hidden;
 }
+
+/*
+ * OrbitControls pone touch-action: none (inline) en el contenedor del canvas y
+ * en mobile no se podría scrollear sobre el hero. Con pan-y el deslizamiento
+ * vertical scrollea la página y el horizontal gira el edificio.
+ */
+[data-scene],
+[data-scene] * {
+  touch-action: pan-y !important;
+}

@@ -64,12 +64,12 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 **Verificación:** confirmar en la pestaña Network que no hay ninguna request al enviar.
 
 ## Fase 7 — Resto de la landing + Lenis
-- [ ] Hero completo (bloque editorial + 3D + selector + indicación de uso).
-- [ ] Mobile: hoy el selector flota sobre el edificio y tapa la mitad derecha; reubicarlo (debajo del 3D o como tira) sin perder el orden vertical SUM → PB.
-- [ ] Secciones: El proyecto, Amenities, Ubicación (plano ilustrado estático), Footer con aviso de demo.
-- [ ] Lenis para scroll suave; detenerlo con panel/modal abiertos; `data-lenis-prevent` en zonas con scroll propio; desactivado con `prefers-reduced-motion`.
-- [ ] Que el scroll de la página no gire el edificio y que el drag del edificio no scrollee la página.
-- [ ] Mobile: OrbitControls pone `touch-action: none` en el canvas y el hero (100svh) no deja scrollear con el dedo; permitir scroll vertical (p. ej. `pan-y` y rotación solo con gesto horizontal).
+- [x] Hero completo (bloque editorial + 3D + selector + indicación de uso).
+- [x] Mobile: hoy el selector flota sobre el edificio y tapa la mitad derecha; reubicarlo (debajo del 3D o como tira) sin perder el orden vertical SUM → PB.
+- [x] Secciones: El proyecto, Amenities, Ubicación (plano ilustrado estático), Footer con aviso de demo.
+- [x] Lenis para scroll suave; detenerlo con panel/modal abiertos; `data-lenis-prevent` en zonas con scroll propio; desactivado con `prefers-reduced-motion`.
+- [x] Que el scroll de la página no gire el edificio y que el drag del edificio no scrollee la página.
+- [x] Mobile: OrbitControls pone `touch-action: none` en el canvas y el hero (100svh) no deja scrollear con el dedo; permitir scroll vertical (p. ej. `pan-y` y rotación solo con gesto horizontal).
 
 **Verificación:** revisión visual contra las reglas anti-slop de SPEC §6.3.
 

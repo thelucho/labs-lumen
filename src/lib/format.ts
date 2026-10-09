@@ -68,3 +68,9 @@ export function selectableTitle(id: SelectableId): string {
 export function formatBedrooms(unit: Unit): string {
   return `${unit.bedrooms} (${unit.ensuites} en suite)`;
 }
+
+/** "diciembre 2027" → "Dic. 2027" */
+export function formatDeliveryShort(delivery: string): string {
+  const [month, year] = delivery.split(" ");
+  return `${month.charAt(0).toUpperCase()}${month.slice(1, 3)}. ${year}`;
+}

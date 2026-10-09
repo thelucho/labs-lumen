@@ -121,3 +121,28 @@ describe("navegación entre pisos", () => {
     expect(adjacentSelectable("sum", 1)).toBeNull();
   });
 });
+
+describe("contenido de la landing", () => {
+  it("entrega corta y precio desde coherentes con los datos", async () => {
+    const { formatDeliveryShort } = await import("@/lib/format");
+    const { minAvailablePrice } = await import("@/lib/building");
+    expect(formatDeliveryShort("diciembre 2027")).toBe("Dic. 2027");
+    // 2B (284.000) está vendida: el menor disponible es 3B.
+    expect(minAvailablePrice()).toBe(291_000);
+  });
+
+  it("el texto del proyecto usa las mismas cifras que los datos", async () => {
+    const { about, project } = await import("@/data/building");
+    const text = about.join(" ");
+    const a = getUnit("4A")!;
+    const full = getUnit("1")!;
+    for (const fragment of [
+      `${project.footprint.width} m de frente`,
+      `${a.balconyArea} m²`,
+      `${full.coveredArea} m²`,
+      `${full.balconyArea} m²`,
+    ]) {
+      expect(text).toContain(fragment);
+    }
+  });
+});
