@@ -29,6 +29,10 @@ export const palette3D = {
   sun: "#fff1dc",
   sunDisc: "#fff6e6",
   unitLight: "#f2c27b",
+  /** Base del interior encendido: más oscura para que domine el emisivo. */
+  interiorLit: "#5e5548",
+  /** Unidades vendidas: luz más tenue y neutra (SPEC §5.6). */
+  soldLight: "#e2ddd3",
 } as const;
 
 /** Cubo unitario compartido: todas las cajas lo escalan. */

@@ -38,12 +38,12 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 **Verificación:** captura; la escena se ve como maqueta arquitectónica, sin colores saturados; fps estables (medir en navegador real: headless usa render por software).
 
 ## Fase 4 — Interacción 3D
-- [ ] OrbitControls con límites de SPEC §4.4, damping, auto-rotación lenta que se detiene al interactuar.
-- [ ] Hover por unidad: emisivo cálido + luz puntual única que se mueve a la unidad activa; transición corta.
-- [ ] Tooltip con nombre de unidad.
-- [ ] Click con umbral para no confundir con drag; selección persistente.
-- [ ] Interacción en PB y SUM.
-- [ ] Tap en touch.
+- [x] OrbitControls con límites de SPEC §4.4, damping, auto-rotación lenta que se detiene al interactuar.
+- [x] Hover por unidad: emisivo cálido + luz puntual única que se mueve a la unidad activa; transición corta.
+- [x] Tooltip con nombre de unidad.
+- [x] Click con umbral para no confundir con drag; selección persistente.
+- [x] Interacción en PB y SUM.
+- [x] Tap en touch.
 
 **Verificación:** recorrer todas las unidades con el mouse: nunca hay dos encendidas; drag no abre fichas; probar en viewport mobile.
 
@@ -68,6 +68,7 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [ ] Secciones: El proyecto, Amenities, Ubicación (plano ilustrado estático), Footer con aviso de demo.
 - [ ] Lenis para scroll suave; detenerlo con panel/modal abiertos; `data-lenis-prevent` en zonas con scroll propio; desactivado con `prefers-reduced-motion`.
 - [ ] Que el scroll de la página no gire el edificio y que el drag del edificio no scrollee la página.
+- [ ] Mobile: OrbitControls pone `touch-action: none` en el canvas y el hero (100svh) no deja scrollear con el dedo; permitir scroll vertical (p. ej. `pan-y` y rotación solo con gesto horizontal).
 
 **Verificación:** revisión visual contra las reglas anti-slop de SPEC §6.3.
 

@@ -8,6 +8,8 @@ interface UIState {
   selectedId: SelectableId | null;
   isPanelOpen: boolean;
   isModalOpen: boolean;
+  /** Primer hover, drag o selección: corta la auto-rotación para siempre. */
+  hasInteracted: boolean;
 
   setHovered: (id: SelectableId | null) => void;
   /** Selecciona y abre el panel con la ficha. */
@@ -15,6 +17,7 @@ interface UIState {
   closePanel: () => void;
   openModal: () => void;
   closeModal: () => void;
+  markInteracted: () => void;
 }
 
 export const useUIStore = create<UIState>()((set) => ({
@@ -22,12 +25,14 @@ export const useUIStore = create<UIState>()((set) => ({
   selectedId: null,
   isPanelOpen: false,
   isModalOpen: false,
+  hasInteracted: false,
 
-  setHovered: (id) => set({ hoveredId: id }),
-  select: (id) => set({ selectedId: id, isPanelOpen: true }),
+  setHovered: (id) => set(id ? { hoveredId: id, hasInteracted: true } : { hoveredId: null }),
+  select: (id) => set({ selectedId: id, isPanelOpen: true, hasInteracted: true }),
   closePanel: () => set({ selectedId: null, isPanelOpen: false, isModalOpen: false }),
   openModal: () => set({ isModalOpen: true }),
   closeModal: () => set({ isModalOpen: false }),
+  markInteracted: () => set({ hasInteracted: true }),
 }));
 
 /**
@@ -35,3 +40,8 @@ export const useUIStore = create<UIState>()((set) => ({
  * (queda encendida aunque el mouse salga).
  */
 export const selectLitId = (s: UIState): SelectableId | null => s.hoveredId ?? s.selectedId;
+
+// Solo en desarrollo: acceso al store desde la consola y las pruebas automatizadas.
+if (process.env.NODE_ENV !== "production" && typeof window !== "undefined") {
+  (window as unknown as { __lumenStore?: typeof useUIStore }).__lumenStore = useUIStore;
+}

@@ -1,11 +1,11 @@
 "use client";
 
-import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { useState } from "react";
 import { NeutralToneMapping } from "three";
 import { Building } from "./Building";
-import { FOV, TARGET, cameraPosition, readAzimuth } from "./camera";
+import { FOV, cameraPosition, readAzimuth } from "./camera";
+import { Controls } from "./Controls";
 import { SceneEnvironment } from "./Environment";
 
 export default function SceneCanvas() {
@@ -20,9 +20,7 @@ export default function SceneCanvas() {
     >
       <SceneEnvironment />
       <Building />
-
-      {/* Solo para inspección: los límites de SPEC §4.4 llegan en la Fase 4. */}
-      <OrbitControls target={TARGET} enablePan={false} makeDefault />
+      <Controls />
     </Canvas>
   );
 }

@@ -95,4 +95,14 @@ describe("store", () => {
     closePanel();
     expect(useUIStore.getState()).toMatchObject({ selectedId: null, isPanelOpen: false });
   });
+
+  it("el primer hover corta la auto-rotación y no se revierte", () => {
+    useUIStore.setState({ hasInteracted: false, hoveredId: null });
+    const { setHovered } = useUIStore.getState();
+    setHovered(null);
+    expect(useUIStore.getState().hasInteracted).toBe(false);
+    setHovered("pb");
+    setHovered(null);
+    expect(useUIStore.getState().hasInteracted).toBe(true);
+  });
 });

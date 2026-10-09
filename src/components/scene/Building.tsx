@@ -3,7 +3,8 @@
 import { project } from "@/data/building";
 import { InstancedBoxes } from "./InstancedBoxes";
 import { buildBuildingLayout, type MaterialKey } from "./layout";
-import { interiorMaterial, materials, unitBox } from "./materials";
+import { materials } from "./materials";
+import { Rooms } from "./Rooms";
 import { StreetNumber } from "./StreetNumber";
 
 /** El layout depende solo de los datos: se calcula una vez por carga. */
@@ -22,16 +23,7 @@ export function Building() {
       <InstancedBoxes boxes={layout.parts.glass} material={materials.glass} castShadow={false} />
       <InstancedBoxes boxes={layout.parts.water} material={materials.water} castShadow={false} />
 
-      {layout.rooms.map((room) => (
-        <mesh
-          key={room.id}
-          geometry={unitBox}
-          material={interiorMaterial}
-          position={room.box.p}
-          scale={room.box.s}
-          userData={{ selectableId: room.id }}
-        />
-      ))}
+      <Rooms rooms={layout.rooms} />
 
       <StreetNumber
         text={streetNumber}
