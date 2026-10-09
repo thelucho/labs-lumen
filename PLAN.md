@@ -21,13 +21,13 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 **Verificación:** el test pasa; los datos coinciden con SPEC.
 
 ## Fase 2 — Edificio 3D estático
-- [ ] Componente `Scene` cargado con `dynamic(..., { ssr: false })` y placeholder.
-- [ ] Generar el edificio por código desde los datos (no hardcodear pisos): PB, pisos 1–8, SUM + terraza + pileta.
-- [ ] Losas, carpinterías, vidrios, interiores simples, tabique A/B, balcones en lateral este (incluidos pisos 1 y 8).
-- [ ] Materiales según SPEC §4.2.
-- [ ] Cámara inicial mostrando frente + lateral este.
+- [x] Componente `Scene` cargado con `dynamic(..., { ssr: false })` y placeholder.
+- [x] Generar el edificio por código desde los datos (no hardcodear pisos): PB, pisos 1–8, SUM + terraza + pileta.
+- [x] Losas, carpinterías, vidrios, interiores simples, tabique A/B, balcones en lateral este (incluidos pisos 1 y 8).
+- [x] Materiales según SPEC §4.2.
+- [x] Cámara inicial mostrando frente + lateral este.
 
-**Verificación:** captura de pantalla desde frente, lateral este, lateral oeste y contrafrente; se distinguen las 2 unidades en pisos 2–7 y el piso completo en 1 y 8.
+**Verificación:** captura de pantalla desde frente, lateral este, lateral oeste y contrafrente (en dev: `?cam=front|east|west|back`); se distinguen las 2 unidades en pisos 2–7 y el piso completo en 1 y 8.
 
 ## Fase 3 — Entorno
 - [ ] Suelo, vereda, cielo con gradiente, fog suave.
