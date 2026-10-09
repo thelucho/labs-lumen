@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+/* Solo existen los tokens de SPEC §6.3: se resetea la paleta por defecto de Tailwind. */
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+
+  --color-paper: #f2efea;
+  --color-stone: #d9d3c7;
+  --color-graphite: #23262a;
+  --color-slate: #6b6f73;
+  --color-brass: #b8833e;
+  --color-sage: #5e6b5a;
+  --color-clay: #a2643f;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+
+  --radius-*: initial;
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+}
+
+html {
+  color-scheme: light;
+}
+
+::selection {
+  background-color: var(--color-brass);
+  color: var(--color-paper);
+}
