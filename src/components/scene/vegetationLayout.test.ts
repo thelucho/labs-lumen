@@ -1,16 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { HALF_D, HALF_W } from "./dimensions";
+import { HALF_D } from "./dimensions";
 import { buildVegetation, isClear } from "./vegetationLayout";
 
 const { trees, shrubs } = buildVegetation();
-const scattered = trees.filter((t) => t.base === 0);
-const street = trees.filter((t) => t.base > 0);
 
 describe("vegetación", () => {
-  it("cantidad moderada: 17 árboles y 24 arbustos", () => {
-    expect(scattered).toHaveLength(14);
-    expect(street.length).toBeGreaterThanOrEqual(3);
-    expect(street.length).toBeLessThanOrEqual(6);
+  it("cantidad moderada: 14 árboles y 24 arbustos", () => {
+    expect(trees).toHaveLength(14);
     expect(shrubs).toHaveLength(24);
   });
 
@@ -19,15 +15,13 @@ describe("vegetación", () => {
   });
 
   it("nada dentro del edificio, los balcones, la vereda ni la calle", () => {
-    for (const t of scattered) expect(isClear(t.x, t.z), `${t.x},${t.z}`).toBe(true);
+    for (const t of trees) expect(isClear(t.x, t.z), `${t.x},${t.z}`).toBe(true);
     for (const s of shrubs) expect(isClear(s.x, s.z), `${s.x},${s.z}`).toBe(true);
   });
 
-  it("los árboles de vereda no tapan la fachada", () => {
-    for (const t of street) {
-      expect(t.z).toBeGreaterThan(HALF_D);
-      expect(Math.abs(t.x)).toBeGreaterThan(HALF_W + 4);
-    }
+  it("sin árboles sobre la vereda", () => {
+    const onSidewalk = trees.filter((t) => t.z > HALF_D && t.z < HALF_D + 4 && Math.abs(t.x) < 45);
+    expect(onSidewalk).toEqual([]);
   });
 
   it("ningún par de árboles superpuesto", () => {
@@ -38,14 +32,8 @@ describe("vegetación", () => {
       }
     }
   });
-});
 
-describe("vegetación y cámara", () => {
   it("nada a más de 60 m del centro (lejos del primer plano de la cámara)", () => {
     for (const t of trees) expect(Math.hypot(t.x, t.z)).toBeLessThanOrEqual(60);
-  });
-
-  it("sin árboles de vereda al oeste (quedarían detrás del texto del hero)", () => {
-    for (const t of street) expect(t.x).toBeGreaterThan(0);
   });
 });

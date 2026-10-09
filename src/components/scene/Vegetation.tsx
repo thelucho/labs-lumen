@@ -37,9 +37,9 @@ const TRUNK_RADIUS = 0.16;
 function crownTransform(t: Tree): { y: number; scale: [number, number, number] } {
   if (t.kind === "columnar") {
     const h = t.height * 0.8;
-    return { y: t.base + t.height - h / 2, scale: [t.crown, h, t.crown] };
+    return { y: t.height - h / 2, scale: [t.crown, h, t.crown] };
   }
-  return { y: t.base + t.height - t.crown * 1.05, scale: [t.crown, t.crown * 1.05, t.crown] };
+  return { y: t.height - t.crown * 1.05, scale: [t.crown, t.crown * 1.05, t.crown] };
 }
 
 function trunkHeight(t: Tree): number {
@@ -75,7 +75,7 @@ function useInstances(placements: Placement[]) {
 const spin = (i: number) => (i * 2.399) % (Math.PI * 2); // ángulo áureo: variación sin azar
 const trunkPlacements: Placement[] = trees.map((t, i) => {
   const h = trunkHeight(t);
-  return { position: [t.x, t.base + h / 2, t.z], scale: [TRUNK_RADIUS, h, TRUNK_RADIUS], spin: spin(i) };
+  return { position: [t.x, h / 2, t.z], scale: [TRUNK_RADIUS, h, TRUNK_RADIUS], spin: spin(i) };
 });
 const crownPlacements = (list: Tree[]): Placement[] =>
   list.map((t, i) => {

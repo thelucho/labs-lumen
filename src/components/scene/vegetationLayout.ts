@@ -18,8 +18,6 @@ export interface Tree {
   crown: number;
   /** 0, 1 o 2: elige el tono de verde. */
   tone: number;
-  /** Cota del pie (0 suelo, más alto sobre la vereda). */
-  base: number;
 }
 
 export interface Shrub {
@@ -36,13 +34,6 @@ export const KEEP_CLEAR: [number, number, number, number][] = [
   // Vereda y calle al frente (ver Ground en Environment).
   [-48, 48, HALF_D, HALF_D + 14.5],
 ];
-
-/** Pie de los árboles de alineación sobre la vereda. */
-const SIDEWALK = { z: HALF_D + 3.3, top: 0.12 };
-/** Sin árboles de vereda delante de la fachada: no tapan el frente ni la PB. */
-const SIDEWALK_GAP: [number, number] = [-HALF_W - 4, HALF_W + 6];
-// Solo del lado este: en la vista inicial el lado oeste queda detrás del texto del hero.
-const STREET_TREE_X = [25, 34, 43];
 
 const TREE_COUNT = 14;
 const SHRUB_COUNT = 24;
@@ -83,22 +74,12 @@ export function buildVegetation(seed = 1240): { trees: Tree[]; shrubs: Shrub[] }
   const rand = random(seed);
   const trees: Tree[] = [];
 
-  // Árboles de alineación: la calle arbolada de la sección Ubicación.
-  for (const x of STREET_TREE_X) {
-    if (x > SIDEWALK_GAP[0] && x < SIDEWALK_GAP[1]) continue;
-    trees.push({
-      kind: "round",
-      x,
-      z: SIDEWALK.z,
-      height: 6.5 + rand() * 1.5,
-      crown: 2 + rand() * 0.4,
-      tone: 0,
-      base: SIDEWALK.top,
-    });
-  }
+  // Se descartan 6 valores que antes usaban los árboles de vereda (quitados):
+  // así el resto del paisaje queda exactamente donde estaba.
+  for (let i = 0; i < 6; i++) rand();
 
   // Árboles dispersos en el terreno.
-  for (let tries = 0; trees.length < STREET_TREE_X.length + TREE_COUNT && tries < 2000; tries++) {
+  for (let tries = 0; trees.length < TREE_COUNT && tries < 2000; tries++) {
     // Hasta 60 m: siempre a más de ~25 m de la cámara, sin árboles gigantes en primer plano.
     const { x, z } = ringPoint(rand, 19, 60);
     if (!isClear(x, z, 2.5) || !farFrom(trees, x, z, TREE_SPACING)) continue;
@@ -110,7 +91,6 @@ export function buildVegetation(seed = 1240): { trees: Tree[]; shrubs: Shrub[] }
       height: columnar ? 7 + rand() * 3 : 5 + rand() * 3,
       crown: columnar ? 1.1 + rand() * 0.4 : 1.7 + rand() * 1,
       tone: Math.floor(rand() * 3),
-      base: 0,
     });
   }
 
