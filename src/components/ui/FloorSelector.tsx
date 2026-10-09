@@ -118,7 +118,7 @@ export function FloorSelector() {
                     ].join(" ")}
                   >
                     {unit && (
-                      <span /* unslop-ignore: punto de estado de 6 px, no un botón píldora */ aria-hidden className={`size-1.5 rounded-full ${dotClass[unit.status]}`} />
+                      <span aria-hidden className={`size-1.5 rounded-full ${dotClass[unit.status]}`} />
                     )}
                     {chipLabel(id)}
                   </button>
@@ -131,7 +131,7 @@ export function FloorSelector() {
       <ul className="mt-4 flex flex-col gap-1 text-[11px] text-slate">
         {(Object.keys(dotClass) as (keyof typeof dotClass)[]).map((status) => (
           <li key={status} className="flex items-center gap-1.5">
-            <span /* unslop-ignore: punto de estado de 6 px, no un botón píldora */ aria-hidden className={`size-1.5 rounded-full ${dotClass[status]}`} />
+            <span aria-hidden className={`size-1.5 rounded-full ${dotClass[status]}`} />
             {statusLabels[status]}
           </li>
         ))}
