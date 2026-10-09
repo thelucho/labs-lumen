@@ -12,11 +12,11 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 **Verificación:** `npm run dev` levanta, se ven las fuentes y colores correctos, build limpio.
 
 ## Fase 1 — Datos y estado
-- [ ] `src/data/building.ts` con tipos (`Unit`, `Level`, `UnitStatus`, etc.) y todos los datos de SPEC §5.
-- [ ] Helpers: formato de precio (`USD 359.000`), etiqueta de unidad ("4° A", "Piso 1 completo").
-- [ ] Store de UI (Zustand): `hoveredId`, `selectedId`, `isPanelOpen`, `isModalOpen`.
-- [ ] Datos de geometría por nivel/unidad que necesita el 3D: `kind`, `height`, `side` (A/B/completo), `hasBalcony`.
-- [ ] Test unitario con Vitest (`npm test`) que verifique: 14 unidades, pisos 1 y 8 completos, todas las A y los pisos completos con balcón, precios = regla de SPEC §5.5.
+- [x] `src/data/building.ts` con tipos (`Unit`, `Level`, `UnitStatus`, etc.) y todos los datos de SPEC §5.
+- [x] Helpers: formato de precio (`USD 359.000`), etiqueta de unidad ("4° A", "Piso 1 completo").
+- [x] Store de UI (Zustand): `hoveredId`, `selectedId`, `isPanelOpen`, `isModalOpen`.
+- [x] Datos de geometría por nivel/unidad que necesita el 3D: `kind`, `height`, `side` (A/B/completo), `hasBalcony`.
+- [x] Test unitario con Vitest (`npm test`) que verifique: 14 unidades, pisos 1 y 8 completos, todas las A y los pisos completos con balcón, precios = regla de SPEC §5.5.
 
 **Verificación:** el test pasa; los datos coinciden con SPEC.
 
