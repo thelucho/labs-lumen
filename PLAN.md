@@ -57,9 +57,9 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 **Verificación:** abrir la ficha de las 16 entradas (14 unidades + PB + SUM) y comparar contra SPEC §5.
 
 ## Fase 6 — Modal de solicitud
-- [ ] Formulario de SPEC §6.2 con validación en cliente.
-- [ ] Submit sin envío + estado de confirmación de demo.
-- [ ] Focus trap, Esc, retorno de foco.
+- [x] Formulario de SPEC §6.2 con validación en cliente.
+- [x] Submit sin envío + estado de confirmación de demo.
+- [x] Focus trap, Esc, retorno de foco.
 
 **Verificación:** confirmar en la pestaña Network que no hay ninguna request al enviar.
 

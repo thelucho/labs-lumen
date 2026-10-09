@@ -32,3 +32,8 @@ html {
   background-color: var(--color-brass);
   color: var(--color-paper);
 }
+
+/* Sin scroll de fondo con el modal abierto. */
+html:has(dialog[open]) {
+  overflow: hidden;
+}

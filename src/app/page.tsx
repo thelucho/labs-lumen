@@ -1,5 +1,6 @@
 import { Scene } from "@/components/scene/Scene";
 import { FloorSelector } from "@/components/ui/FloorSelector";
+import { InquiryModal } from "@/components/ui/InquiryModal";
 import { UnitPanel } from "@/components/ui/UnitPanel";
 import { project } from "@/data/building";
 
@@ -17,6 +18,7 @@ export default function Home() {
         <FloorSelector />
       </section>
       <UnitPanel />
+      <InquiryModal />
     </main>
   );
 }
