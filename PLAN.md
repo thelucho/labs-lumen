@@ -30,12 +30,12 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 **Verificación:** captura de pantalla desde frente, lateral este, lateral oeste y contrafrente (en dev: `?cam=front|east|west|back`); se distinguen las 2 unidades en pisos 2–7 y el piso completo en 1 y 8.
 
 ## Fase 3 — Entorno
-- [ ] Suelo, vereda, cielo con gradiente, fog suave.
-- [ ] Sol visible al noreste + `directionalLight` alineada con sombras.
-- [ ] Nubes con movimiento lento.
-- [ ] Sombras de contacto.
+- [x] Suelo, vereda, cielo con gradiente, fog suave.
+- [x] Sol visible al noreste + `directionalLight` alineada con sombras.
+- [x] Nubes con movimiento lento.
+- [x] Sombras de contacto.
 
-**Verificación:** captura; la escena se ve como maqueta arquitectónica, sin colores saturados; fps estables.
+**Verificación:** captura; la escena se ve como maqueta arquitectónica, sin colores saturados; fps estables (medir en navegador real: headless usa render por software).
 
 ## Fase 4 — Interacción 3D
 - [ ] OrbitControls con límites de SPEC §4.4, damping, auto-rotación lenta que se detiene al interactuar.

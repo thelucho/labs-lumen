@@ -49,7 +49,8 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 ### 4.3 Entorno
 - Suelo simple: plano amplio color piedra/césped desaturado, vereda frente al edificio, borde que se funde con el fondo (fog o gradiente).
 - **Sol** visible desde un costado (noreste), con una `directionalLight` cálida alineada a él que proyecta sombras.
-- 3–5 **nubes** low-poly o volumétricas suaves, con movimiento lento.
+  - *Decisión*: como la cámara inicial mira frente + lateral este (desde el noreste), un sol real al noreste quedaría detrás de la cámara. La luz viene del noreste (frente y balcones iluminados, sombras al sudoeste) y el **disco** del sol se ubica en el cielo para que aparezca arriba, a un costado del edificio, en la vista inicial. No es físicamente coherente al girar; se acepta como licencia de encuadre.
+- 3–5 **nubes** low-poly (sin texturas externas), con movimiento lento.
 - Cielo con gradiente suave (no azul saturado).
 - `ContactShadows` o sombra real bajo el edificio.
 

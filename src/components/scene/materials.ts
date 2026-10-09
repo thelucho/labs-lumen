@@ -19,9 +19,15 @@ export const palette3D = {
   interior: "#ebe6dc",
   deck: "#9c7d61",
   water: "#7d9ea6",
-  sky: "#e7e5e0",
-  ground: "#cfcabd",
+  skyTop: "#c7d2d6",
+  skyHorizon: "#ebe8e2",
+  skyFill: "#dfe1df",
+  ground: "#c9c7b7",
+  sidewalk: "#dcd8cf",
+  street: "#b3b0a8",
+  cloud: "#f8f7f4",
   sun: "#fff1dc",
+  sunDisc: "#fff6e6",
   unitLight: "#f2c27b",
 } as const;
 
