@@ -8,6 +8,7 @@ import { BuildingDetail, BuildingShell } from "./Building";
 import { FOV, cameraPosition, readAzimuth } from "./camera";
 import { Controls } from "./Controls";
 import { GroundShadows, SceneBackdrop, SceneLights, SkyDecor } from "./Environment";
+import { getShadowVersion } from "./shadowCache";
 import { Vegetation } from "./Vegetation";
 
 /** Cuadros iniciales en los que se recalcula el mapa de sombras. */
@@ -20,7 +21,14 @@ const SHADOW_WARMUP_FRAMES = 4;
 function StaticShadows() {
   const get = useThree((s) => s.get);
   const frames = useRef(0);
+  const seenVersion = useRef(getShadowVersion());
   useFrame(() => {
+    // Algo que proyecta sombra cambió: recalentar el mapa de sombras.
+    const version = getShadowVersion();
+    if (version !== seenVersion.current) {
+      seenVersion.current = version;
+      frames.current = 0;
+    }
     if (frames.current > SHADOW_WARMUP_FRAMES) return;
     frames.current += 1;
     const { shadowMap } = get().gl;

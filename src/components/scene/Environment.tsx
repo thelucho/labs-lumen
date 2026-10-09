@@ -7,6 +7,7 @@ import { project } from "@/data/building";
 import { DISTANCE, fogRange, skyPoint } from "./camera";
 import { Clouds } from "./Clouds";
 import { palette3D } from "./materials";
+import { useShadowVersion } from "./shadowCache";
 import { Sun } from "./Sun";
 import { UnitLight } from "./unitLight";
 
@@ -134,11 +135,14 @@ export function SkyDecor() {
 
 /**
  * Sombras de contacto: se calculan una sola vez (frames=1), así que se montan
- * cuando el edificio ya está en escena.
+ * cuando el edificio ya está en escena, y se vuelven a montar (key) si cambia
+ * algo que proyecta sombra; si no, quedarían sombras de objetos quitados.
  */
 export function GroundShadows() {
+  const version = useShadowVersion();
   return (
     <ContactShadows
+      key={version}
       position={[0, SIDEWALK.height + 0.01, 0]}
       scale={60}
       resolution={1024}

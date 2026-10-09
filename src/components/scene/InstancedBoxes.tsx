@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef } from "react";
 import { Matrix4, Quaternion, Vector3, type InstancedMesh, type Material } from "three";
 import type { Box } from "./layout";
 import { unitBox } from "./materials";
+import { invalidateShadows } from "./shadowCache";
 
 interface Props {
   boxes: Box[];
@@ -29,6 +30,8 @@ export function InstancedBoxes({ boxes, material, castShadow = true, receiveShad
     });
     mesh.instanceMatrix.needsUpdate = true;
     mesh.computeBoundingSphere();
+    invalidateShadows();
+    return invalidateShadows;
   }, [boxes]);
 
   if (boxes.length === 0) return null;

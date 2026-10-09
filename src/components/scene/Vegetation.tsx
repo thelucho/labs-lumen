@@ -14,6 +14,7 @@ import {
   type InstancedMesh,
 } from "three";
 import { palette3D } from "./materials";
+import { invalidateShadows } from "./shadowCache";
 import { buildVegetation, type Tree } from "./vegetationLayout";
 
 const { trees, shrubs } = buildVegetation();
@@ -67,6 +68,8 @@ function useInstances(placements: Placement[]) {
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     mesh.computeBoundingSphere();
+    invalidateShadows();
+    return invalidateShadows;
   }, [placements]);
   return ref;
 }
