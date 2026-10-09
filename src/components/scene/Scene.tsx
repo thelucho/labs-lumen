@@ -10,7 +10,7 @@ const SceneCanvas = dynamic(() => import("./SceneCanvas"), {
 
 export function Scene() {
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" data-keep-panel>
       <SceneCanvas />
     </div>
   );

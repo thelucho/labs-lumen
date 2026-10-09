@@ -52,3 +52,19 @@ export const statusLabels: Record<UnitStatus, string> = {
 export function formatBathrooms(unit: Unit): string {
   return unit.hasToilette ? `${unit.bathrooms} + toilette` : String(unit.bathrooms);
 }
+
+const commonSpaceTitles = { pb: "Planta baja · Hall", sum: "Nivel 9 · SUM y amenities" } as const;
+
+/** Encabezado de ficha para unidades, PB y SUM. */
+export function selectableTitle(id: SelectableId): string {
+  const unit = getUnit(id);
+  if (unit) return unitTitle(unit);
+  const space = getCommonSpace(id);
+  if (space) return commonSpaceTitles[space.id];
+  return id;
+}
+
+/** "3 (1 en suite)" */
+export function formatBedrooms(unit: Unit): string {
+  return `${unit.bedrooms} (${unit.ensuites} en suite)`;
+}

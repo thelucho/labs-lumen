@@ -1,4 +1,6 @@
 import { Scene } from "@/components/scene/Scene";
+import { FloorSelector } from "@/components/ui/FloorSelector";
+import { UnitPanel } from "@/components/ui/UnitPanel";
 import { project } from "@/data/building";
 
 export default function Home() {
@@ -12,7 +14,9 @@ export default function Home() {
           </p>
           <h1 className="mt-2 font-serif text-4xl leading-none sm:text-5xl">{project.name}</h1>
         </div>
+        <FloorSelector />
       </section>
+      <UnitPanel />
     </main>
   );
 }

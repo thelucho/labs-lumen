@@ -106,3 +106,18 @@ describe("store", () => {
     expect(useUIStore.getState().hasInteracted).toBe(true);
   });
 });
+
+describe("navegación entre pisos", () => {
+  it("mantiene el lado y pasa por pisos completos, PB y SUM", async () => {
+    const { adjacentSelectable } = await import("@/lib/building");
+    expect(adjacentSelectable("4A", 1)).toBe("5A");
+    expect(adjacentSelectable("4B", -1)).toBe("3B");
+    expect(adjacentSelectable("2B", -1)).toBe("1");
+    expect(adjacentSelectable("1", -1)).toBe("pb");
+    expect(adjacentSelectable("pb", -1)).toBeNull();
+    expect(adjacentSelectable("1", 1)).toBe("2A");
+    expect(adjacentSelectable("7B", 1)).toBe("8");
+    expect(adjacentSelectable("8", 1)).toBe("sum");
+    expect(adjacentSelectable("sum", 1)).toBeNull();
+  });
+});

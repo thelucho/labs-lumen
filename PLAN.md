@@ -48,11 +48,11 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 **Verificación:** recorrer todas las unidades con el mouse: nunca hay dos encendidas; drag no abre fichas; probar en viewport mobile.
 
 ## Fase 5 — Panel lateral y selector de pisos
-- [ ] Selector vertical (SUM, 8…1, PB) sincronizado con el 3D en ambos sentidos.
-- [ ] Panel de ficha (desktop: lateral; mobile: bottom sheet) según SPEC §6.1, con mini plano SVG.
-- [ ] Fichas específicas de PB y SUM.
-- [ ] Estados vendida/reservada.
-- [ ] Teclado: Tab/flechas en selector, Enter abre, Esc cierra.
+- [x] Selector vertical (SUM, 8…1, PB) sincronizado con el 3D en ambos sentidos.
+- [x] Panel de ficha (desktop: lateral; mobile: bottom sheet) según SPEC §6.1, con mini plano SVG.
+- [x] Fichas específicas de PB y SUM.
+- [x] Estados vendida/reservada.
+- [x] Teclado: Tab/flechas en selector, Enter abre, Esc cierra.
 
 **Verificación:** abrir la ficha de las 16 entradas (14 unidades + PB + SUM) y comparar contra SPEC §5.
 
@@ -65,6 +65,7 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 
 ## Fase 7 — Resto de la landing + Lenis
 - [ ] Hero completo (bloque editorial + 3D + selector + indicación de uso).
+- [ ] Mobile: hoy el selector flota sobre el edificio y tapa la mitad derecha; reubicarlo (debajo del 3D o como tira) sin perder el orden vertical SUM → PB.
 - [ ] Secciones: El proyecto, Amenities, Ubicación (plano ilustrado estático), Footer con aviso de demo.
 - [ ] Lenis para scroll suave; detenerlo con panel/modal abiertos; `data-lenis-prevent` en zonas con scroll propio; desactivado con `prefers-reduced-motion`.
 - [ ] Que el scroll de la página no gire el edificio y que el drag del edificio no scrollee la página.

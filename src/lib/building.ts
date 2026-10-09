@@ -74,3 +74,24 @@ export function priceByRule(unit: Unit): number {
   const raw = weightedArea(unit) * pricePerM2ByRule(unit);
   return Math.round(raw / pricing.roundTo) * pricing.roundTo;
 }
+
+/** Ids seleccionables de un nivel: sus unidades, o PB/SUM. */
+export function selectablesOf(level: Level): SelectableId[] {
+  if (level.unitIds.length > 0) return level.unitIds;
+  return level.commonSpaceId ? [level.commonSpaceId] : [];
+}
+
+/**
+ * Elemento del piso de arriba (+1) o de abajo (−1), manteniendo el lado A/B
+ * cuando existe; si no, el primero del nivel. `null` en los extremos.
+ */
+export function adjacentSelectable(id: SelectableId, direction: 1 | -1): SelectableId | null {
+  const level = getLevelOf(id);
+  if (!level) return null;
+  const next = levels.find((l) => l.index === level.index + direction);
+  if (!next) return null;
+  const candidates = selectablesOf(next);
+  const side = getUnit(id)?.side;
+  const sameSide = candidates.find((c) => getUnit(c)?.side === side);
+  return sameSide ?? candidates[0] ?? null;
+}
