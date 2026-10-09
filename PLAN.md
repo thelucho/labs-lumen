@@ -79,6 +79,6 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Accesibilidad: contraste, labels, roles, foco visible. (Contraste: `slate`/`clay` quedan bajo AA por decisión, ver SPEC §6.3.)
 - [x] Metadata, favicon, Open Graph.
 - [x] Lighthouse ≥ 90 (SPEC §7). Escritorio, build de producción: Performance 99, Accesibilidad 96, Buenas prácticas 100, SEO 100.
-- [ ] Deploy en Vercel.
+- [x] Deploy en Vercel.
 
 **Verificación:** todos los criterios de aceptación de SPEC §9.
