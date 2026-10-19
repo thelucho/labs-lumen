@@ -34,6 +34,17 @@ export const palette3D = {
   trunk: "#76695a",
   sun: "#fff1dc",
   sunDisc: "#fff6e6",
+  /** Sol bajo (amanecer y atardecer): más cálido, sin saturar. */
+  sunLow: "#f2c39a",
+  skyTopDusk: "#b9bfc3",
+  skyHorizonDusk: "#ead5c1",
+  /** Noche: luz de luna fría y tenue, cielo grafito azulado. */
+  moon: "#b7c2cf",
+  skyTopNight: "#262c33",
+  skyHorizonNight: "#3d444b",
+  skyFillNight: "#58626d",
+  groundNight: "#3a3c38",
+  cloudNight: "#8b9198",
   unitLight: "#f2c27b",
   /** Base del interior encendido: más oscura para que domine el emisivo. */
   interiorLit: "#5e5548",

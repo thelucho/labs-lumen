@@ -38,7 +38,8 @@ const CLOUDS: [number, number, number, number, number][] = [
 const DRIFT = 0.004;
 
 const geometry = new IcosahedronGeometry(1, 1);
-const material = new MeshStandardMaterial({
+/** Compartido: Daylight lo oscurece de noche. */
+export const cloudMaterial = new MeshStandardMaterial({
   color: palette3D.cloud,
   emissive: palette3D.cloud,
   emissiveIntensity: 0.45,
@@ -83,7 +84,7 @@ export function Clouds() {
 
   return (
     <group ref={group}>
-      <instancedMesh ref={mesh} args={[geometry, material, CLOUDS.length * PUFFS.length]} />
+      <instancedMesh ref={mesh} args={[geometry, cloudMaterial,CLOUDS.length * PUFFS.length]} />
     </group>
   );
 }

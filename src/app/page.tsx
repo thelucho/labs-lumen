@@ -9,6 +9,7 @@ import {
   SiteFooter,
 } from "@/components/ui/sections";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
+import { SunControl } from "@/components/ui/SunControl";
 import { UnitPanel } from "@/components/ui/UnitPanel";
 import { UsageHint } from "@/components/ui/UsageHint";
 
@@ -23,6 +24,7 @@ export default function Home() {
             <FloorSelector />
             <UsageHint />
           </div>
+          <SunControl />
           <HeroIntro />
         </section>
         <ProjectSection />

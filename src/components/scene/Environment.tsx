@@ -1,22 +1,18 @@
 "use client";
 
 import { ContactShadows } from "@react-three/drei";
-import { useMemo } from "react";
-import { BackSide, Color, ShaderMaterial } from "three";
 import { project } from "@/data/building";
-import { DISTANCE, fogRange, skyPoint } from "./camera";
+import { DISTANCE, fogRange } from "./camera";
 import { Clouds } from "./Clouds";
+import { Daylight } from "./Daylight";
 import { palette3D } from "./materials";
 import { useShadowVersion } from "./shadowCache";
+import { skyMaterial } from "./sky";
 import { Sun } from "./Sun";
 import { UnitLight } from "./unitLight";
 
 const SKY_RADIUS = 600;
 const GROUND_RADIUS = 320;
-
-/** Luz del sol: desde el noreste, alta, cálida (SPEC §4.3). */
-const SUN_LIGHT = skyPoint(45, 52, 70);
-const SHADOW_EXTENT = 38;
 
 const HALF_D = project.footprint.depth / 2;
 const SIDEWALK = { width: 4, height: 0.12 };
@@ -24,39 +20,8 @@ const STREET_WIDTH = 9;
 const FRONTAGE = 90;
 
 function Sky() {
-  const material = useMemo(
-    () =>
-      new ShaderMaterial({
-        side: BackSide,
-        depthWrite: false,
-        fog: false,
-        uniforms: {
-          top: { value: new Color(palette3D.skyTop) },
-          horizon: { value: new Color(palette3D.skyHorizon) },
-        },
-        vertexShader: /* glsl */ `
-          varying vec3 vDir;
-          void main() {
-            vDir = normalize(position);
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `,
-        fragmentShader: /* glsl */ `
-          uniform vec3 top;
-          uniform vec3 horizon;
-          varying vec3 vDir;
-          void main() {
-            float h = smoothstep(0.0, 0.5, max(vDir.y, 0.0));
-            gl_FragColor = vec4(mix(horizon, top, h), 1.0);
-            #include <colorspace_fragment>
-          }
-        `,
-      }),
-    [],
-  );
-
   return (
-    <mesh material={material} renderOrder={-1}>
+    <mesh material={skyMaterial} renderOrder={-1}>
       <sphereGeometry args={[SKY_RADIUS, 32, 16]} />
     </mesh>
   );
@@ -92,22 +57,7 @@ export function SceneLights() {
   return (
     <>
       <fog attach="fog" args={[palette3D.skyHorizon, ...fogRange(DISTANCE)]} />
-      <hemisphereLight args={[palette3D.skyFill, palette3D.ground, 2.4]} />
-      <directionalLight
-        position={SUN_LIGHT}
-        intensity={1.9}
-        color={palette3D.sun}
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-bias={-0.0004}
-        shadow-normalBias={0.03}
-        shadow-camera-left={-SHADOW_EXTENT}
-        shadow-camera-right={SHADOW_EXTENT}
-        shadow-camera-top={SHADOW_EXTENT}
-        shadow-camera-bottom={-SHADOW_EXTENT}
-        shadow-camera-near={1}
-        shadow-camera-far={160}
-      />
+      <Daylight />
       <UnitLight />
     </>
   );

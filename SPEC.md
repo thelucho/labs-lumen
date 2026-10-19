@@ -48,8 +48,8 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 
 ### 4.3 Entorno
 - Suelo simple: plano amplio color piedra/césped desaturado, vereda frente al edificio, borde que se funde con el fondo (fog o gradiente).
-- **Sol** visible desde un costado (noreste), con una `directionalLight` cálida alineada a él que proyecta sombras.
-  - *Decisión*: como la cámara inicial mira frente + lateral este (desde el noreste), un sol real al noreste quedaría detrás de la cámara. La luz viene del noreste (frente y balcones iluminados, sombras al sudoeste) y el **disco** del sol se ubica en el cielo para que aparezca arriba, a un costado del edificio, en la vista inicial. No es físicamente coherente al girar; se acepta como licencia de encuadre.
+- **Sol** con una `directionalLight` cálida alineada a él que proyecta sombras. Su posición depende de la hora elegida en el control "Luz del día" (§4.5); el disco y la luz siempre coinciden.
+  - *Decisión (fase 9)*: reemplaza la licencia de encuadre anterior (disco del sol en un lugar y luz en otro). A la hora por defecto el sol queda **detrás de la cámara inicial** (azimut 35°, ≈ 10:44 h): ilumina frente y balcones y el disco no se ve hasta girar o cambiar la hora.
 - 3–5 **nubes** low-poly (sin texturas externas), con movimiento lento.
 - **Vegetación** low-poly, sin exceso: 14 árboles dispersos (copa redondeada y columnar) y 24 arbustos. Sin árboles en la vereda. Distribución determinística, fuera del edificio, la vereda y la calle, y a no más de 60 m del centro para no invadir el primer plano.
 - Cielo con gradiente suave (no azul saturado).
@@ -63,6 +63,14 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 - **Mobile/touch**: tap = seleccionar (no hay hover). El selector de pisos es la vía principal. El panel se abre como bottom sheet.
 - El selector de pisos y el 3D están sincronizados (hover en el selector enciende la unidad en el 3D y viceversa).
 - Teclado: el selector de pisos es navegable con Tab/flechas; Enter abre la ficha; Esc cierra panel/modal.
+
+### 4.5 Luz del día
+- Slider horizontal **continuo** de 06:00 a 22:00 (paso de 1 minuto, sin posiciones fijas), con la hora actual en números tabulares.
+- Debajo, 4 referencias con ícono Phosphor (peso *light*): **Mañana** 07:30, **Mediodía** 13:00, **Tarde** 18:00, **Noche** 21:30. Solo orientan; al hacer click llevan el slider a esa hora.
+- Recorrido del sol en Buenos Aires (modelo simple, sin estaciones): sale por el este (06:30), al mediodía solar (13:00) está al norte a 58° de altura y se pone por el oeste (19:30).
+- Al mover el slider la escena acompaña con una transición corta (inmediata con `prefers-reduced-motion`): posición, color e intensidad del sol (más cálido y tenue cerca del horizonte), sombras, cielo, niebla, nubes y luz ambiente. De noche, luz de luna fría y tenue (sin sombras) y cielo grafito azulado.
+- Con la escena oscura, el texto del hero que va sobre el 3D (desktop) pasa a `paper`/`stone`.
+- Ubicación: desde lg, abajo a la izquierda alineado con el bloque editorial, sobre fondo `paper` con borde fino (como el selector de pisos); en mobile, debajo del 3D.
 
 ## 5. Datos (ficticios pero coherentes)
 Todos los datos viven en `src/data/building.ts`, tipados. Ningún dato hardcodeado en componentes.

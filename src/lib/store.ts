@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { SelectableId } from "@/data/building";
+import { DEFAULT_HOUR, clampHour, daylightFactor } from "@/lib/daylight";
 
 interface UIState {
   /** Unidad, PB o SUM bajo el puntero (3D o selector). */
@@ -10,6 +11,8 @@ interface UIState {
   isModalOpen: boolean;
   /** Primer hover, drag o selección: corta la auto-rotación para siempre. */
   hasInteracted: boolean;
+  /** Hora del día que define la posición del sol (slider del hero). */
+  hour: number;
 
   setHovered: (id: SelectableId | null) => void;
   /** Selecciona y abre el panel con la ficha. */
@@ -18,6 +21,7 @@ interface UIState {
   openModal: () => void;
   closeModal: () => void;
   markInteracted: () => void;
+  setHour: (hour: number) => void;
 }
 
 export const useUIStore = create<UIState>()((set) => ({
@@ -26,6 +30,7 @@ export const useUIStore = create<UIState>()((set) => ({
   isPanelOpen: false,
   isModalOpen: false,
   hasInteracted: false,
+  hour: DEFAULT_HOUR,
 
   setHovered: (id) => set(id ? { hoveredId: id, hasInteracted: true } : { hoveredId: null }),
   select: (id) => set({ selectedId: id, isPanelOpen: true, hasInteracted: true }),
@@ -33,6 +38,7 @@ export const useUIStore = create<UIState>()((set) => ({
   openModal: () => set({ isModalOpen: true }),
   closeModal: () => set({ isModalOpen: false }),
   markInteracted: () => set({ hasInteracted: true }),
+  setHour: (hour) => set({ hour: clampHour(hour) }),
 }));
 
 /**
@@ -40,6 +46,9 @@ export const useUIStore = create<UIState>()((set) => ({
  * (queda encendida aunque el mouse salga).
  */
 export const selectLitId = (s: UIState): SelectableId | null => s.hoveredId ?? s.selectedId;
+
+/** Escena oscura: el texto que va sobre el 3D pasa a claro para seguir leyéndose. */
+export const selectIsDark = (s: UIState): boolean => daylightFactor(s.hour) < 0.2;
 
 // Solo en desarrollo: acceso al store desde la consola y las pruebas automatizadas.
 if (process.env.NODE_ENV !== "production" && typeof window !== "undefined") {

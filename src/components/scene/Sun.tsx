@@ -1,20 +1,29 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { CanvasTexture, SRGBColorSpace } from "three";
-import { INITIAL_AZIMUTH, skyPoint } from "./camera";
+import { useFrame } from "@react-three/fiber";
+import { useEffect, useMemo, useRef } from "react";
+import {
+  CanvasTexture,
+  Color,
+  SRGBColorSpace,
+  type Group,
+  type MeshBasicMaterial,
+  type SpriteMaterial,
+} from "three";
+import { skyPoint } from "./camera";
+import { daylightNow } from "./Daylight";
 import { palette3D } from "./materials";
 
 /**
- * Disco del sol. Licencia de encuadre (SPEC §4.3): la luz viene del noreste,
- * pero el disco se ubica a la derecha del edificio, bajo sobre el horizonte,
- * para que se vea en la vista inicial.
+ * Disco del sol, alineado con la luz (SPEC §4.3): sigue la hora del slider.
+ * Por defecto queda detrás de la cámara; se ve al girar o al mover la hora.
  */
-const OFFSET_RIGHT = 17;
-const ELEVATION = 5;
 const DISTANCE = 420;
-const POSITION = skyPoint(INITIAL_AZIMUTH + 180 - OFFSET_RIGHT, ELEVATION, DISTANCE);
 const RADIUS = 7;
+const HALO_OPACITY = 0.7;
+
+const discDay = new Color(palette3D.sunDisc);
+const discLow = new Color(palette3D.sunLow);
 
 function useHaloTexture() {
   const texture = useMemo(() => {
@@ -41,20 +50,35 @@ function useHaloTexture() {
 
 export function Sun() {
   const halo = useHaloTexture();
+  const group = useRef<Group>(null);
+  const disc = useRef<MeshBasicMaterial>(null);
+  const glow = useRef<SpriteMaterial>(null);
+
+  useFrame(() => {
+    if (!group.current || !disc.current || !glow.current) return;
+    const { azimuth, elevation, day, high } = daylightNow;
+    // Bajo el horizonte no se dibuja (el suelo no llega a taparlo).
+    group.current.visible = elevation > -RADIUS / 10;
+    group.current.position.set(...skyPoint(azimuth, elevation, DISTANCE));
+    disc.current.color.copy(discLow).lerp(discDay, high);
+    glow.current.opacity = HALO_OPACITY * day;
+  });
+
   return (
-    <group position={POSITION}>
+    <group ref={group}>
       <mesh>
         <sphereGeometry args={[RADIUS, 32, 16]} />
-        <meshBasicMaterial color={palette3D.sunDisc} fog={false} toneMapped={false} />
+        <meshBasicMaterial ref={disc} color={palette3D.sunDisc} fog={false} toneMapped={false} />
       </mesh>
       <sprite scale={[RADIUS * 9, RADIUS * 9, 1]}>
         <spriteMaterial
+          ref={glow}
           map={halo}
           transparent
           depthWrite={false}
           fog={false}
           toneMapped={false}
-          opacity={0.7}
+          opacity={HALO_OPACITY}
         />
       </sprite>
     </group>

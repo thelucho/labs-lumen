@@ -82,3 +82,13 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Deploy en Vercel.
 
 **Verificación:** todos los criterios de aceptación de SPEC §9.
+
+## Fase 9 — Luz del día
+- [x] Slider continuo de hora (06:00–22:00) con referencias Mañana / Mediodía / Tarde / Noche (SPEC §4.5).
+- [x] Recorrido del sol (este → norte → oeste); disco y `directionalLight` alineados; por defecto detrás de la cámara inicial.
+- [x] Color e intensidad del sol, cielo, niebla, nubes y luz ambiente según la hora; luna de noche.
+- [x] Sombras recalculadas al mover la hora (el mapa sigue congelado mientras no cambia).
+- [x] Texto del hero legible con la escena oscura.
+- [x] Test de recorrido solar (`src/lib/daylight.test.ts`).
+
+**Verificación:** capturas a 07:30, 10:44, 13:00, 18:00, 19:30 y 21:00 en desktop y mobile; el slider se mueve de forma continua con mouse, touch y teclado.
