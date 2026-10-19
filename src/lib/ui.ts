@@ -1,3 +1,13 @@
+import type { CSSProperties } from "react";
+
+/**
+ * Entrada del hero (globals.css): demora y desplazamiento de una pieza. Va con
+ * el atributo `data-intro`.
+ */
+export function introStyle(delayMs: number, x = 0, y = 16): CSSProperties {
+  return { "--intro-delay": `${delayMs}ms`, "--intro-x": `${x}px`, "--intro-y": `${y}px` } as CSSProperties;
+}
+
 /** Breakpoint `lg` de Tailwind: desde acá el hero va lado a lado (texto · 3D · selector). */
 export const HERO_BREAKPOINT = 1024;
 

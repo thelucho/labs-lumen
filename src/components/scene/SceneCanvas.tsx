@@ -8,6 +8,7 @@ import { BuildingDetail, BuildingShell } from "./Building";
 import { FOV, cameraPosition, readAzimuth } from "./camera";
 import { Controls } from "./Controls";
 import { GroundShadows, Neighborhood, SceneBackdrop, SceneLights, SkyDecor } from "./Environment";
+import { armRise, onRiseFinished } from "./rise";
 import { getShadowVersion } from "./shadowCache";
 import { Vegetation } from "./Vegetation";
 
@@ -82,6 +83,15 @@ const STAGES = [SceneBackdrop, BuildingShell, BuildingDetail, Neighborhood, Vege
 function Stages() {
   const [ready, setReady] = useState(0);
   const [advance] = useState(() => () => setReady((n) => n + 1));
+  const loaded = ready >= STAGES.length;
+  const [risen, setRisen] = useState(false);
+
+  // Con todo compilado, el edificio puede subir de corrido (rise.ts).
+  useEffect(() => {
+    if (!loaded) return;
+    armRise();
+    return onRiseFinished(() => setRisen(true));
+  }, [loaded]);
 
   return (
     <>
@@ -90,13 +100,9 @@ function Stages() {
           <Stage />
         </Precompiled>
       ))}
-      {/* Último: sombras que se calculan una vez y necesitan el edificio completo. */}
-      {ready >= STAGES.length && (
-        <>
-          <GroundShadows />
-          <StaticShadows />
-        </>
-      )}
+      {/* Último: sombras que se calculan una vez; las de contacto, con el edificio ya construido. */}
+      {loaded && <StaticShadows />}
+      {loaded && risen && <GroundShadows />}
     </>
   );
 }

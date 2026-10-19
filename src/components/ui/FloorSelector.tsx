@@ -5,8 +5,10 @@ import { levels, type SelectableId } from "@/data/building";
 import { getUnit, selectablesOf } from "@/lib/building";
 import { selectableTitle, statusLabels } from "@/lib/format";
 import { useUIStore } from "@/lib/store";
+import { introStyle } from "@/lib/ui";
+import { RISE_DURATION } from "@/components/scene/rise";
 
-/** Filas de arriba hacia abajo: SUM, 8 … 1, PB. */
+/** Filas de arriba hacia abajo: SUM, 12 … 1, PB. */
 const rows = [...levels].reverse().map((level) => ({ level, ids: selectablesOf(level) }));
 
 function chipLabel(id: SelectableId): string {
@@ -19,6 +21,10 @@ function accessibleLabel(id: SelectableId): string {
   const unit = getUnit(id);
   return unit ? `${selectableTitle(id)}, ${statusLabels[unit.status].toLowerCase()}` : selectableTitle(id);
 }
+
+/** Demora de la primera fila (PB) y paso entre filas, en ms: acompaña la subida del edificio. */
+const ROW_START = 120;
+const ROW_STEP = Math.round(RISE_DURATION / rows.length);
 
 const dotClass = { available: "bg-sage", reserved: "bg-clay", sold: "bg-slate" } as const;
 
@@ -65,13 +71,16 @@ export function FloorSelector() {
 
   return (
     <nav
+      data-intro
+      style={introStyle(0, 24, 0)}
       aria-label="Selector de pisos"
       className="absolute top-1/2 right-3 -translate-y-1/2 rounded-xs border border-stone bg-paper px-3 py-3 sm:right-8"
     >
       <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-slate">Pisos</p>
       <ul className="flex flex-col gap-1">
         {rows.map(({ level, ids }, r) => (
-          <li key={level.id} className="flex items-center gap-2">
+          // Las filas aparecen de abajo hacia arriba, al ritmo de los pisos del edificio.
+          <li key={level.id} data-intro style={introStyle(ROW_START + (rows.length - 1 - r) * ROW_STEP, 0, 8)} className="flex items-center gap-2">
             <span className="w-9 text-right text-xs font-medium tabular-nums text-slate">
               {level.label}
             </span>

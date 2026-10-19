@@ -3,6 +3,7 @@
 import { Moon, Sun, SunDim, SunHorizon, type Icon } from "@phosphor-icons/react";
 import { DAY_END, DAY_MARKS, DAY_START, formatHour, type DayMarkId } from "@/lib/daylight";
 import { useUIStore } from "@/lib/store";
+import { introStyle } from "@/lib/ui";
 
 const markIcons: Record<DayMarkId, Icon> = {
   morning: SunHorizon,
@@ -30,6 +31,8 @@ export function SunControl() {
 
   return (
     <div
+      data-intro
+      style={introStyle(520, -24, 0)}
       className="px-4 pt-6 sm:px-8 lg:absolute lg:bottom-8 lg:left-8 lg:w-[21rem] lg:rounded-xs lg:border lg:border-stone lg:bg-paper lg:px-4 lg:pt-3 lg:pb-1"
     >
       <div className="flex items-baseline justify-between">

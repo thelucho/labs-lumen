@@ -39,6 +39,37 @@ html {
   color: var(--color-paper);
 }
 
+/*
+ * Entrada del hero: el bloque editorial, la luz del día y el selector de pisos
+ * aparecen con el edificio (la escena pone data-intro="go" al empezar a
+ * construirlo; hay un respaldo por tiempo en IntroFallback). Cada pieza define
+ * su desplazamiento (--intro-x / --intro-y) y su demora (--intro-delay).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-intro="pending"] [data-intro] {
+    opacity: 0;
+    /* Si nada dispara la señal (sin JS), igual aparece. */
+    animation: intro-fallback 1ms 3s forwards;
+  }
+  html[data-intro="go"] [data-intro] {
+    animation: intro-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--intro-delay, 0ms);
+  }
+}
+
+@keyframes intro-in {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--intro-x, 0px), var(--intro-y, 16px), 0);
+  }
+}
+
+@keyframes intro-fallback {
+  to {
+    opacity: 1;
+  }
+}
+
 /* Sin scroll de fondo con el modal abierto. */
 html:has(dialog[open]) {
   overflow: hidden;

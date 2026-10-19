@@ -151,3 +151,11 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Tests de datos reescritos y tests de planos (superficies, superposición, dormitorios y baños).
 
 **Verificación:** capturas del hero (desktop y mobile) y de los planos de A, B y oficina. Lighthouse desktop: Performance 96, Accesibilidad 96, Buenas prácticas 100, CLS 0.
+
+## Fase 16 — Entrada animada del hero
+- [x] Edificio que se construye piso por piso al cargar (`rise.ts`): frente de obra con easing por nivel, 1,7 s; cajas instanciadas recortadas a la altura del frente; interiores y número de calle acompañan.
+- [x] Arranca con todas las etapas de la escena compiladas; sombras recalculadas cada 3 pisos y las de contacto una sola vez al terminar.
+- [x] Entrada de la interfaz del hero (CSS, `data-intro`): bloque editorial y luz del día desde la izquierda, selector desde la derecha con filas sincronizadas con los pisos; respaldo por tiempo (0,9 s) y sin JS.
+- [x] Sin animaciones con `prefers-reduced-motion`.
+
+**Verificación:** secuencia de carga grabada con screencast (lote vacío → edificio a medio construir → completo); estado final con y sin movimiento reducido. Lighthouse desktop en 4 corridas: Performance 98 / 91 / 91 / 97 (la versión anterior, medida igual: 96 / 88 / 95), Accesibilidad 96, Buenas prácticas 100, LCP 0,5–0,6 s.

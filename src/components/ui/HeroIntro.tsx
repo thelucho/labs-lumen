@@ -1,6 +1,7 @@
 import { project, tagline, units } from "@/data/building";
 import { minAvailablePrice } from "@/lib/building";
 import { formatDeliveryShort, formatPrice } from "@/lib/format";
+import { introStyle } from "@/lib/ui";
 
 const facts = [
   { label: "Unidades", value: String(units.length) },
@@ -16,6 +17,8 @@ const facts = [
 export function HeroIntro() {
   return (
     <div
+      data-intro
+      style={introStyle(260, -24, 0)}
       className={[
         "px-4 pt-8 pb-14 sm:px-8",
         "lg:absolute lg:top-[45%] lg:left-8 lg:w-[21rem] lg:-translate-y-1/2 lg:rounded-xs lg:border lg:border-stone lg:bg-paper lg:px-5 lg:py-6",

@@ -49,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es-AR"
+      data-intro="pending"
       className={`${instrumentSerif.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-paper font-sans text-graphite">
