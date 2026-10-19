@@ -70,6 +70,12 @@ describe("entorno urbano", () => {
     }
   });
 
+  it("pocos autos estacionados (~20 % de los lugares que había: 309 → 65)", () => {
+    const cars = city.carGlass.length; // un habitáculo por auto
+    expect(cars).toBeGreaterThan(30);
+    expect(cars).toBeLessThan(80);
+  });
+
   it("casas bajas: hasta dos plantas", () => {
     for (const h of city.houses) expect(h.s[1]).toBeLessThanOrEqual(6.5);
   });

@@ -73,6 +73,9 @@ const TREE_RADIUS = 210;
 export const LOW_RADIUS = 60;
 export const LOW_HEIGHT = { house: 3.6, tree: 6.5 };
 
+/** Probabilidad de que cada lugar junto al cordón tenga un auto: pocos, para no cargar la escena. */
+const PARKING_RATE = 0.11;
+
 function box(x0: number, x1: number, y0: number, y1: number, z0: number, z1: number): Box {
   return {
     p: [(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2],
@@ -377,7 +380,7 @@ function streets(out: CityLayout, rand: () => number) {
         const [x, z] = seg.alongX ? [t + length / 2, lane] : [lane, t + length / 2];
         // Frente al edificio no se estaciona (acceso y portón de cocheras).
         const blocked = seg.alongX && side === -1 && seg.at === streetsZ.find((v) => v > LOT.z[1]) && x > -14 && x < 14;
-        if (!blocked && rand() < 0.55) car(x, z, seg.alongX, rand, out);
+        if (!blocked && rand() < PARKING_RATE) car(x, z, seg.alongX, rand, out);
         t += length;
       }
     }

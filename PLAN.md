@@ -116,3 +116,12 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Tests del trazado (`cityLayout.test.ts`) y del jardín.
 
 **Verificación:** capturas de día, atardecer y noche, vista frontal, lateral este y contrafrente, desktop y mobile. Lighthouse desktop sobre build de producción: Performance 96, Accesibilidad 96, Buenas prácticas 100.
+
+## Fase 12 — Menos autos y ficha animada
+- [x] Autos estacionados al ~20 % (de 309 a 65), con test.
+- [x] Apertura y cierre animados de la ficha fullscreen (diálogo y fondo), con respaldo por tiempo en el cierre.
+- [x] Contenido escalonado (`data-reveal`): textos, portada con descubrimiento y zoom, cifras, galería y secciones al hacer scroll; se repite al cambiar de piso.
+- [x] Visor de fotos con fundido de entrada y entre fotos.
+- [x] Sin animaciones con `prefers-reduced-motion`.
+
+**Verificación:** estados intermedios capturados adelantando las animaciones (0, 150, 350, 700, 1400 ms y cierre a 150 ms); al terminar no queda nada oculto en pantalla; Esc cierra modal → visor → ficha; con movimiento reducido abre y cierra al instante.

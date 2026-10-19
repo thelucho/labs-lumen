@@ -2,8 +2,10 @@
 
 import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
 import Image from "next/image";
-import { useEffect, useRef, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, type KeyboardEvent } from "react";
 import type { Photo } from "@/data/building";
+import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
+import { EASE_OUT, FADE_IN } from "./reveal";
 
 /**
  * Columnas (de 6) que ocupa cada foto en escritorio, para que las filas
@@ -20,7 +22,7 @@ export function PhotoGallery({ photos, onOpen }: { photos: Photo[]; onOpen: (ind
   return (
     <ul className="grid grid-cols-2 gap-x-3 gap-y-6 lg:grid-cols-6 lg:gap-x-4">
       {photos.map((photo, i) => (
-        <li key={photo.src} className={`${spanClass(i, photos.length)} ${i === 0 && photos.length % 2 === 1 ? "col-span-2" : ""}`}>
+        <li data-reveal key={photo.src} className={`${spanClass(i, photos.length)} ${i === 0 && photos.length % 2 === 1 ? "col-span-2" : ""}`}>
           <button
             type="button"
             onClick={() => onOpen(i)}
@@ -65,6 +67,9 @@ export function Lightbox({
   onClose: () => void;
 }) {
   const closeButton = useRef<HTMLButtonElement>(null);
+  const root = useRef<HTMLDivElement>(null);
+  const frame = useRef<HTMLDivElement>(null);
+  const reducedMotion = usePrefersReducedMotion();
   const photo = photos[index];
   const count = photos.length;
   const go = (step: number) => onChange((index + step + count) % count);
@@ -76,6 +81,26 @@ export function Lightbox({
       if (returnTo instanceof HTMLElement && returnTo.isConnected) returnTo.focus({ preventScroll: true });
     };
   }, []);
+
+  // Entrada del visor: fundido del fondo.
+  useLayoutEffect(() => {
+    if (reducedMotion) return;
+    const a = root.current?.animate(FADE_IN, { duration: 350, easing: EASE_OUT });
+    return () => a?.cancel();
+  }, [reducedMotion]);
+
+  // Cada foto entra con un fundido y se asienta apenas.
+  useLayoutEffect(() => {
+    if (reducedMotion) return;
+    const a = frame.current?.animate(
+      [
+        { opacity: 0, transform: "scale(0.985)" },
+        { opacity: 1, transform: "none" },
+      ],
+      { duration: 550, easing: EASE_OUT },
+    );
+    return () => a?.cancel();
+  }, [index, reducedMotion]);
 
   function handleKeyDown(e: KeyboardEvent<HTMLDivElement>) {
     if (e.key === "ArrowLeft") go(-1);
@@ -92,6 +117,7 @@ export function Lightbox({
       role="group"
       aria-roledescription="visor de fotos"
       aria-label={`${photo.caption}, foto ${index + 1} de ${count}`}
+      ref={root}
       onKeyDown={handleKeyDown}
       className="fixed inset-0 z-20 flex flex-col bg-graphite text-paper"
     >
@@ -110,7 +136,7 @@ export function Lightbox({
         <button type="button" onClick={() => go(-1)} aria-label="Foto anterior" className={navButton}>
           <CaretLeft size={26} weight="light" aria-hidden />
         </button>
-        <div className="relative h-full flex-1">
+        <div ref={frame} className="relative h-full flex-1">
           <Image key={photo.src} src={photo.src} alt={photo.alt} fill sizes="100vw" className="object-contain" />
         </div>
         <button type="button" onClick={() => go(1)} aria-label="Foto siguiente" className={navButton}>
