@@ -125,3 +125,9 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Sin animaciones con `prefers-reduced-motion`.
 
 **Verificación:** estados intermedios capturados adelantando las animaciones (0, 150, 350, 700, 1400 ms y cierre a 150 ms); al terminar no queda nada oculto en pantalla; Esc cierra modal → visor → ficha; con movimiento reducido abre y cierra al instante.
+
+## Fase 13 — Autos con forma y sin salto al cerrar
+- [x] Modelo de auto por código (perfil extruido con bisel, pasaruedas, habitáculo angosto, vidrios y ruedas); `Box` admite giro sobre Y.
+- [x] `scrollbar-gutter: stable` en `html`: abrir o cerrar la ficha (o el modal) no corre la página.
+
+**Verificación:** ancho del canvas y posición del selector iguales con la ficha abierta y cerrada (1407 / 1375 px; antes 1422 / 1390 con la ficha abierta); autos vistos en recortes ampliados; Lighthouse desktop: Performance 95, Accesibilidad 96, Buenas prácticas 100, CLS 0.

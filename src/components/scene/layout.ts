@@ -28,6 +28,8 @@ import {
 export interface Box {
   p: [number, number, number];
   s: [number, number, number];
+  /** Giro sobre Y en radianes (solo piezas con geometría propia, como los autos). */
+  r?: number;
 }
 
 export type MaterialKey = "concrete" | "cladding" | "frame" | "glass" | "deck" | "water";

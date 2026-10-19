@@ -26,6 +26,12 @@
 
 html {
   color-scheme: light;
+  /*
+   * Reserva siempre el lugar de la barra de scroll: al abrir un <dialog> la
+   * página pasa a overflow: hidden (abajo) y, sin esto, la barra desaparece y
+   * todo se corre unos píxeles al abrir y al cerrar.
+   */
+  scrollbar-gutter: stable;
 }
 
 ::selection {

@@ -40,8 +40,10 @@ export interface CityLayout {
   roofTile: Box[];
   windowDark: Box[];
   windowLit: Box[];
+  /** Autos: ubicaciones (posición, escala y giro) del modelo, no cajas. */
   cars: ColoredBox[];
   carGlass: Box[];
+  wheels: Box[];
   trees: Tree[];
   shrubs: Shrub[];
 }
@@ -260,27 +262,38 @@ function sidewalkFurniture(b: Rect, rand: () => number, out: CityLayout, isOwn: 
   }
 }
 
-/** Auto estacionado junto al cordón: carrocería, habitáculo y ruedas. */
+/**
+ * Medidas del auto modelado (ver carGeometry en City.tsx): largo de referencia
+ * a lo largo de X y ubicación de las ruedas respecto del centro.
+ */
+export const CAR = { length: 4.4, wheelBase: 1.35, track: 0.74, wheelRadius: 0.32 };
+
+/**
+ * Auto estacionado junto al cordón. Cada pieza es una ubicación (no una caja):
+ * posición a nivel de calzada, escala sobre el modelo de 4,4 m y giro sobre Y.
+ * Los autos miran para uno u otro lado, como en la calle.
+ */
 function car(x: number, z: number, alongX: boolean, rand: () => number, out: CityLayout) {
-  const L = 4.2 + rand() * 0.5;
-  const W = 1.8;
-  const [lx, lz] = alongX ? [L, W] : [W, L];
+  const length = 4.15 + rand() * 0.55;
+  const k = length / CAR.length;
+  const flip = rand() < 0.5 ? 0 : Math.PI;
+  const r = (alongX ? 0 : Math.PI / 2) + flip;
   const tone = Math.floor(rand() * 7);
-  out.cars.push({ ...box(x - lx / 2, x + lx / 2, 0.32, 1.05, z - lz / 2, z + lz / 2), tone });
-  // Habitáculo: vidrios alrededor y techo del color de la carrocería.
-  const cab = 0.55;
-  const shift = (rand() < 0.5 ? -1 : 1) * 0.2;
-  const [cx, cz] = alongX ? [x + shift, z] : [x, z + shift];
-  const [clx, clz] = alongX ? [L * cab, W * 0.86] : [W * 0.86, L * cab];
-  out.carGlass.push(box(cx - clx / 2, cx + clx / 2, 1.05, 1.45, cz - clz / 2, cz + clz / 2));
-  out.cars.push({ ...box(cx - clx * 0.46, cx + clx * 0.46, 1.45, 1.55, cz - clz * 0.46, cz + clz * 0.46), tone });
+  const p: [number, number, number] = [x, ROAD_Y, z];
+  out.cars.push({ p, s: [k, 1, 1], r, tone });
+  out.carGlass.push({ p, s: [k, 1, 1], r });
+  // Ruedas: el desplazamiento local (a lo largo, a lo ancho) girado como el auto.
+  const cos = Math.cos(r);
+  const sin = Math.sin(r);
   for (const a of [-1, 1]) {
-    for (const s of [-1, 1]) {
-      const along = a * (L / 2 - 0.75);
-      const across = s * (W / 2 - 0.12);
-      const [wx, wz] = alongX ? [x + along, z + across] : [x + across, z + along];
-      const [wlx, wlz] = alongX ? [0.62, 0.22] : [0.22, 0.62];
-      out.metal.push(box(wx - wlx / 2, wx + wlx / 2, ROAD_Y, 0.62, wz - wlz / 2, wz + wlz / 2));
+    for (const b of [-1, 1]) {
+      const lx = a * CAR.wheelBase * k;
+      const lz = b * CAR.track;
+      out.wheels.push({
+        p: [x + lx * cos + lz * sin, ROAD_Y + CAR.wheelRadius, z - lx * sin + lz * cos],
+        s: [1, 1, 1],
+        r,
+      });
     }
   }
 }
@@ -415,6 +428,7 @@ export function buildCity(seed = 1240): CityLayout {
     windowLit: [],
     cars: [],
     carGlass: [],
+    wheels: [],
     trees: [],
     shrubs: [],
   };

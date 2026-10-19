@@ -45,7 +45,9 @@ export function InstancedBoxes({
     const rotation = new Quaternion();
     const position = new Vector3();
     const scale = new Vector3();
+    const up = new Vector3(0, 1, 0);
     boxes.forEach((b, i) => {
+      rotation.setFromAxisAngle(up, b.r ?? 0);
       matrix.compose(position.set(...b.p), rotation, scale.set(...b.s));
       mesh.setMatrixAt(i, matrix);
       // Siempre con color por instancia (blanco si no hay): todas las mallas
