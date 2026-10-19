@@ -31,13 +31,16 @@ export interface Shrub {
   y?: number;
 }
 
-/** Lote del edificio, con un margen contra la línea municipal. */
+/**
+ * Lote del edificio, con un margen contra la línea municipal. Solo laterales y
+ * contrafrente: el retiro de frente es el jardín de acceso (frontYardLayout).
+ */
 const LOT_MARGIN = 1.5;
 export const GARDEN = {
   x0: URBAN.lot.x[0] + LOT_MARGIN,
   x1: URBAN.lot.x[1] - LOT_MARGIN,
   z0: URBAN.lot.z[0] + LOT_MARGIN,
-  z1: URBAN.lot.z[1] - LOT_MARGIN,
+  z1: Math.min(URBAN.lot.z[1] - LOT_MARGIN, HALF_D),
 };
 
 /** Edificio con balcones al este y un margen (más amplio al este: que se lean los balcones). */

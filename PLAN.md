@@ -130,4 +130,14 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Modelo de auto por código (perfil extruido con bisel, pasaruedas, habitáculo angosto, vidrios y ruedas); `Box` admite giro sobre Y.
 - [x] `scrollbar-gutter: stable` en `html`: abrir o cerrar la ficha (o el modal) no corre la página.
 
-**Verificación:** ancho del canvas y posición del selector iguales con la ficha abierta y cerrada (1407 / 1375 px; antes 1422 / 1390 con la ficha abierta); autos vistos en recortes ampliados; Lighthouse desktop: Performance 95, Accesibilidad 96, Buenas prácticas 100, CLS 0.
+**Verificación (fase 13):** ancho del canvas y posición del selector iguales con la ficha abierta y cerrada (1407 / 1375 px; antes 1422 / 1390 con la ficha abierta); autos vistos en recortes ampliados; Lighthouse desktop: Performance 95, Accesibilidad 96, Buenas prácticas 100, CLS 0.
+
+## Fase 14 — Más arquitectura y jardín de acceso
+- [x] Marco de hormigón saliente en las unidades A del frente; parasoles de madera en el frente de las B y en el lateral oeste.
+- [x] Núcleo de escalera y ascensores saliente en el contrafrente, hasta la sala de máquinas.
+- [x] Hall: menos vidrio, pórtico de hormigón y puerta pivotante grande.
+- [x] SUM: paredes de hormigón al fondo y al oeste (un paño vidriado).
+- [x] Edificio retirado 6 m de la vereda (lote corrido); jardín aleatorio solo en laterales y contrafrente.
+- [x] Jardín de acceso (`frontYardLayout.ts`): solado, entrada vehicular, canteros con flores, balizas, tótem y árbol columnar; con tests.
+
+**Verificación:** capturas desde la cámara inicial, frente, contrafrente y lateral oeste, con recortes ampliados del acceso. Lighthouse desktop: Performance 95, Accesibilidad 96, Buenas prácticas 100, CLS 0.

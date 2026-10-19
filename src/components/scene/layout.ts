@@ -2,8 +2,10 @@ import { levels, type Level, type SelectableId } from "@/data/building";
 import { getUnit, levelElevation } from "@/lib/building";
 import {
   BAY,
+  CORE,
   CORNER,
   DIVIDER_X,
+  FRONT_FRAME,
   GLASS,
   GROUND,
   HALF_D,
@@ -66,8 +68,11 @@ interface Face {
   normal: 1 | -1;
   y0: number;
   y1: number;
-  pattern?: (i: number, n: number) => BayKind;
+  /** Paño de cada módulo; recibe también los extremos del módulo (a, b) a lo largo de la fachada. */
+  pattern?: (i: number, n: number, a: number, b: number) => BayKind;
   transom?: number;
+  /** Material de los paños ciegos (por defecto, revestimiento de madera). */
+  panel?: MaterialKey;
 }
 
 class LayoutBuilder {
@@ -101,13 +106,13 @@ class LayoutBuilder {
     let hasGlass = false;
     for (let i = 0; i < n; i++) {
       const a = f.from + i * bay;
-      const kind = f.pattern?.(i, n) ?? "glass";
+      const kind = f.pattern?.(i, n, a, a + bay) ?? "glass";
       if (kind === "glass") {
         hasGlass = true;
         this.add("glass", this.onFace(f, a, a + bay, f.y0, f.y1, -0.04, GLASS));
       } else {
         // Centrado en el plano: los montantes (más profundos) sobresalen y no quedan al ras.
-        this.add("cladding", this.onFace(f, a, a + bay, f.y0, f.y1, 0, PANEL));
+        this.add(f.panel ?? "cladding", this.onFace(f, a, a + bay, f.y0, f.y1, 0, PANEL));
       }
     }
     for (let i = 0; i <= n; i++) {
@@ -117,6 +122,19 @@ class LayoutBuilder {
     if (hasGlass && f.transom !== undefined) {
       const y = f.y0 + f.transom;
       this.add("frame", this.onFace(f, f.from, f.to, y - MULLION / 2, y + MULLION / 2, 0, MULLION_DEPTH));
+    }
+  }
+
+  /**
+   * Parasoles verticales sobre cada montante de una fachada (mismo módulo que
+   * `face`): sombra al sol bajo y relieve en una cara que si no sería plana.
+   */
+  fins(f: Face, depth: number, width = 0.1, key: MaterialKey = "cladding") {
+    const n = Math.max(1, Math.round((f.to - f.from) / BAY));
+    const bay = (f.to - f.from) / n;
+    for (let i = 1; i < n; i++) {
+      const x = f.from + i * bay;
+      this.add(key, this.onFace(f, x - width / 2, x + width / 2, f.y0, f.y1, depth / 2, depth));
     }
   }
 
@@ -157,11 +175,32 @@ function groundLevel(b: LayoutBuilder, level: Level, y0: number) {
   const yB = y0 + level.height;
   b.add("concrete", box(-HALF_W - 0.3, HALF_W + 0.3, y0, yA, -HALF_D - 0.3, HALF_D + 0.3));
 
-  // Hall vidriado doble altura en frente y laterales; servicios al contrafrente.
-  b.face({ axis: "x", from: -HALF_W, to: GROUND.garageX, at: HALF_D, normal: 1, y0: yA, y1: yB, transom: GROUND.doorHead });
-  b.face({ axis: "z", from: -HALF_D, to: HALF_D, at: HALF_W, normal: 1, y0: yA, y1: yB, transom: GROUND.doorHead });
-  b.face({ axis: "z", from: -HALF_D, to: HALF_D, at: -HALF_W, normal: -1, y0: yA, y1: yB, transom: GROUND.doorHead });
+  // Hall doble altura: macizo de madera con el vidrio concentrado en el acceso
+  // (frente) y en los primeros módulos de los laterales; servicios al contrafrente.
+  const e = GROUND.entrance;
+  const atEntrance = (_i: number, _n: number, a: number, end: number): BayKind =>
+    end > e.x[0] + 0.2 && a < e.x[1] - 0.2 ? "glass" : "panel";
+  const nearFront = (_i: number, _n: number, a: number): BayKind => (a > HALF_D - 4.6 ? "glass" : "panel");
+  b.face({ axis: "x", from: -HALF_W, to: GROUND.garageX, at: HALF_D, normal: 1, y0: yA, y1: yB, pattern: atEntrance, transom: GROUND.doorHead });
+  b.face({ axis: "z", from: -HALF_D, to: HALF_D, at: HALF_W, normal: 1, y0: yA, y1: yB, pattern: nearFront, transom: GROUND.doorHead });
+  b.face({ axis: "z", from: -HALF_D, to: HALF_D, at: -HALF_W, normal: -1, y0: yA, y1: yB, pattern: nearFront, transom: GROUND.doorHead });
   b.face({ axis: "x", from: -HALF_W, to: HALF_W, at: -HALF_D, normal: -1, y0: yA, y1: yB, pattern: solidWest });
+
+  // Pórtico de hormigón alrededor del acceso, hasta la marquesina.
+  const jamb = 0.45;
+  const portal = HALF_D + e.depth;
+  b.add("concrete", box(e.x[0] - jamb, e.x[0], yA, GROUND.canopy.y, HALF_D, portal));
+  b.add("concrete", box(e.x[1], e.x[1] + jamb, yA, GROUND.canopy.y, HALF_D, portal));
+  // Puerta pivotante grande: hoja de vidrio con marco grafito grueso y tirador vertical.
+  const [d0, d1] = e.door;
+  const zf = HALF_D + 0.02;
+  const t = 0.12;
+  b.add("frame", box(d0, d0 + t, yA, e.doorHeight, zf, zf + 0.1));
+  b.add("frame", box(d1 - t, d1, yA, e.doorHeight, zf, zf + 0.1));
+  b.add("frame", box(d0, d1, e.doorHeight - t, e.doorHeight, zf, zf + 0.1));
+  b.add("frame", box((d0 + d1) / 2 - 0.03, (d0 + d1) / 2 + 0.03, yA, e.doorHeight - t, zf, zf + 0.08));
+  const pull = d1 - 0.45;
+  b.add("frame", box(pull - 0.03, pull + 0.03, yA + 0.6, yA + 2.2, zf + 0.1, zf + 0.18));
 
   // Portón de cocheras y paño ciego encima.
   b.add("cladding", box(GROUND.garageX, HALF_W, yA, GROUND.garageHeight, HALF_D - 0.05, HALF_D + 0.04));
@@ -189,7 +228,16 @@ function residentialLevel(b: LayoutBuilder, level: Level, y0: number) {
     b.face({ axis: "x", from: x0, to: x1, at: HALF_D, normal: 1, y0: yA, y1: yB, pattern: framedNorth, transom: TRANSOM });
     b.face({ axis: "x", from: x0, to: x1, at: -HALF_D, normal: -1, y0: yA, y1: yB, pattern: solidSouth, transom: TRANSOM });
     if (east) b.face({ axis: "z", from: -HALF_D, to: HALF_D, at: HALF_W, normal: 1, y0: yA, y1: yB, transom: TRANSOM });
-    if (west) b.face({ axis: "z", from: -HALF_D, to: HALF_D, at: -HALF_W, normal: -1, y0: yA, y1: yB, pattern: solidWest, transom: TRANSOM });
+    if (west) {
+      const westFace: Face = { axis: "z", from: -HALF_D, to: HALF_D, at: -HALF_W, normal: -1, y0: yA, y1: yB, pattern: solidWest, transom: TRANSOM };
+      b.face(westFace);
+      // Lateral oeste: parasoles de madera contra el sol de la tarde.
+      b.fins(westFace, 0.55);
+    }
+    // Frente de las B: parasoles (las A van dentro del marco saliente).
+    if (unit.side === "B") {
+      b.fins({ axis: "x", from: x0, to: x1, at: HALF_D, normal: 1, y0: yA, y1: yB }, 0.5);
+    }
 
     if (unit.balconyArea > 0) {
       const { length, depth } = balconyGeometry(unit);
@@ -226,10 +274,13 @@ function roofLevel(b: LayoutBuilder, level: Level, y0: number) {
   // SUM: volumen liviano, vidriado en los cuatro lados, con losa en alero.
   const s = ROOF.sum;
   const yTop = yA + s.height;
+  // Vidrio hacia el frente (vista) y hacia la pileta; hormigón al fondo y al oeste, con un paño vidriado.
+  const solid = (): BayKind => "panel";
+  const middleGlass = (i: number, n: number): BayKind => (i === Math.floor(n / 2) ? "glass" : "panel");
   b.face({ axis: "x", from: s.x[0], to: s.x[1], at: s.z[1], normal: 1, y0: yA, y1: yTop, transom: TRANSOM });
-  b.face({ axis: "x", from: s.x[0], to: s.x[1], at: s.z[0], normal: -1, y0: yA, y1: yTop, transom: TRANSOM });
+  b.face({ axis: "x", from: s.x[0], to: s.x[1], at: s.z[0], normal: -1, y0: yA, y1: yTop, pattern: solid, panel: "concrete" });
   b.face({ axis: "z", from: s.z[0], to: s.z[1], at: s.x[1], normal: 1, y0: yA, y1: yTop, transom: TRANSOM });
-  b.face({ axis: "z", from: s.z[0], to: s.z[1], at: s.x[0], normal: -1, y0: yA, y1: yTop, transom: TRANSOM });
+  b.face({ axis: "z", from: s.z[0], to: s.z[1], at: s.x[0], normal: -1, y0: yA, y1: yTop, pattern: middleGlass, panel: "concrete", transom: TRANSOM });
   b.add("concrete", box(s.x[0] - s.eave, s.x[1] + s.eave, yTop, yTop + s.roof, s.z[0] - s.eave, s.z[1] + s.eave));
   if (level.commonSpaceId) b.room(level.commonSpaceId, s.x[0], s.x[1], yA, yTop, s.z[0], s.z[1]);
 
@@ -265,6 +316,31 @@ export function buildBuildingLayout(): BuildingLayout {
   // Columnas de esquina desde la vereda hasta la losa de azotea.
   const roof = levels.find((l) => l.kind === "roof")!;
   const top = levelElevation(roof.index) + SLAB;
+
+  // Marco de hormigón saliente que abraza las unidades A del frente (pisos tipo):
+  // esa parte del edificio "sale" respecto del resto de la fachada.
+  const typicalFloors = levels.filter((l) => l.kind === "typical");
+  if (typicalFloors.length > 0) {
+    const f = FRONT_FRAME;
+    const yLow = levelElevation(typicalFloors[0].index);
+    const yHigh = levelElevation(typicalFloors[typicalFloors.length - 1].index + 1) + SLAB;
+    const xa = DIVIDER_X + 0.2;
+    const xb = HALF_W - 0.2;
+    const z1 = HALF_D + f.depth;
+    b.add("concrete", box(xa, xb, yLow - f.thickness, yLow + 0.05, HALF_D, z1));
+    b.add("concrete", box(xa, xb, yHigh - 0.05, yHigh + f.thickness, HALF_D, z1));
+    b.add("concrete", box(xa, xa + f.thickness, yLow - f.thickness, yHigh + f.thickness, HALF_D, z1));
+    b.add("concrete", box(xb - f.thickness, xb, yLow - f.thickness, yHigh + f.thickness, HALF_D, z1));
+  }
+
+  // Núcleo de escalera y ascensores: volumen macizo que sobresale en el
+  // contrafrente y sube hasta la sala de máquinas, con una ranura vidriada.
+  const core = CORE;
+  const coreTop = top + ROOF.machineRoom.height;
+  b.add("concrete", box(core.x[0], core.x[1], 0, coreTop, core.z, -HALF_D));
+  const slit = (core.x[0] + core.x[1]) / 2;
+  b.add("glass", box(slit - 0.3, slit + 0.3, 4.6, coreTop - 1.2, core.z - 0.03, core.z + 0.01));
+  b.add("frame", box(slit - 0.36, slit + 0.36, 4.5, 4.6, core.z - 0.06, core.z + 0.01));
   for (const x of [-HALF_W, HALF_W]) {
     for (const z of [-HALF_D, HALF_D]) {
       b.add("concrete", box(x - CORNER / 2, x + CORNER / 2, 0, top, z - CORNER / 2, z + CORNER / 2));

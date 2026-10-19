@@ -16,13 +16,14 @@ import {
 } from "three";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { city } from "./City";
+import { frontYard } from "./FrontYard";
 import { palette3D } from "./materials";
 import { invalidateShadows } from "./shadowCache";
 import { buildVegetation, type Tree } from "./vegetationLayout";
 
 const garden = buildVegetation();
-const trees = [...garden.trees, ...city.trees];
-const shrubs = [...garden.shrubs, ...city.shrubs];
+const trees = [...garden.trees, ...frontYard.trees, ...city.trees];
+const shrubs = [...garden.shrubs, ...frontYard.shrubs, ...city.shrubs];
 const round = trees.filter((t) => t.kind === "round");
 const columnar = trees.filter((t) => t.kind === "columnar");
 

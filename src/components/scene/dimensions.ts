@@ -77,16 +77,33 @@ export const URBAN = {
   curb: 0.2,
   /** Altura de vereda sobre la calzada. */
   curbHeight: 0.15,
-  /** Lote del edificio: frente sobre la línea municipal (el frente norte del edificio). */
-  lot: { x: [-26, 26], z: [-25, HALF_D] },
+  /**
+   * Lote del edificio. El edificio queda retirado de la línea municipal
+   * (FRONT_SETBACK) con un jardín de acceso al frente, y algo más de fondo atrás.
+   */
+  lot: { x: [-26, 26], z: [-21, HALF_D + 6] },
   /** Radio hasta donde se generan manzanas (más allá, la niebla ya tapa todo). */
   radius: 290,
 } as const;
 
-/** PB: acceso con marquesina y portón de cocheras sobre el frente norte. */
+/** Retiro de frente: jardín de acceso entre la vereda y el hall. */
+export const FRONT_SETBACK = URBAN.lot.z[1] - HALF_D;
+
+/**
+ * PB: acceso con marquesina, pórtico de hormigón y puerta pivotante grande;
+ * portón de cocheras sobre el frente norte.
+ */
 export const GROUND = {
   canopy: { x: [-7.5, -1.5], y: 3, thickness: 0.45, depth: 2.2 },
+  /** Paños vidriados del acceso, pórtico (profundidad) y puerta pivotante. */
+  entrance: { x: [-7, -2], depth: 0.6, door: [-5.4, -3.6], doorHeight: 2.9 },
   garageX: 6.2,
   garageHeight: 2.8,
   doorHead: 2.6,
 } as const;
+
+/** Marco de hormigón saliente alrededor de las unidades A del frente (pisos tipo). */
+export const FRONT_FRAME = { depth: 0.9, thickness: 0.45 } as const;
+
+/** Núcleo de escalera y ascensores: sobresale en el contrafrente, bajo la sala de máquinas. */
+export const CORE = { x: [5.6, 10.2], z: -HALF_D - 1.4 } as const;

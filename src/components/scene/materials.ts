@@ -44,6 +44,10 @@ export const palette3D = {
   /** Silueta de la ciudad en el horizonte (se mezcla con el color del cielo). */
   skyline: "#9ea7ad",
   bench: "#8a6d55",
+  /** Jardín de acceso: solado de piedra clara, tierra de canteros y flores de tonos suaves. */
+  paving: "#cfc6b5",
+  soil: "#5d5045",
+  flowers: ["#efe8dc", "#c4b4d3", "#d6a9a2", "#d7bf72", "#e3cfc9"],
   cloud: "#f8f7f4",
   /** Vegetación: verdes desaturados de maqueta, emparentados con el token `sage`. */
   foliage: "#7e8d68",
@@ -120,6 +124,11 @@ export const cityMaterials = {
   car: new MeshStandardMaterial({ color: "#ffffff", roughness: 0.45, metalness: 0.1 }),
   carGlass: new MeshStandardMaterial({ color: palette3D.carGlass, roughness: 0.1, metalness: 0.5 }),
   bench: worldMapped(new MeshStandardMaterial({ color: palette3D.bench, roughness: 0.8 }), "wood", 1.6),
+  /** Solado del acceso: baldosas grandes (60 cm). */
+  paving: worldMapped(new MeshStandardMaterial({ color: palette3D.paving, roughness: 0.9 }), "tiles", 3),
+  soil: worldMapped(new MeshStandardMaterial({ color: palette3D.soil, roughness: 1 }), "grass", 4),
+  /** Blanco: el tono de cada flor va por instancia. */
+  flower: new MeshStandardMaterial({ color: "#ffffff", roughness: 0.8 }),
 };
 
 export type CityMaterialKey = keyof typeof cityMaterials;

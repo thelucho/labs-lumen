@@ -6,6 +6,7 @@ import { DISTANCE, fogRange } from "./camera";
 import { CityBlocks, CityGround } from "./City";
 import { Clouds } from "./Clouds";
 import { Daylight } from "./Daylight";
+import { FrontYard } from "./FrontYard";
 import type { Box } from "./layout";
 import { InstancedBoxes } from "./InstancedBoxes";
 import { palette3D } from "./materials";
@@ -64,9 +65,14 @@ export function SceneBackdrop() {
   );
 }
 
-/** Manzanas vecinas: casas, autos y mobiliario. */
+/** Manzanas vecinas (casas, autos y mobiliario) y el jardín de acceso del edificio. */
 export function Neighborhood() {
-  return <CityBlocks />;
+  return (
+    <>
+      <CityBlocks />
+      <FrontYard />
+    </>
+  );
 }
 
 /** Sol y nubes: decorado, se suma en una etapa posterior. */
