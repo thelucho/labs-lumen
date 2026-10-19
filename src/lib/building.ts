@@ -2,8 +2,10 @@ import {
   commonSpaces,
   levels,
   pricing,
+  showcases,
   units,
   type CommonSpace,
+  type Showcase,
   type CommonSpaceId,
   type Level,
   type SelectableId,
@@ -94,6 +96,13 @@ export function adjacentSelectable(id: SelectableId, direction: 1 | -1): Selecta
   const side = getUnit(id)?.side;
   const sameSide = candidates.find((c) => getUnit(c)?.side === side);
   return sameSide ?? candidates[0] ?? null;
+}
+
+/** Ficha (textos, fotos) de una unidad según su tipología, o de PB/SUM. */
+export function getShowcase(id: SelectableId): Showcase | undefined {
+  const unit = getUnit(id);
+  if (unit) return showcases[unit.side];
+  return isCommonSpaceId(id) ? showcases[id] : undefined;
 }
 
 /** Precio más bajo entre las unidades no vendidas ("Desde USD …"). */

@@ -31,7 +31,6 @@ export function FloorSelector() {
   const selectedId = useUIStore((s) => s.selectedId);
   const setHovered = useUIStore((s) => s.setHovered);
   const select = useUIStore((s) => s.select);
-  const isPanelOpen = useUIStore((s) => s.isPanelOpen);
 
   const [focusId, setFocusId] = useState<SelectableId>(rows[0].ids[0]);
   const buttons = useRef(new Map<SelectableId, HTMLButtonElement>());
@@ -67,12 +66,7 @@ export function FloorSelector() {
   return (
     <nav
       aria-label="Selector de pisos"
-      data-keep-panel
-      className={[
-        "absolute top-1/2 right-3 -translate-y-1/2 rounded-xs border border-stone bg-paper px-3 py-3 transition-[right] duration-200 ease-out motion-reduce:transition-none sm:right-8",
-        // En escritorio se corre a la izquierda del panel abierto (420 px).
-        isPanelOpen ? "md:right-[calc(420px+2rem)]" : "",
-      ].join(" ")}
+      className="absolute top-1/2 right-3 -translate-y-1/2 rounded-xs border border-stone bg-paper px-3 py-3 sm:right-8"
     >
       <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-slate">Pisos</p>
       <ul className="flex flex-col gap-1">

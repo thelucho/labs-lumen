@@ -7,7 +7,7 @@ import { Fog, MathUtils, Vector3, type PerspectiveCamera } from "three";
 import { project } from "@/data/building";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { useUIStore } from "@/lib/store";
-import { HERO_BREAKPOINT, freeBand } from "@/lib/ui";
+import { freeBand } from "@/lib/ui";
 import { DISTANCE, ELEVATION, FOV, MAX_DISTANCE, TARGET, fogRange } from "./camera";
 
 type OrbitControlsImpl = ComponentRef<typeof OrbitControls>;
@@ -29,25 +29,17 @@ function distanceFor(aspect: number, fraction: number): number {
 
 /**
  * Encuadre según pantalla: el edificio entra en la franja libre entre el texto
- * del hero y el selector (o el panel abierto). La distancia usa la franja más
- * angosta de las dos situaciones, así abrir la ficha no hace zoom: solo desliza.
- * Usa setViewOffset: desplaza la imagen sin mover el centro de rotación.
+ * del hero y el selector. Usa setViewOffset: desplaza la imagen sin mover el
+ * centro de rotación.
  */
 function Framing() {
   const width = useThree((s) => s.size.width);
   const height = useThree((s) => s.size.height);
   const get = useThree((s) => s.get);
-  const isPanelOpen = useUIStore((s) => s.isPanelOpen);
   const reducedMotion = usePrefersReducedMotion();
 
-  const closed = freeBand(width, false);
-  const open = freeBand(width, true);
-  // Por debajo de lg el panel abierto tapa casi todo: la distancia se calcula
-  // solo con la franja cerrada (si no, la cámara se iría demasiado lejos).
-  const closedWidth = closed.right - closed.left;
-  const openWidth = open.right - open.left;
-  const fraction = (width >= HERO_BREAKPOINT ? Math.min(closedWidth, openWidth) : closedWidth) / width;
-  const band = isPanelOpen ? open : closed;
+  const band = freeBand(width);
+  const fraction = (band.right - band.left) / width;
   const targetShift = width / 2 - (band.left + band.right) / 2;
   const shift = useRef(0);
 

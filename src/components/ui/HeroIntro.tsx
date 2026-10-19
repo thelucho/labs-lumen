@@ -13,10 +13,9 @@ const facts = [
 
 /**
  * Bloque editorial del hero. Debajo del edificio hasta lg; desde lg
- * a la izquierda, y se oculta mientras el panel de ficha está abierto.
+ * a la izquierda, sobre el 3D.
  */
 export function HeroIntro() {
-  const isPanelOpen = useUIStore((s) => s.isPanelOpen);
   // Desde lg el texto va sobre el 3D: con la escena oscura (luz del día) pasa a claro.
   const isDark = useUIStore(selectIsDark);
 
@@ -26,8 +25,7 @@ export function HeroIntro() {
       className={[
         "group px-4 pt-8 pb-14 sm:px-8",
         "lg:pointer-events-none lg:absolute lg:top-1/2 lg:left-8 lg:w-[21rem] lg:-translate-y-1/2 lg:p-0",
-        "lg:transition-[opacity,color] lg:duration-200 motion-reduce:transition-none lg:data-dark:text-paper",
-        isPanelOpen ? "lg:opacity-0" : "lg:opacity-100",
+        "lg:transition-colors lg:duration-200 motion-reduce:transition-none lg:data-dark:text-paper",
       ].join(" ")}
     >
       <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate lg:group-data-dark:text-stone">

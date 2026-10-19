@@ -1,7 +1,7 @@
 # SPEC — Demo inmobiliaria 3D "Lumen Residencias"
 
 ## 1. Objetivo
-Landing de una sola página para **vender la demo a un cliente inmobiliario**. El protagonista es un edificio 3D interactivo (three.js) en el centro del hero: el usuario lo gira, pasa el mouse por las unidades y "se prende la luz" de la unidad apuntada; al hacer click se abre un panel lateral con la ficha de la unidad y un botón "Solicitar información" que abre un formulario en un modal.
+Landing de una sola página para **vender la demo a un cliente inmobiliario**. El protagonista es un edificio 3D interactivo (three.js) en el centro del hero: el usuario lo gira, pasa el mouse por las unidades y "se prende la luz" de la unidad apuntada; al hacer click se abre la ficha de la unidad a pantalla completa (§6.1), con fotos y un botón "Solicitar información" que abre un formulario en un modal.
 
 Todo es estático: **sin backend, sin API, sin envío de emails, sin servicios externos**. Deploy en Vercel.
 
@@ -58,11 +58,11 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 ### 4.4 Interacción
 - **Rotación**: OrbitControls solo en el eje horizontal (o con ángulo polar muy limitado), sin pan, zoom limitado o deshabilitado. Rotación inicial mostrando frente + lateral este (balcones). Damping activado. Auto-rotación muy lenta mientras no hay interacción (se detiene al primer hover/drag).
 - **Hover** (desktop): al apuntar una unidad se "prende su luz" — interior con emisivo cálido (≈ #F2C27B) + una luz puntual dentro de esa unidad. Solo una unidad encendida a la vez; al moverse a otra, la anterior se apaga con transición corta (~150 ms). Cursor `pointer` sobre unidades. Tooltip pequeño con nombre de la unidad ("4° A").
-- **Click**: selecciona la unidad (queda encendida aunque el mouse salga) y abre el **panel lateral**. Un drag de rotación **no** debe contar como click (umbral de movimiento).
-- PB y SUM también son interactivos y abren su propio panel.
-- **Mobile/touch**: tap = seleccionar (no hay hover). El selector de pisos es la vía principal. El panel se abre como bottom sheet.
+- **Click**: selecciona la unidad (queda encendida aunque el mouse salga) y abre la **ficha fullscreen** (§6.1). Un drag de rotación **no** debe contar como click (umbral de movimiento).
+- PB y SUM también son interactivos y abren su propia ficha.
+- **Mobile/touch**: tap = seleccionar (no hay hover). El selector de pisos es la vía principal.
 - El selector de pisos y el 3D están sincronizados (hover en el selector enciende la unidad en el 3D y viceversa).
-- Teclado: el selector de pisos es navegable con Tab/flechas; Enter abre la ficha; Esc cierra panel/modal.
+- Teclado: el selector de pisos es navegable con Tab/flechas; Enter abre la ficha; Esc cierra modal, visor de fotos o ficha (de la capa de arriba hacia abajo).
 
 ### 4.5 Luz del día
 - Slider horizontal **continuo** de 06:00 a 22:00 (paso de 1 minuto, sin posiciones fijas), con la hora actual en números tabulares.
@@ -150,16 +150,14 @@ Regla: superficie ponderada = cubierta + 50 % del balcón. Valor del m² sube 2,
 
 ## 6. UI
 
-### 6.1 Panel lateral (ficha de unidad)
-- Se desliza desde la derecha en desktop (≈ 420 px), bottom sheet en mobile.
-- Encabezado: nombre de la unidad ("Piso 4 · Unidad A"), estado (Disponible / Reservada / Vendida) como etiqueta discreta.
-- Precio destacado en USD con separador de miles (`USD 359.000`).
-- Datos en lista de dos columnas (etiqueta / valor), números tabulares, separadores finos. Íconos Phosphor solo donde aportan (m², dormitorios, baño, balcón, vista, calefacción).
-- Mini plano esquemático de la planta resaltando la unidad (SVG simple: rectángulo de planta con la mitad A o B marcada, flecha de norte).
-- Botón primario "Solicitar información" (oculto si está vendida).
-- Navegación "Piso anterior / siguiente" dentro del panel.
-- Fichas distintas para PB y SUM (datos de 5.7 y 5.8, sin precio ni formulario de unidad; el SUM puede tener "Consultar por amenities").
-- Cerrar con X, Esc o click fuera. El scroll interno del panel no debe ser capturado por Lenis (`data-lenis-prevent`).
+### 6.1 Ficha fullscreen (unidad, PB y SUM)
+*Decisión (fase 10)*: reemplaza al panel lateral / bottom sheet. Cada unidad, PB y SUM tiene una mini landing a pantalla completa, con el contenido centrado en un contenedor (máx. 1152 px).
+- `<dialog>` nativo con `showModal()`: el resto de la página queda inerte, Esc cierra y el foco vuelve a donde estaba. El 3D deja de dibujarse mientras está abierta. Scroll propio con `data-lenis-prevent`.
+- Barra fija arriba: "Volver al edificio", nombre del proyecto y unidad, y navegación piso anterior / siguiente (mantiene el lado A/B).
+- Orden: ubicación ("Piso 4 · Lateral este") y título grande en serif ("4° A"), línea de presentación, estado como etiqueta discreta, precio en USD con separador de miles (`USD 359.000`) y "Solicitar información" (oculto si está vendida; en el SUM, "Consultar por amenities") → **portada** (foto ilustrativa del espacio principal) → cifras destacadas en serif (superficies, ambientes, dormitorios, baños; en PB y SUM, las suyas) → descripción + ficha técnica (lista etiqueta/valor, números tabulares, separadores finos, íconos Phosphor solo donde aportan) → **galería** de espacios → mini plano de planta (SVG) y corte esquemático del edificio con la unidad resaltada + equipamiento común → cierre con consulta y tarjetas de piso anterior/siguiente (estado y precio).
+- Galería: grilla de fotos numeradas con el nombre del espacio; cada una abre un visor a pantalla completa (flechas, Esc cierra solo el visor, el foco vuelve a la foto).
+- Textos, fotos y cifras viven en `showcases` de `src/data/building.ts`, por tipología (A, B, piso completo) y por espacio común.
+- Fotos: ilustrativas, de Unsplash (licencia libre), descargadas a `public/images/units` y servidas con `next/image` (sin requests a servicios externos). Aviso visible: "Imágenes ilustrativas de referencia: no corresponden a la unidad", con los autores.
 
 ### 6.2 Modal "Solicitar información"
 Campos: nombre y apellido, email, teléfono, unidad (precargada, solo lectura), cómo prefiere que lo contacten (WhatsApp / llamada / email), mensaje (opcional, con texto sugerido), checkbox de aceptación.
@@ -207,5 +205,5 @@ Backend, APIs, envío de emails, analytics, CMS, i18n, mapas de terceros, login,
 5. Click en cualquier unidad, en PB o en el SUM abre su ficha con los datos de la sección 5.
 6. "Solicitar información" abre el modal, valida y muestra la confirmación de demo sin enviar nada.
 7. Selector de pisos sincronizado con el 3D y usable con teclado.
-8. Funciona en mobile (tap + bottom sheet).
+8. Funciona en mobile (tap + ficha fullscreen).
 9. Build limpio y deployado en Vercel.

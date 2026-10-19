@@ -340,7 +340,6 @@ export function InquiryModal() {
     <dialog
       ref={dialog}
       aria-labelledby={titleId}
-      data-keep-panel
       data-lenis-prevent
       onClose={closeModal}
       onKeyDown={handleKeyDown}

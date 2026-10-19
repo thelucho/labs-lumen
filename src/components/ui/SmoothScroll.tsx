@@ -17,8 +17,8 @@ export function SmoothScroll() {
   useEffect(() => {
     if (reducedMotion) return;
     const lenis = new Lenis({ autoRaf: true });
-    const sync = ({ isPanelOpen, isModalOpen }: { isPanelOpen: boolean; isModalOpen: boolean }) => {
-      if (isPanelOpen || isModalOpen) lenis.stop();
+    const sync = ({ isDetailOpen, isModalOpen }: { isDetailOpen: boolean; isModalOpen: boolean }) => {
+      if (isDetailOpen || isModalOpen) lenis.stop();
       else lenis.start();
     };
     sync(useUIStore.getState());

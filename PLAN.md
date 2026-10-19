@@ -14,7 +14,7 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 ## Fase 1 — Datos y estado
 - [x] `src/data/building.ts` con tipos (`Unit`, `Level`, `UnitStatus`, etc.) y todos los datos de SPEC §5.
 - [x] Helpers: formato de precio (`USD 359.000`), etiqueta de unidad ("4° A", "Piso 1 completo").
-- [x] Store de UI (Zustand): `hoveredId`, `selectedId`, `isPanelOpen`, `isModalOpen`.
+- [x] Store de UI (Zustand): `hoveredId`, `selectedId`, `isPanelOpen` (hoy `isDetailOpen`, fase 10), `isModalOpen`.
 - [x] Datos de geometría por nivel/unidad que necesita el 3D: `kind`, `height`, `side` (A/B/completo), `hasBalcony`.
 - [x] Test unitario con Vitest (`npm test`) que verifique: 14 unidades, pisos 1 y 8 completos, todas las A y los pisos completos con balcón, precios = regla de SPEC §5.5.
 
@@ -92,3 +92,13 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Test de recorrido solar (`src/lib/daylight.test.ts`).
 
 **Verificación:** capturas a 07:30, 10:44, 13:00, 18:00, 19:30 y 21:00 en desktop y mobile; el slider se mueve de forma continua con mouse, touch y teclado.
+
+## Fase 10 — Ficha fullscreen con fotos
+- [x] Reemplazar el panel lateral / bottom sheet por una ficha fullscreen (`<dialog>`) con contenido centrado (SPEC §6.1).
+- [x] Estructura de mini landing: título, precio y CTA; portada; cifras; descripción y ficha técnica; galería; planta y corte del edificio; cierre con consulta y pisos vecinos.
+- [x] Fotos ilustrativas de Unsplash en `public/images/units`, por tipología (A, B, piso completo), PB y SUM; textos y fotos en `showcases` de `building.ts`.
+- [x] Galería con visor a pantalla completa (flechas, Esc, retorno de foco).
+- [x] Quitar el encuadre de cámara y los corrimientos que dependían del panel; pausar el 3D con la ficha abierta.
+- [x] Tests: cada ficha tiene portada en su galería y todas las fotos existen.
+
+**Verificación:** capturas de 4° A, piso 1, PB y SUM en desktop y mobile; Esc cierra modal → visor → ficha en ese orden; el foco vuelve al selector de pisos.

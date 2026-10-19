@@ -5,9 +5,10 @@ import { DEFAULT_HOUR, clampHour, daylightFactor } from "@/lib/daylight";
 interface UIState {
   /** Unidad, PB o SUM bajo el puntero (3D o selector). */
   hoveredId: SelectableId | null;
-  /** Unidad seleccionada: queda encendida mientras el panel está abierto. */
+  /** Unidad seleccionada: queda encendida mientras la ficha está abierta. */
   selectedId: SelectableId | null;
-  isPanelOpen: boolean;
+  /** Ficha fullscreen de la unidad, PB o SUM. */
+  isDetailOpen: boolean;
   isModalOpen: boolean;
   /** Primer hover, drag o selección: corta la auto-rotación para siempre. */
   hasInteracted: boolean;
@@ -15,9 +16,9 @@ interface UIState {
   hour: number;
 
   setHovered: (id: SelectableId | null) => void;
-  /** Selecciona y abre el panel con la ficha. */
+  /** Selecciona y abre la ficha fullscreen. */
   select: (id: SelectableId) => void;
-  closePanel: () => void;
+  closeDetail: () => void;
   openModal: () => void;
   closeModal: () => void;
   markInteracted: () => void;
@@ -27,14 +28,15 @@ interface UIState {
 export const useUIStore = create<UIState>()((set) => ({
   hoveredId: null,
   selectedId: null,
-  isPanelOpen: false,
+  isDetailOpen: false,
   isModalOpen: false,
   hasInteracted: false,
   hour: DEFAULT_HOUR,
 
   setHovered: (id) => set(id ? { hoveredId: id, hasInteracted: true } : { hoveredId: null }),
-  select: (id) => set({ selectedId: id, isPanelOpen: true, hasInteracted: true }),
-  closePanel: () => set({ selectedId: null, isPanelOpen: false, isModalOpen: false }),
+  select: (id) => set({ selectedId: id, isDetailOpen: true, hasInteracted: true }),
+  // El hover también se limpia: el puntero quedó sobre la ficha, no sobre el edificio.
+  closeDetail: () => set({ selectedId: null, hoveredId: null, isDetailOpen: false, isModalOpen: false }),
   openModal: () => set({ isModalOpen: true }),
   closeModal: () => set({ isModalOpen: false }),
   markInteracted: () => set({ hasInteracted: true }),

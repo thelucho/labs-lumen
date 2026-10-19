@@ -103,7 +103,7 @@ function Stages() {
 
 export default function SceneCanvas({ active = true }: { active?: boolean }) {
   const [position] = useState(() => cameraPosition(readAzimuth()));
-  const closePanel = useUIStore((s) => s.closePanel);
+  const closeDetail = useUIStore((s) => s.closeDetail);
 
   return (
     <Canvas
@@ -112,7 +112,7 @@ export default function SceneCanvas({ active = true }: { active?: boolean }) {
       shadows="soft"
       camera={{ fov: FOV, near: 1, far: 1500, position }}
       gl={{ antialias: true, toneMapping: NeutralToneMapping }}
-      onPointerMissed={closePanel}
+      onPointerMissed={closeDetail}
     >
       <SceneLights />
       <Stages />

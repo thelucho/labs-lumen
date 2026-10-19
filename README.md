@@ -12,11 +12,11 @@ The Hero is a **3D building you can browse unit by unit**.
 
 The building is generated entirely in code from a single data file (`src/data/building.ts`): a ground-floor lobby, eight residential floors, and a rooftop amenity level with a pool. Floors 2 to 7 split into two units (A with balcony, B without); floors 1 and 8 are full-floor units. Nothing about the units is hardcoded in the scene or the UI.
 
-Drag to rotate the building. Hovering a unit "turns its lights on" — a warm emissive interior plus a single point light that moves to whichever unit is active. Clicking opens a side panel (a bottom sheet on mobile) with the unit's floor plan, areas, rooms, and price, plus an inquiry form that stays local to the demo. A vertical floor selector mirrors the 3D view and works as the accessible, keyboard-friendly way in.
+Drag to rotate the building. Hovering a unit "turns its lights on" — a warm emissive interior plus a single point light that moves to whichever unit is active. Clicking opens a full-screen page for that unit — a small landing with a cover photo, key figures, specs, a photo gallery with a viewer, the floor plan, and its place in the building — plus an inquiry form that stays local to the demo. A day-light slider moves the sun around the building, with its shadows and sky. A vertical floor selector mirrors the 3D view and works as the accessible, keyboard-friendly way in.
 
 The scene keeps cost low: shared geometries and materials, instanced meshes, cached shadows, and a capped device pixel ratio. Auto-rotation and transitions respect `prefers-reduced-motion`.
 
-The rest of the page is a fictional development (Lumen Residencias, Los Aromos 1240) that gives the building a real layout to live in. Everything is static — no backend, no API routes, no external services.
+The rest of the page is a fictional development (Lumen Residencias, Los Aromos 1240) that gives the building a real layout to live in. Everything is static — no backend, no API routes, no external services. Interior photos are illustrative, from [Unsplash](https://unsplash.com) (free license), and are served from `public/`.
 
 ---
 

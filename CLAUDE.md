@@ -19,7 +19,7 @@ Landing de una página con un edificio 3D interactivo para vender una demo a un 
 - three.js solo a través de @react-three/fiber y @react-three/drei. El canvas se carga en cliente con `dynamic` sin SSR.
 - El edificio se genera **por código a partir de `src/data/building.ts`**. Ningún dato de unidades hardcodeado en componentes 3D o UI.
 - Una sola luz puntual para la unidad activa; reutilizar geometrías y materiales; `dpr` limitado a [1, 2].
-- Lenis para scroll; detenerlo con panel/modal abiertos; `data-lenis-prevent` en zonas con scroll propio.
+- Lenis para scroll; detenerlo con ficha/modal abiertos; `data-lenis-prevent` en zonas con scroll propio.
 - **Sin backend, sin API routes, sin fetch a servicios externos, sin envío de emails.** El formulario hace `preventDefault` y muestra un estado de demo.
 
 ## Reglas de diseño (no negociables)
@@ -35,7 +35,7 @@ src/
   app/            layout, page, estilos globales
   components/
     scene/        Canvas, Building, Level, Unit, Environment, Clouds
-    ui/           FloorSelector, UnitPanel, InquiryModal, secciones
+    ui/           FloorSelector, UnitDetail (ficha fullscreen), InquiryModal, secciones
   data/           building.ts
   lib/            formato, helpers, store
 ```

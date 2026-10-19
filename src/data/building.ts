@@ -325,6 +325,135 @@ export const location = {
   ] satisfies LocationPoint[],
 };
 
+/* ------------------------------------------------------------------------ */
+/* Ficha fullscreen de cada unidad, PB y SUM (SPEC §6.1).                   */
+/* ------------------------------------------------------------------------ */
+
+/** Foto ilustrativa (Unsplash, licencia libre), servida desde /public. */
+export interface Photo {
+  src: string;
+  alt: string;
+  /** Nombre del espacio, como se muestra en la galería. */
+  caption: string;
+  credit: string;
+}
+
+export interface Figure {
+  label: string;
+  value: string;
+}
+
+export interface Showcase {
+  /** Una línea de presentación. */
+  lead: string;
+  body: string[];
+  cover: Photo;
+  gallery: Photo[];
+  /** Cifras destacadas (PB y SUM; en las unidades salen de la tipología). */
+  figures?: Figure[];
+}
+
+export type ShowcaseId = UnitSide | CommonSpaceId;
+
+const IMG = "/images/units";
+
+const photos = {
+  aLiving: { src: `${IMG}/a-living.jpg`, alt: "Living comedor con muebles de madera clara, estantería calada y luz natural", caption: "Living comedor", credit: "Puscas Adryan" },
+  aKitchen: { src: `${IMG}/a-cocina.jpg`, alt: "Cocina con isla blanca y banquetas, iluminada por el sol", caption: "Cocina integrada con isla", credit: "Francesco Ungaro" },
+  aBalcony: { src: `${IMG}/a-balcon.jpg`, alt: "Balcón con plantas visto desde el living a través de la carpintería", caption: "Balcón al este", credit: "Travis Fish" },
+  aBedroom: { src: `${IMG}/a-dormitorio.jpg`, alt: "Dormitorio con cama tapizada y ropa de cama clara", caption: "Dormitorio principal en suite", credit: "McFollis" },
+  aBath: { src: `${IMG}/a-bano.jpg`, alt: "Baño con bañera exenta blanca y estante de madera", caption: "Baño en suite", credit: "Ela De Pure" },
+  bLiving: { src: `${IMG}/b-living.jpg`, alt: "Living luminoso con cortinas blancas, sillón claro y cuadros", caption: "Living", credit: "EZcurtain Life" },
+  bDining: { src: `${IMG}/b-comedor.jpg`, alt: "Mesa redonda oscura con sillas tapizadas junto a la cocina", caption: "Comedor diario", credit: "Aleksandra Dementeva" },
+  bKitchen: { src: `${IMG}/b-cocina.jpg`, alt: "Cocina clara con ventana grande hacia el verde", caption: "Cocina semi-integrada", credit: "Cat Han" },
+  bBedroom: { src: `${IMG}/b-dormitorio.jpg`, alt: "Dormitorio con placard blanco y ventanal", caption: "Dormitorio principal en suite", credit: "Pickawood" },
+  bBath: { src: `${IMG}/b-bano.jpg`, alt: "Baño con bañera, mampara de vidrio y mueble de vanitory blanco", caption: "Baño", credit: "Alex Tyson" },
+  fullLiving: { src: `${IMG}/full-living.jpg`, alt: "Living amplio con sillones blancos y cocina de madera al fondo", caption: "Living con cocina integrada", credit: "Clay Banks" },
+  fullDining: { src: `${IMG}/full-comedor.jpg`, alt: "Comedor con mesa de madera y puertas vidriadas al exterior", caption: "Comedor", credit: "Clay Banks" },
+  fullKitchen: { src: `${IMG}/full-cocina.jpg`, alt: "Cocina blanca con isla, mueble de madera y luminarias colgantes", caption: "Cocina con isla", credit: "Clay Banks" },
+  fullSuite: { src: `${IMG}/full-suite.jpg`, alt: "Suite con respaldo de madera y ventanales de piso a techo", caption: "Suite principal", credit: "Hans" },
+  fullBath: { src: `${IMG}/full-bano.jpg`, alt: "Baño con ducha de vidrio y revestimiento símil mármol", caption: "Baño en suite", credit: "Smart Renovations" },
+  fullStudy: { src: `${IMG}/full-estar.jpg`, alt: "Estar con aparador de madera, sillón y plantas", caption: "Estar íntimo", credit: "Julia" },
+  pbReception: { src: `${IMG}/pb-recepcion.jpg`, alt: "Recepción con mostrador de piedra y revestimiento de listones de madera", caption: "Recepción", credit: "Aalo Lens" },
+  pbElevators: { src: `${IMG}/pb-ascensores.jpg`, alt: "Palier con dos ascensores de acero y piso de mármol", caption: "Palier de ascensores", credit: "Aalo Lens" },
+  sumTerrace: { src: `${IMG}/sum-terraza.jpg`, alt: "Terraza en altura con mesas y vista a la ciudad al atardecer", caption: "Terraza del SUM", credit: "garrett parker" },
+  sumPool: { src: `${IMG}/sum-pileta.jpg`, alt: "Pileta vista desde arriba junto a un deck de madera", caption: "Pileta y solárium", credit: "Bernd Dittrich" },
+  sumGym: { src: `${IMG}/sum-gimnasio.jpg`, alt: "Gimnasio con cintas de correr frente a un ventanal", caption: "Gimnasio", credit: "Aalo Lens" },
+  sumSauna: { src: `${IMG}/sum-sauna.jpg`, alt: "Sauna revestido en madera con estufa de piedras", caption: "Sauna seco", credit: "HUUM" },
+} satisfies Record<string, Photo>;
+
+/** Textos, fotos y cifras de la ficha de cada tipología y espacio común. */
+export const showcases: Record<ShowcaseId, Showcase> = {
+  A: {
+    lead: "Cuatro ambientes sobre el lateral este, con balcón de 12 m² y losa radiante.",
+    body: [
+      "El living comedor da al frente y se abre al balcón del lateral este, que recibe el sol de la mañana. La cocina se integra al estar con una isla.",
+      "Tres dormitorios, el principal en suite, un segundo baño completo y toilette para visitas. Losa radiante en toda la unidad, con caldera dual individual.",
+    ],
+    cover: photos.aLiving,
+    gallery: [photos.aLiving, photos.aKitchen, photos.aBalcony, photos.aBedroom, photos.aBath],
+  },
+  B: {
+    lead: "Tres ambientes sobre el lateral oeste, con sol de tarde y cocina semi-integrada.",
+    body: [
+      "El living da al frente y al oeste y recibe la luz de la tarde. La cocina semi-integrada separa el área de trabajo sin cerrar el comedor.",
+      "Dos dormitorios, el principal en suite, y un segundo baño completo. Calefacción por radiadores con caldera dual individual.",
+    ],
+    cover: photos.bLiving,
+    gallery: [photos.bLiving, photos.bDining, photos.bKitchen, photos.bBedroom, photos.bBath],
+  },
+  full: {
+    lead: "Piso completo de cinco ambientes, con tres frentes y balcón corrido de 24 m².",
+    body: [
+      "Ocupa toda la planta: frente, lateral este y lateral oeste, con luz natural de la mañana a la tarde. El ascensor llega directo a un palier privado.",
+      "Cuatro dormitorios, dos en suite, tres baños, toilette y lavadero independiente. Losa radiante en toda la unidad y dos cocheras en el subsuelo.",
+    ],
+    cover: photos.fullLiving,
+    gallery: [
+      photos.fullLiving,
+      photos.fullDining,
+      photos.fullKitchen,
+      photos.fullStudy,
+      photos.fullSuite,
+      photos.fullBath,
+    ],
+  },
+  pb: {
+    lead: "Hall de acceso de doble altura, con recepción y seguridad las 24 horas.",
+    body: [
+      "La planta baja recibe con un hall vidriado sobre Los Aromos. Desde la recepción se llega a los dos ascensores; uno sube directo a los pisos completos.",
+      "En el subsuelo están las cocheras y las bauleras de todas las unidades. A nivel de vereda, bicicletero, sala de residuos y rampa de acceso.",
+    ],
+    cover: photos.pbReception,
+    gallery: [photos.pbReception, photos.pbElevators],
+    figures: [
+      { label: "Altura del hall", value: "4,2 m" },
+      { label: "Ascensores", value: "2" },
+      { label: "Cocheras", value: "16" },
+      { label: "Bauleras", value: "14" },
+      { label: "Seguridad", value: "24 h" },
+    ],
+  },
+  sum: {
+    lead: "Azotea con SUM, pileta, solárium, gimnasio y sauna, con vista 360°.",
+    body: [
+      "En el nivel 9, el SUM tiene cocina y dos parrillas y se abre a la terraza, con la pileta descubierta y el deck del solárium.",
+      "Del otro lado de la azotea están el gimnasio equipado, los vestuarios y el sauna seco.",
+    ],
+    cover: photos.sumTerrace,
+    gallery: [photos.sumTerrace, photos.sumPool, photos.sumGym, photos.sumSauna],
+    figures: [
+      { label: "SUM cubierto", value: "120 m²" },
+      { label: "Terraza", value: "180 m²" },
+      { label: "Pileta", value: "8 × 3,5 m" },
+      { label: "Gimnasio", value: "45 m²" },
+    ],
+  },
+};
+
+/** Aviso de las fotos de las fichas. */
+export const photoNotice = "Imágenes ilustrativas de referencia: no corresponden a la unidad. Fotos de Unsplash.";
+
 /** Datos de contacto ficticios de la desarrolladora. */
 export const contact = {
   showroom: "Los Aromos 1240, planta baja",

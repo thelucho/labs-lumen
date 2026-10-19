@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sections";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
 import { SunControl } from "@/components/ui/SunControl";
-import { UnitPanel } from "@/components/ui/UnitPanel";
+import { UnitDetail } from "@/components/ui/UnitDetail";
 import { UsageHint } from "@/components/ui/UsageHint";
 
 export default function Home() {
@@ -32,7 +32,7 @@ export default function Home() {
         <LocationSection />
       </main>
       <SiteFooter />
-      <UnitPanel />
+      <UnitDetail />
       <InquiryModal />
       <SmoothScroll />
     </>

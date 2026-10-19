@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
+import { useUIStore } from "@/lib/store";
 import { ScenePlaceholder } from "./ScenePlaceholder";
 
 const SceneCanvas = dynamic(() => import("./SceneCanvas"), {
@@ -23,10 +24,12 @@ export function Scene() {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+  // La ficha fullscreen tapa el edificio: tampoco hace falta dibujarlo.
+  const isDetailOpen = useUIStore((s) => s.isDetailOpen);
 
   return (
-    <div ref={container} className="absolute inset-0" data-keep-panel data-scene>
-      <SceneCanvas active={visible} />
+    <div ref={container} className="absolute inset-0" data-scene>
+      <SceneCanvas active={visible && !isDetailOpen} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import type { SelectableId, Unit, UnitStatus } from "@/data/building";
-import { getCommonSpace, getUnit } from "@/lib/building";
+import type { Figure, SelectableId, Unit, UnitStatus } from "@/data/building";
+import { getCommonSpace, getUnit, totalArea } from "@/lib/building";
 
 const numberFormat = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 1 });
 
@@ -67,6 +67,37 @@ export function selectableTitle(id: SelectableId): string {
 /** "3 (1 en suite)" */
 export function formatBedrooms(unit: Unit): string {
   return `${unit.bedrooms} (${unit.ensuites} en suite)`;
+}
+
+const sideLocations = { A: "Lateral este", B: "Lateral oeste", full: "Planta completa" } as const;
+const commonSpaceLocations = { pb: "Planta baja", sum: "Nivel 9 · Azotea" } as const;
+
+/** Línea sobre el título de la ficha: "Piso 4 · Lateral este", "Planta baja". */
+export function selectableEyebrow(id: SelectableId): string {
+  const unit = getUnit(id);
+  if (unit) return `Piso ${unit.floor} · ${sideLocations[unit.side]}`;
+  const space = getCommonSpace(id);
+  if (space) return commonSpaceLocations[space.id];
+  return "";
+}
+
+/** Título grande de la ficha: "4° A", "Piso 1 completo", "Hall de acceso". */
+export function selectableHeadline(id: SelectableId): string {
+  const unit = getUnit(id);
+  if (unit) return unitShortLabel(unit);
+  return getCommonSpace(id)?.title ?? id;
+}
+
+/** Cifras destacadas de una unidad, en el orden de la ficha. */
+export function unitFigures(unit: Unit): Figure[] {
+  return [
+    { label: "Superficie total", value: formatArea(totalArea(unit)) },
+    { label: "Cubierta", value: formatArea(unit.coveredArea) },
+    { label: "Balcón", value: unit.balconyArea > 0 ? formatArea(unit.balconyArea) : "—" },
+    { label: "Ambientes", value: String(unit.rooms) },
+    { label: "Dormitorios", value: String(unit.bedrooms) },
+    { label: "Baños", value: formatBathrooms(unit) },
+  ];
 }
 
 /** "diciembre 2027" → "Dic. 2027" */

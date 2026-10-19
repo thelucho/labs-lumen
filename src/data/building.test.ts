@@ -1,6 +1,8 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { commonSpaces, levels, units } from "@/data/building";
-import { buildingHeight, getUnit, hasBalcony, levelElevation, priceByRule, weightedArea } from "@/lib/building";
+import { commonSpaces, levels, showcases, units } from "@/data/building";
+import { buildingHeight, getShowcase, getUnit, hasBalcony, levelElevation, priceByRule, weightedArea } from "@/lib/building";
 import { formatPrice, selectableLabel, unitShortLabel, unitTitle } from "@/lib/format";
 import { selectLitId, useUIStore } from "@/lib/store";
 
@@ -85,15 +87,15 @@ describe("formato", () => {
 
 describe("store", () => {
   it("una sola unidad encendida: hover manda, si no la seleccionada", () => {
-    const { select, setHovered, closePanel } = useUIStore.getState();
+    const { select, setHovered, closeDetail } = useUIStore.getState();
     select("4A");
     expect(selectLitId(useUIStore.getState())).toBe("4A");
     setHovered("5B");
     expect(selectLitId(useUIStore.getState())).toBe("5B");
     setHovered(null);
     expect(selectLitId(useUIStore.getState())).toBe("4A");
-    closePanel();
-    expect(useUIStore.getState()).toMatchObject({ selectedId: null, isPanelOpen: false });
+    closeDetail();
+    expect(useUIStore.getState()).toMatchObject({ selectedId: null, isDetailOpen: false });
   });
 
   it("el primer hover corta la auto-rotación y no se revierte", () => {
@@ -143,6 +145,25 @@ describe("contenido de la landing", () => {
       `${full.balconyArea} m²`,
     ]) {
       expect(text).toContain(fragment);
+    }
+  });
+});
+
+describe("fichas fullscreen", () => {
+  it("cada unidad, PB y SUM tiene ficha con portada dentro de la galería", () => {
+    for (const id of [...units.map((u) => u.id), "pb", "sum"]) {
+      const showcase = getShowcase(id);
+      expect(showcase, id).toBeDefined();
+      expect(showcase!.gallery).toContain(showcase!.cover);
+    }
+  });
+
+  it("todas las fotos existen en public/ y tienen texto alternativo", () => {
+    for (const showcase of Object.values(showcases)) {
+      for (const photo of showcase.gallery) {
+        expect(existsSync(join("public", photo.src)), photo.src).toBe(true);
+        expect(photo.alt.length).toBeGreaterThan(10);
+      }
     }
   });
 });
