@@ -6,7 +6,6 @@ import { getUnit, selectablesOf } from "@/lib/building";
 import { selectableTitle, statusLabels } from "@/lib/format";
 import { useUIStore } from "@/lib/store";
 import { introStyle } from "@/lib/ui";
-import { RISE_DURATION } from "@/components/scene/rise";
 
 /** Filas de arriba hacia abajo: SUM, 12 … 1, PB. */
 const rows = [...levels].reverse().map((level) => ({ level, ids: selectablesOf(level) }));
@@ -23,8 +22,8 @@ function accessibleLabel(id: SelectableId): string {
 }
 
 /** Demora de la primera fila (PB) y paso entre filas, en ms: acompaña la subida del edificio. */
-const ROW_START = 120;
-const ROW_STEP = Math.round(RISE_DURATION / rows.length);
+const ROW_START = 450;
+const ROW_STEP = 40;
 
 const dotClass = { available: "bg-sage", reserved: "bg-clay", sold: "bg-slate" } as const;
 
@@ -72,14 +71,14 @@ export function FloorSelector() {
   return (
     <nav
       data-intro
-      style={introStyle(0, 24, 0)}
+      style={introStyle(300, 40, 0)}
       aria-label="Selector de pisos"
       className="absolute top-1/2 right-3 -translate-y-1/2 rounded-xs border border-stone bg-paper px-3 py-3 sm:right-8"
     >
       <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-slate">Pisos</p>
       <ul className="flex flex-col gap-1">
         {rows.map(({ level, ids }, r) => (
-          // Las filas aparecen de abajo hacia arriba, al ritmo de los pisos del edificio.
+          // Las filas aparecen de abajo hacia arriba, como el edificio.
           <li key={level.id} data-intro style={introStyle(ROW_START + (rows.length - 1 - r) * ROW_STEP, 0, 8)} className="flex items-center gap-2">
             <span className="w-9 text-right text-xs font-medium tabular-nums text-slate">
               {level.label}

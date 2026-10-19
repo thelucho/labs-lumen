@@ -32,8 +32,8 @@ export function SunControl() {
   return (
     <div
       data-intro
-      style={introStyle(520, -24, 0)}
-      className="px-4 pt-6 sm:px-8 lg:absolute lg:bottom-8 lg:left-8 lg:w-[21rem] lg:rounded-xs lg:border lg:border-stone lg:bg-paper lg:px-4 lg:pt-3 lg:pb-1"
+      style={introStyle(620, -40, 0)}
+      className="px-4 pt-6 sm:px-8 lg:absolute lg:bottom-8 lg:left-8 lg:w-[23rem] lg:rounded-xs lg:border lg:border-stone lg:bg-paper lg:px-4 lg:pt-3 lg:pb-1"
     >
       <div className="flex items-baseline justify-between">
         <label htmlFor="sun-hour" className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate">

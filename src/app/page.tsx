@@ -3,6 +3,7 @@ import { FloorSelector } from "@/components/ui/FloorSelector";
 import { HeroIntro } from "@/components/ui/HeroIntro";
 import { InquiryModal } from "@/components/ui/InquiryModal";
 import { IntroFallback } from "@/components/ui/IntroFallback";
+import { Loader } from "@/components/ui/Loader";
 import {
   AmenitiesSection,
   LocationSection,
@@ -37,6 +38,7 @@ export default function Home() {
       <InquiryModal />
       <SmoothScroll />
       <IntroFallback />
+      <Loader />
     </>
   );
 }

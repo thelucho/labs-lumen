@@ -159,3 +159,12 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Sin animaciones con `prefers-reduced-motion`.
 
 **Verificación:** secuencia de carga grabada con screencast (lote vacío → edificio a medio construir → completo); estado final con y sin movimiento reducido. Lighthouse desktop en 4 corridas: Performance 98 / 91 / 91 / 97 (la versión anterior, medida igual: 96 / 88 / 95), Accesibilidad 96, Buenas prácticas 100, LCP 0,5–0,6 s.
+
+## Fase 17 — Loader y entrada con fundido (reemplaza la construcción de la fase 16)
+- [x] Fuera la animación de construcción piso por piso y la silueta de placeholder.
+- [x] Loader con isologo animado, nombre, dirección y avance real de la escena (`src/lib/intro.ts`, `Loader`).
+- [x] La escena aparece con un fundido cuando está completa y con sombras; los paneles entran después (CSS, `data-intro`), también la indicación de uso.
+- [x] Respaldo de 8 s y `<noscript>`; sin animaciones con `prefers-reduced-motion`.
+- [x] Panel izquierdo (y luz del día) de 21 a 23rem: "Desde" ya no toca el separador de "Entrega".
+
+**Verificación:** estados capturados adelantando animaciones y transiciones (0, 300, 700, 1400 ms) sobre el build de producción; página sin JS. Lighthouse desktop en 3 corridas: Performance 93 / 95 / 94, Accesibilidad 96, Buenas prácticas 100, LCP 0,5–0,6 s (título del loader), CLS 0. Nota: el `next dev` que estaba corriendo servía un CSS global viejo (no recargó globals.css); hay que reiniciarlo para ver estos cambios.

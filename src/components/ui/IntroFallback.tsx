@@ -1,19 +1,18 @@
 "use client";
 
 import { useEffect } from "react";
-import { revealHeroUI } from "@/components/scene/rise";
+import { revealHero } from "@/lib/intro";
 
-/** La interfaz del hero espera al edificio, pero no más que esto (ms): no demora el contenido principal. */
-const MAX_WAIT = 900;
+/** Si la escena no avisa en este tiempo (ms), el loader se va igual. */
+const MAX_WAIT = 8000;
 
 /**
- * Respaldo de la entrada del hero: si la escena 3D tarda (o no carga), la
- * interfaz aparece igual pasado MAX_WAIT. Normalmente la dispara la escena al
- * empezar a construir el edificio.
+ * Respaldo del loader: normalmente lo saca la escena 3D al terminar de cargar;
+ * si tarda demasiado o WebGL no está disponible, la página aparece igual.
  */
 export function IntroFallback() {
   useEffect(() => {
-    const timer = window.setTimeout(revealHeroUI, MAX_WAIT);
+    const timer = window.setTimeout(revealHero, MAX_WAIT);
     return () => window.clearTimeout(timer);
   }, []);
   return null;

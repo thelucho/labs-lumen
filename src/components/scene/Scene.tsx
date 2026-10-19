@@ -3,12 +3,9 @@
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { useUIStore } from "@/lib/store";
-import { ScenePlaceholder } from "./ScenePlaceholder";
 
-const SceneCanvas = dynamic(() => import("./SceneCanvas"), {
-  ssr: false,
-  loading: () => <ScenePlaceholder />,
-});
+// Mientras carga no se muestra nada: el loader de la página cubre el hero.
+const SceneCanvas = dynamic(() => import("./SceneCanvas"), { ssr: false });
 
 export function Scene() {
   const container = useRef<HTMLDivElement>(null);
@@ -28,7 +25,7 @@ export function Scene() {
   const isDetailOpen = useUIStore((s) => s.isDetailOpen);
 
   return (
-    <div ref={container} className="absolute inset-0" data-scene>
+    <div ref={container} className="absolute inset-0" data-scene data-scene-fade>
       <SceneCanvas active={visible && !isDetailOpen} />
     </div>
   );

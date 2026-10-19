@@ -3,12 +3,12 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { NeutralToneMapping, type Group } from "three";
+import { revealHero, setLoadProgress } from "@/lib/intro";
 import { useUIStore } from "@/lib/store";
 import { BuildingDetail, BuildingShell } from "./Building";
 import { FOV, cameraPosition, readAzimuth } from "./camera";
 import { Controls } from "./Controls";
 import { GroundShadows, Neighborhood, SceneBackdrop, SceneLights, SkyDecor } from "./Environment";
-import { armRise, onRiseFinished } from "./rise";
 import { getShadowVersion } from "./shadowCache";
 import { Vegetation } from "./Vegetation";
 
@@ -80,18 +80,29 @@ function Precompiled({ children, onReady }: { children: ReactNode; onReady: () =
  */
 const STAGES = [SceneBackdrop, BuildingShell, BuildingDetail, Neighborhood, Vegetation, SkyDecor];
 
+/** Cuadros que se esperan con todo montado antes de revelar: sombras ya calculadas. */
+const REVEAL_AFTER_FRAMES = SHADOW_WARMUP_FRAMES + 2;
+
+/** Con la escena completa (y sus sombras) en pantalla, saca el loader y la muestra con un fundido. */
+function RevealWhenReady() {
+  const frames = useRef(0);
+  useFrame(() => {
+    if (frames.current > REVEAL_AFTER_FRAMES) return;
+    frames.current += 1;
+    if (frames.current > REVEAL_AFTER_FRAMES) revealHero();
+  });
+  return null;
+}
+
 function Stages() {
   const [ready, setReady] = useState(0);
   const [advance] = useState(() => () => setReady((n) => n + 1));
   const loaded = ready >= STAGES.length;
-  const [risen, setRisen] = useState(false);
 
-  // Con todo compilado, el edificio puede subir de corrido (rise.ts).
+  // El loader muestra el avance real: etapas compiladas sobre el total.
   useEffect(() => {
-    if (!loaded) return;
-    armRise();
-    return onRiseFinished(() => setRisen(true));
-  }, [loaded]);
+    setLoadProgress(ready / (STAGES.length + 1));
+  }, [ready]);
 
   return (
     <>
@@ -100,9 +111,14 @@ function Stages() {
           <Stage />
         </Precompiled>
       ))}
-      {/* Último: sombras que se calculan una vez; las de contacto, con el edificio ya construido. */}
-      {loaded && <StaticShadows />}
-      {loaded && risen && <GroundShadows />}
+      {/* Último: sombras que se calculan una vez y necesitan el edificio completo. */}
+      {loaded && (
+        <>
+          <GroundShadows />
+          <StaticShadows />
+          <RevealWhenReady />
+        </>
+      )}
     </>
   );
 }

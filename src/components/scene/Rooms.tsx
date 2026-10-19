@@ -3,14 +3,13 @@
 import { Html, useCursor } from "@react-three/drei";
 import { useFrame, type ThreeEvent } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Color, MathUtils, Vector3, type Group, type Mesh, type MeshStandardMaterial } from "three";
+import { Color, MathUtils, Vector3, type Mesh, type MeshStandardMaterial } from "three";
 import type { SelectableId } from "@/data/building";
 import { getUnit } from "@/lib/building";
 import { selectableLabel } from "@/lib/format";
 import { selectLitId, useUIStore } from "@/lib/store";
 import type { Room } from "./layout";
 import { interiorMaterial, palette3D, unitBox } from "./materials";
-import { riseFront } from "./rise";
 import { UNIT_LIGHT, unitLightRef } from "./unitLight";
 
 /** Más de esto (px) entre pointerdown y pointerup es un drag, no un click. */
@@ -64,25 +63,6 @@ export function Rooms({ rooms }: Props) {
   const setHovered = useUIStore((s) => s.setHovered);
   const select = useUIStore((s) => s.select);
 
-  // Construcción: los interiores suben con la obra (recortados a la altura del frente).
-  const group = useRef<Group>(null);
-  const risen = useRef(false);
-  useFrame(() => {
-    const g = group.current;
-    if (risen.current || !g) return;
-    const front = riseFront(performance.now());
-    for (const child of g.children) {
-      const room = roomById.get(child.userData.selectableId);
-      if (!room) continue;
-      const bottom = room.box.p[1] - room.box.s[1] / 2;
-      const height = Math.min(room.box.s[1], Math.max(1e-4, front - bottom));
-      child.scale.y = height;
-      child.position.y = bottom + height / 2;
-      child.visible = front > bottom;
-    }
-    if (front === Infinity) risen.current = true;
-  });
-
   useFrame((_, delta) => {
     const litId = selectLitId(useUIStore.getState());
     for (const [id, mesh] of meshes.current) {
@@ -133,7 +113,7 @@ export function Rooms({ rooms }: Props) {
   const tooltipRoom = hoveredId ? roomById.get(hoveredId) : undefined;
 
   return (
-    <group ref={group}>
+    <group>
       {rooms.map((room) => (
         <mesh
           key={room.id}

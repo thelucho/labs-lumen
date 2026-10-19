@@ -53,6 +53,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${instrumentSerif.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-paper font-sans text-graphite">
+        {/* Sin JS no hay loader ni entrada animada: todo visible de entrada. */}
+        <noscript dangerouslySetInnerHTML={{ __html: "<style>html[data-intro]{overflow:auto}[data-loader]{display:none}html[data-intro] [data-intro],html[data-intro] [data-scene-fade]{opacity:1}</style>" }} />
         {children}
       </body>
     </html>

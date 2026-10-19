@@ -18,10 +18,10 @@ export function HeroIntro() {
   return (
     <div
       data-intro
-      style={introStyle(260, -24, 0)}
+      style={introStyle(420, -40, 0)}
       className={[
         "px-4 pt-8 pb-14 sm:px-8",
-        "lg:absolute lg:top-[45%] lg:left-8 lg:w-[21rem] lg:-translate-y-1/2 lg:rounded-xs lg:border lg:border-stone lg:bg-paper lg:px-5 lg:py-6",
+        "lg:absolute lg:top-[45%] lg:left-8 lg:w-[23rem] lg:-translate-y-1/2 lg:rounded-xs lg:border lg:border-stone lg:bg-paper lg:px-5 lg:py-6",
       ].join(" ")}
     >
       <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate">{project.address}</p>

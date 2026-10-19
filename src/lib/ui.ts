@@ -16,7 +16,7 @@ const GUTTER_BREAKPOINT = 640;
 
 /** Medidas del hero que el encuadre 3D tiene que esquivar (ver HeroIntro y FloorSelector). */
 const INTRO_LEFT = 32; // lg:left-8
-const INTRO_WIDTH = 336; // lg:w-[21rem]
+const INTRO_WIDTH = 368; // lg:w-[23rem]
 const SELECTOR_WIDTH = 160;
 const GAP = 24;
 const GAP_STACKED = 8;

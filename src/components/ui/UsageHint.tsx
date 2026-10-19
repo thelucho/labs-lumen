@@ -1,6 +1,7 @@
 "use client";
 
 import { selectIsDark, useUIStore } from "@/lib/store";
+import { introStyle } from "@/lib/ui";
 
 /** Indicación sutil de uso; se desvanece después del primer gesto. */
 export function UsageHint() {
@@ -8,6 +9,8 @@ export function UsageHint() {
   const isDark = useUIStore(selectIsDark);
   return (
     <p
+      data-intro
+      style={introStyle(900, 0, 8)}
       aria-hidden={hasInteracted}
       className={[
         // En el layout apilado no llega a la columna del selector.
