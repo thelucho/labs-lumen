@@ -22,7 +22,7 @@ import {
   type Showcase,
   type Unit,
 } from "@/data/building";
-import { adjacentSelectable, getCommonSpace, getShowcase, getUnit, totalArea } from "@/lib/building";
+import { adjacentSelectable, getCommonSpace, getShowcase, getUnit, planArea, totalArea } from "@/lib/building";
 import {
   formatArea,
   formatBathrooms,
@@ -39,6 +39,7 @@ import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { BuildingStack } from "./BuildingStack";
 import { Lightbox, PhotoGallery } from "./PhotoGallery";
 import { DIALOG_IN, DIALOG_OUT, EASE_IN, EASE_OUT, FADE_IN, FADE_OUT, revealContent } from "./reveal";
+import { FloorPlanBrochure } from "./FloorPlanBrochure";
 import { UnitPlan } from "./UnitPlan";
 
 const ICON = { size: 16, weight: "light" as const, "aria-hidden": true };
@@ -92,7 +93,28 @@ function Figures({ figures }: { figures: Figure[] }) {
   );
 }
 
+function OfficeSpecs({ unit }: { unit: Unit }) {
+  return (
+    <dl className="grid border-t border-stone sm:grid-cols-2 sm:gap-x-10">
+      <Row icon={<Ruler {...ICON} />} label="Superficie cubierta" value={formatArea(unit.coveredArea)} />
+      <Row label="Planta libre" value={formatArea(planArea(unit, "open"))} />
+      <Row label="Sala de reuniones" value={formatArea(planArea(unit, "meeting"))} />
+      <Row label="Privado" value={formatArea(planArea(unit, "private"))} />
+      <Row label="Office" value={unit.kitchen} />
+      <Row icon={<Bathtub {...ICON} />} label="Sanitarios" value={unit.bathrooms} />
+      <Row icon={<Eye {...ICON} />} label="Vista" value={unit.view} />
+      <Row icon={<Thermometer {...ICON} />} label="Climatización" value={unit.heating} />
+      <Row label="Cocheras" value={unit.parkingSpaces} />
+      <Row label="Baulera" value={unit.hasStorage ? "Sí" : "No"} />
+      {unit.extras.map((extra) => (
+        <Row key={extra} label="Extra" value={extra} />
+      ))}
+    </dl>
+  );
+}
+
 function UnitSpecs({ unit }: { unit: Unit }) {
+  if (unit.side === "office") return <OfficeSpecs unit={unit} />;
   return (
     <dl className="grid border-t border-stone sm:grid-cols-2 sm:gap-x-10">
       <Row icon={<Ruler {...ICON} />} label="Superficie cubierta" value={formatArea(unit.coveredArea)} />
@@ -242,7 +264,7 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
         {/* Descripción y ficha técnica */}
         <section className="mt-20 grid gap-12 lg:grid-cols-12" aria-labelledby="detail-about">
           <div data-reveal className="lg:col-span-5">
-            <Eyebrow>{unit ? "La unidad" : "El espacio"}</Eyebrow>
+            <Eyebrow>{unit ? (unit.side === "office" ? "La oficina" : "La unidad") : "El espacio"}</Eyebrow>
             <h3 id="detail-about" className="mt-2 font-serif text-3xl leading-tight sm:text-4xl">
               {unit ? unit.view : space?.title}
             </h3>
@@ -288,16 +310,22 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
         <section className="mt-24 grid gap-12 lg:grid-cols-12" aria-label="Planta y ubicación">
           {unit && (
             <div data-reveal className="lg:col-span-7">
-              <SectionTitle eyebrow="Planta" title="Frente al norte" />
-              <div className="max-w-md">
-                <UnitPlan unit={unit} />
-              </div>
+              <SectionTitle eyebrow="Plano" title={unit.side === "office" ? "Planta libre" : "Distribución"} />
+              <FloorPlanBrochure unit={unit} />
             </div>
           )}
           <div data-reveal className={unit ? "lg:col-span-5" : "lg:col-span-6"}>
             <SectionTitle eyebrow="Ubicación" title="En el edificio" />
             <BuildingStack activeId={id} />
             {unit && (
+              <div className="mt-10 max-w-xs">
+                <Eyebrow>En la planta del piso</Eyebrow>
+                <div className="mt-3">
+                  <UnitPlan unit={unit} />
+                </div>
+              </div>
+            )}
+            {unit && unit.side !== "office" && (
               <>
                 <div className="mt-10">
                   <Eyebrow>Equipamiento de todas las unidades</Eyebrow>
@@ -321,7 +349,7 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
           <div data-reveal className="lg:col-span-6">
             <Eyebrow>{project.name}</Eyebrow>
             <p className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
-              {cta ? `Consultá por ${unit ? `el ${selectableLabel(id)}` : "las amenities"}` : selectableHeadline(id)}
+              {cta ? `Consultá por ${unit ? `${unit.side === "office" ? "la" : "el"} ${selectableLabel(id)}` : "las amenities"}` : selectableHeadline(id)}
             </p>
             {cta && (
               <button type="button" onClick={openModal} className={`${primaryButton} mt-6`}>

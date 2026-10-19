@@ -11,7 +11,7 @@ const rows = [...levels].reverse().map((level) => ({ level, ids: selectablesOf(l
 
 function chipLabel(id: SelectableId): string {
   const unit = getUnit(id);
-  if (unit) return unit.side === "full" ? "Completo" : unit.side;
+  if (unit) return unit.side === "office" ? "Oficina" : unit.side;
   return id === "pb" ? "Hall" : "Amenities";
 }
 

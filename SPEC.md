@@ -17,7 +17,7 @@ Todo es estático: **sin backend, sin API, sin envío de emails, sin servicios e
 - Sin librerías de componentes prefabricados (nada de shadcn por defecto, nada de templates).
 
 ## 3. Estructura de la página
-1. **Hero (100vh)**: edificio 3D centrado. A la izquierda, bloque editorial breve (nombre del proyecto, dirección, 1 línea de propuesta, 3 datos clave). A la derecha del edificio, un **selector vertical de pisos** (SUM, 8…1, PB) que funciona como alternativa accesible al 3D y como navegación en mobile. Indicación sutil de uso: "Arrastrá para girar · Click en una unidad para ver su ficha".
+1. **Hero (100vh)**: edificio 3D centrado. A la izquierda, bloque editorial breve (nombre del proyecto, dirección, 1 línea de propuesta, 3 datos clave). A la derecha del edificio, un **selector vertical de pisos** (SUM, 12…1, PB) que funciona como alternativa accesible al 3D y como navegación en mobile. Indicación sutil de uso: "Arrastrá para girar · Click en una unidad para ver su ficha".
 2. **El proyecto**: texto corto + 3 o 4 datos (pisos, unidades, entrega, orientación).
 3. **Amenities**: pileta, sauna, gimnasio, SUM con parrillas, solárium (lista con íconos, no cards genéricas).
 4. **Ubicación**: dirección ficticia + bloque estático tipo plano/mapa ilustrado (sin Google Maps ni servicios externos).
@@ -28,11 +28,12 @@ Todo es estático: **sin backend, sin API, sin envío de emails, sin servicios e
 ### 4.1 Volumetría
 - Orientación: **frente al norte**. El costado con balcones es el **lateral este**.
 - Planta tipo: 22 m de frente × 14 m de fondo (escala relativa; 1 unidad three.js = 1 m).
-- Alturas: **PB 4,2 m** (hall doble altura vidriado), **pisos 1 a 8: 3 m** cada uno, **SUM 3,5 m** retirado sobre la terraza.
-- Niveles: PB (hall) + pisos 1–8 + **SUM (nivel 9)** en la azotea, con terraza y pileta descubierta al lado.
+- *Decisión (fase 15)*: el edificio crece a **12 pisos**: departamentos del 1 al 8 y **oficinas del 9 al 12**; el SUM sigue en la azotea.
+- Alturas: **PB 4,2 m** (hall doble altura), **pisos 1 a 8: 3 m** cada uno, **pisos 9 a 12 (oficinas): 3,4 m** (piso técnico y cielorraso), **SUM 3,5 m** retirado sobre la terraza. Altura total: 45,3 m.
+- Niveles: PB (hall) + pisos 1–12 + **SUM (nivel 13)** en la azotea, con terraza y pileta descubierta al lado.
 - División de unidades:
-  - **Pisos 2 a 7**: 2 unidades por piso, divididas por un eje este-oeste. **A = lado este (con balcón)**, **B = lado oeste (sin balcón)**.
-  - **Pisos 1 y 8**: piso completo (1 unidad), con balcón corrido sobre el lateral este.
+  - **Pisos 1 a 8**: 2 departamentos por piso, divididos por un eje este-oeste. **A = lado este (con balcón)**, **B = lado oeste (sin balcón)**. *Fase 15*: ya no hay pisos completos.
+  - **Pisos 9 a 12**: una oficina por piso en planta libre (piso entero), con fachada de vidrio casi de piso a techo y aleros horizontales de grafito en frente y oeste: se leen como una banda distinta sobre los departamentos.
 - La división A/B debe leerse en fachada (bandeja/montante o cambio de carpintería), no solo en la lógica.
 
 ### 4.2 Nivel de detalle y estilo
@@ -94,15 +95,15 @@ Todos los datos viven en `src/data/building.ts`, tipados. Ningún dato hardcodea
 - Dirección: **Los Aromos 1240** (ficticia)
 - Desarrolladora: **Thelucho Desarrollos** (ficticia)
 - Entrega estimada: **diciembre 2027**
-- 14 unidades · 8 pisos + PB + SUM · frente norte
+- 20 unidades (16 departamentos + 4 oficinas) · 12 pisos + PB + SUM · frente norte
 
-### 5.2 Equipamiento común a todas las unidades
+### 5.2 Equipamiento común a todos los departamentos
 - Caldera dual individual (agua caliente + calefacción).
 - Preinstalación de aire acondicionado split frío/calor en living y dormitorios.
 - Carpinterías de aluminio con DVH.
-- Cocina integrada con isla (unidades A y pisos completos) o semi-integrada (unidades B).
+- Cocina integrada con isla (unidades A) o semi-integrada (unidades B).
 
-### 5.3 Unidades tipo (pisos 2 a 7)
+### 5.3 Departamentos (pisos 1 a 8)
 | | **A — lateral este** | **B — lateral oeste** |
 |---|---|---|
 | Superficie cubierta | 112 m² | 98 m² |
@@ -118,44 +119,49 @@ Todos los datos viven en `src/data/building.ts`, tipados. Ningún dato hardcodea
 | Cocheras incluidas | 1 | 1 |
 | Baulera | Sí | Sí |
 
-### 5.4 Pisos completos (pisos 1 y 8)
-- Superficie cubierta 210 m² + balcón corrido 24 m² (lateral este) = 234 m² totales.
-- 5 ambientes · 4 dormitorios · 2 en suite · 3 baños + toilette · lavadero independiente.
-- Vista: frente, lateral este y lateral oeste (piso 8: además vista abierta, último piso).
-- Losa radiante · calefacción por losa radiante (caldera dual).
-- 2 cocheras + baulera.
-- Ascensor con acceso directo a palier privado.
+### 5.4 Oficinas (pisos 9 a 12)
+- Una por piso, en planta libre: **286 m² cubiertos** (22 × 13 m), sin balcón.
+- Planta libre de 171 m², sala de reuniones (24 m²), privado (28 m²), recepción, office con kitchenette y 2 sanitarios.
+- Vista: frente, lateral este y lateral oeste (piso 12: además vista abierta, último piso).
+- Climatización por sistema VRV frío/calor; piso técnico y cielorraso registrable.
+- 2 cocheras + baulera. Ascensor propio para oficinas.
 
 ### 5.5 Precios (USD)
-Regla: superficie ponderada = cubierta + 50 % del balcón. Valor del m² sube 2,5 % por piso desde USD 2.900 (piso 2), en forma **lineal** sobre esa base (+USD 72,5/m² por piso, no compuesto). Precio = superficie ponderada × valor del m², **redondeado al millar más cercano**. Pisos completos con valor propio.
+Regla: superficie ponderada = cubierta + 50 % del balcón. Departamentos: el valor del m² sube 2,5 % por piso desde USD 2.900 (piso 2), en forma **lineal** sobre esa base (+USD 72,5/m² por piso, no compuesto; el piso 1 queda por debajo de la base). Oficinas: misma regla con base propia, USD 2.600/m² en el piso 9. Precio = superficie ponderada × valor del m², **redondeado al millar más cercano**.
 
 | Piso | A (118 m² pond.) | B (98 m² pond.) |
 |---|---|---|
+| 1 | 334.000 | 277.000 |
 | 2 | 342.000 | 284.000 |
 | 3 | 351.000 | 291.000 |
 | 4 | 359.000 | 298.000 |
 | 5 | 368.000 | 306.000 |
 | 6 | 376.000 | 313.000 |
 | 7 | 385.000 | 320.000 |
+| 8 | 394.000 | 327.000 |
 
-- **Piso 1 completo** (222 m² pond. × USD 3.000): **USD 666.000**
-- **Piso 8 completo** (222 m² pond. × USD 3.500): **USD 777.000**
+| Piso | Oficina (286 m²) |
+|---|---|
+| 9 | 744.000 |
+| 10 | 762.000 |
+| 11 | 781.000 |
+| 12 | 799.000 |
 
 ### 5.6 Estado comercial (para que la demo se vea "viva")
-- Vendidas: 2° B, 3° A, 5° B.
-- Reservadas: 6° A, Piso 8.
+- Vendidas: 2° B, 3° A, 5° B, 7° A.
+- Reservadas: 6° A, 8° B, Oficina 10.
 - Resto: disponibles.
 - Unidades vendidas: se pueden ver pero sin precio ("Vendida") y sin botón de solicitar info; el 3D las muestra con luz más tenue/neutra al hover.
 
 ### 5.7 Planta baja — Hall
 - Hall de acceso doble altura con recepción.
 - Seguridad 24 h y control de acceso con tarjeta.
-- 2 ascensores (uno con acceso directo a pisos completos).
-- Subsuelo: 16 cocheras + 14 bauleras.
+- 3 ascensores: dos para departamentos y uno para oficinas.
+- Subsuelo: 24 cocheras + 20 bauleras.
 - Bicicletero y sala de residuos.
 - Acceso accesible (rampa) y portón automático a cocheras.
 
-### 5.8 SUM — Nivel 9 (azotea)
+### 5.8 SUM — Nivel 13 (azotea, sobre el piso 12)
 - SUM cubierto de 120 m² con cocina y 2 parrillas.
 - 2 baños (uno accesible) + vestuarios.
 - Terraza de 180 m² con pileta descubierta de 8 × 3,5 m y solárium con deck.
@@ -171,7 +177,8 @@ Regla: superficie ponderada = cubierta + 50 % del balcón. Valor del m² sube 2,
 - Orden: ubicación ("Piso 4 · Lateral este") y título grande en serif ("4° A"), línea de presentación, estado como etiqueta discreta, precio en USD con separador de miles (`USD 359.000`) y "Solicitar información" (oculto si está vendida; en el SUM, "Consultar por amenities") → **portada** (foto ilustrativa del espacio principal) → cifras destacadas en serif (superficies, ambientes, dormitorios, baños; en PB y SUM, las suyas) → descripción + ficha técnica (lista etiqueta/valor, números tabulares, separadores finos, íconos Phosphor solo donde aportan) → **galería** de espacios → mini plano de planta (SVG) y corte esquemático del edificio con la unidad resaltada + equipamiento común → cierre con consulta y tarjetas de piso anterior/siguiente (estado y precio).
 - Galería: grilla de fotos numeradas con el nombre del espacio; cada una abre un visor a pantalla completa (flechas, Esc cierra solo el visor, el foco vuelve a la foto).
 - *Decisión (fase 12)*: movimiento suave y sobrio, con la Web Animations API (sin dependencias). La ficha entra con un fundido y sube 24 px (650 ms, curva *ease-out* larga); el fondo se funde desde el edificio. Sale con un fundido de 300 ms y recién entonces se cierra el diálogo (con un respaldo por tiempo si el navegador no corre la animación). El contenido aparece escalonado (70 ms entre piezas): textos que suben 18 px, la portada que se descubre de abajo hacia arriba con un zoom de 1,08 a 1, y lo que está más abajo, al entrar en pantalla con el scroll. Al cambiar de piso el contenido vuelve a entrar. El visor de fotos entra con un fundido y cada foto se asienta apenas. Todo se omite con `prefers-reduced-motion`.
-- Textos, fotos y cifras viven en `showcases` de `src/data/building.ts`, por tipología (A, B, piso completo) y por espacio común.
+- Textos, fotos y cifras viven en `showcases` de `src/data/building.ts`, por tipología (A, B, oficina) y por espacio común.
+- *Decisión (fase 15)*: **plano tipo folleto** de cada unidad, dibujado en SVG a partir de `floorPlans` de `building.ts` (no imágenes de stock, que no coincidirían con las superficies): muros, ventanas sobre las fachadas, muebles esquemáticos, nombre, m² y medidas de cada ambiente, cotas totales, balcón rayado y norte, con la planilla de superficies debajo. Los ambientes suman exactamente la superficie cubierta (112, 98 y 286 m²); un test lo verifica. El esquema de ubicación en la planta del piso queda como referencia chica junto al corte del edificio.
 - Fotos: ilustrativas, de Unsplash (licencia libre), descargadas a `public/images/units` y servidas con `next/image` (sin requests a servicios externos). Aviso visible: "Imágenes ilustrativas de referencia: no corresponden a la unidad", con los autores.
 
 ### 6.2 Modal "Solicitar información"
@@ -216,7 +223,7 @@ Backend, APIs, envío de emails, analytics, CMS, i18n, mapas de terceros, login,
 1. El edificio aparece centrado en el hero con suelo, sol y nubes.
 2. Se puede girar con el mouse/touch para ver los cuatro costados.
 3. Hover sobre una unidad la ilumina; solo una a la vez; al cambiar de unidad la anterior se apaga.
-4. Pisos 2–7 tienen 2 unidades; pisos 1 y 8 son piso completo; todas las unidades del lateral este y los pisos 1 y 8 tienen balcón visible.
+4. Pisos 1–8 tienen 2 departamentos (todas las A con balcón visible al este); pisos 9–12, una oficina en planta libre.
 5. Click en cualquier unidad, en PB o en el SUM abre su ficha con los datos de la sección 5.
 6. "Solicitar información" abre el modal, valida y muestra la confirmación de demo sin enviar nada.
 7. Selector de pisos sincronizado con el 3D y usable con teclado.

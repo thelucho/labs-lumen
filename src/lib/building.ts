@@ -1,5 +1,6 @@
 import {
   commonSpaces,
+  floorPlans,
   levels,
   pricing,
   showcases,
@@ -8,6 +9,7 @@ import {
   type Showcase,
   type CommonSpaceId,
   type Level,
+  type PlanRoomKind,
   type SelectableId,
   type Unit,
 } from "@/data/building";
@@ -66,10 +68,9 @@ export function weightedArea(unit: Unit): number {
 
 /** Valor del m² según la regla de SPEC §5.5 (lineal desde el piso base). */
 export function pricePerM2ByRule(unit: Unit): number {
-  const fixed = pricing.fullFloorPricePerM2[unit.floor];
-  if (unit.side === "full" && fixed !== undefined) return fixed;
-  const floorsAboveBase = unit.floor - pricing.baseFloor;
-  return pricing.basePricePerM2 * (1 + pricing.stepPerFloor * floorsAboveBase);
+  // Oficinas: su propio valor base desde el primer piso de oficinas.
+  const rule = unit.side === "office" ? pricing.office : pricing;
+  return rule.basePricePerM2 * (1 + rule.stepPerFloor * (unit.floor - rule.baseFloor));
 }
 
 export function priceByRule(unit: Unit): number {
@@ -96,6 +97,15 @@ export function adjacentSelectable(id: SelectableId, direction: 1 | -1): Selecta
   const side = getUnit(id)?.side;
   const sameSide = candidates.find((c) => getUnit(c)?.side === side);
   return sameSide ?? candidates[0] ?? null;
+}
+
+/** Superficie (m², un decimal) de los ambientes de un tipo en el plano de la unidad. */
+export function planArea(unit: Unit, kind: PlanRoomKind): number {
+  const total = floorPlans[unit.side].rooms
+    .filter((r) => r.kind === kind)
+    .flatMap((r) => r.rects)
+    .reduce((n, [, , w, d]) => n + w * d, 0);
+  return Math.round(total * 10) / 10;
 }
 
 /** Ficha (textos, fotos) de una unidad según su tipología, o de PB/SUM. */

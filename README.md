@@ -10,7 +10,7 @@ This project is part of a series of small, self-contained experiments I build to
 
 The Hero is a **3D building you can browse unit by unit**.
 
-The building is generated entirely in code from a single data file (`src/data/building.ts`): a ground-floor lobby, eight residential floors, and a rooftop amenity level with a pool. Floors 2 to 7 split into two units (A with balcony, B without); floors 1 and 8 are full-floor units. Nothing about the units is hardcoded in the scene or the UI.
+The building is generated entirely in code from a single data file (`src/data/building.ts`): a ground-floor lobby, twelve floors, and a rooftop amenity level with a pool. Floors 1 to 8 split into two apartments (A with balcony, B without); floors 9 to 12 are open-plan offices, one per floor. Each unit page includes a brochure-style floor plan drawn in SVG from the same data. Nothing about the units is hardcoded in the scene or the UI.
 
 Drag to rotate the building. Hovering a unit "turns its lights on" — a warm emissive interior plus a single point light that moves to whichever unit is active. Clicking opens a full-screen page for that unit — a small landing with a cover photo, key figures, specs, a photo gallery with a viewer, the floor plan, and its place in the building — plus an inquiry form that stays local to the demo. A day-light slider moves the sun around the building, with its shadows and sky. A vertical floor selector mirrors the 3D view and works as the accessible, keyboard-friendly way in.
 

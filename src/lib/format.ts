@@ -1,5 +1,5 @@
 import type { Figure, SelectableId, Unit, UnitStatus } from "@/data/building";
-import { getCommonSpace, getUnit, totalArea } from "@/lib/building";
+import { getCommonSpace, getUnit, planArea, totalArea } from "@/lib/building";
 
 const numberFormat = new Intl.NumberFormat("es-AR", { maximumFractionDigits: 1 });
 
@@ -17,17 +17,17 @@ export function formatArea(value: number): string {
   return `${formatNumber(value)} m²`;
 }
 
-/** Etiqueta corta (tooltip, selector): "4° A", "Piso 1 completo". */
+/** Etiqueta corta (tooltip, selector): "4° A", "Oficina 9". */
 export function unitShortLabel(unit: Unit): string {
-  return unit.side === "full"
-    ? `Piso ${unit.floor} completo`
+  return unit.side === "office"
+    ? `Oficina ${unit.floor}`
     : `${unit.floor}° ${unit.side}`;
 }
 
-/** Encabezado de ficha: "Piso 4 · Unidad A", "Piso 1 · Piso completo". */
+/** Encabezado de ficha: "Piso 4 · Unidad A", "Piso 9 · Oficina". */
 export function unitTitle(unit: Unit): string {
-  return unit.side === "full"
-    ? `Piso ${unit.floor} · Piso completo`
+  return unit.side === "office"
+    ? `Piso ${unit.floor} · Oficina`
     : `Piso ${unit.floor} · Unidad ${unit.side}`;
 }
 
@@ -53,7 +53,7 @@ export function formatBathrooms(unit: Unit): string {
   return unit.hasToilette ? `${unit.bathrooms} + toilette` : String(unit.bathrooms);
 }
 
-const commonSpaceTitles = { pb: "Planta baja · Hall", sum: "Nivel 9 · SUM y amenities" } as const;
+const commonSpaceTitles = { pb: "Planta baja · Hall", sum: "Azotea · SUM y amenities" } as const;
 
 /** Encabezado de ficha para unidades, PB y SUM. */
 export function selectableTitle(id: SelectableId): string {
@@ -69,8 +69,8 @@ export function formatBedrooms(unit: Unit): string {
   return `${unit.bedrooms} (${unit.ensuites} en suite)`;
 }
 
-const sideLocations = { A: "Lateral este", B: "Lateral oeste", full: "Planta completa" } as const;
-const commonSpaceLocations = { pb: "Planta baja", sum: "Nivel 9 · Azotea" } as const;
+const sideLocations = { A: "Lateral este", B: "Lateral oeste", office: "Planta libre" } as const;
+const commonSpaceLocations = { pb: "Planta baja", sum: "Azotea" } as const;
 
 /** Línea sobre el título de la ficha: "Piso 4 · Lateral este", "Planta baja". */
 export function selectableEyebrow(id: SelectableId): string {
@@ -81,7 +81,7 @@ export function selectableEyebrow(id: SelectableId): string {
   return "";
 }
 
-/** Título grande de la ficha: "4° A", "Piso 1 completo", "Hall de acceso". */
+/** Título grande de la ficha: "4° A", "Oficina 9", "Hall de acceso". */
 export function selectableHeadline(id: SelectableId): string {
   const unit = getUnit(id);
   if (unit) return unitShortLabel(unit);
@@ -90,6 +90,15 @@ export function selectableHeadline(id: SelectableId): string {
 
 /** Cifras destacadas de una unidad, en el orden de la ficha. */
 export function unitFigures(unit: Unit): Figure[] {
+  if (unit.side === "office") {
+    return [
+      { label: "Superficie", value: formatArea(unit.coveredArea) },
+      { label: "Planta libre", value: formatArea(planArea(unit, "open")) },
+      { label: "Sala de reuniones", value: formatArea(planArea(unit, "meeting")) },
+      { label: "Sanitarios", value: String(unit.bathrooms) },
+      { label: "Cocheras", value: String(unit.parkingSpaces) },
+    ];
+  }
   return [
     { label: "Superficie total", value: formatArea(totalArea(unit)) },
     { label: "Cubierta", value: formatArea(unit.coveredArea) },

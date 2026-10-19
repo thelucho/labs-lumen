@@ -11,6 +11,7 @@ import {
   HALF_D,
   HALF_W,
   MULLION,
+  OFFICE,
   MULLION_DEPTH,
   PANEL,
   PLINTH,
@@ -260,6 +261,32 @@ function residentialLevel(b: LayoutBuilder, level: Level, y0: number) {
   }
 }
 
+/**
+ * Oficinas: piso entero en planta libre, con vidrio de piso a techo en frente
+ * y laterales (montantes más finos que en los departamentos), contrafrente
+ * alternado y aleros horizontales de grafito en el frente y el oeste. Se leen
+ * como una banda distinta sobre los departamentos.
+ */
+function officeLevel(b: LayoutBuilder, level: Level, y0: number) {
+  const yA = y0 + SLAB;
+  const yB = y0 + level.height;
+  b.slabBand(y0);
+  const id = level.unitIds[0];
+  if (id) b.room(id, -HALF_W, HALF_W, yA, yB, -HALF_D, HALF_D);
+
+  const transom = OFFICE.transom;
+  b.face({ axis: "x", from: -HALF_W, to: HALF_W, at: HALF_D, normal: 1, y0: yA, y1: yB, transom });
+  b.face({ axis: "x", from: -HALF_W, to: HALF_W, at: -HALF_D, normal: -1, y0: yA, y1: yB, pattern: solidSouth, transom });
+  b.face({ axis: "z", from: -HALF_D, to: HALF_D, at: HALF_W, normal: 1, y0: yA, y1: yB, transom });
+  b.face({ axis: "z", from: -HALF_D, to: HALF_D, at: -HALF_W, normal: -1, y0: yA, y1: yB, transom });
+
+  // Aleros: frente (norte) y lateral oeste, a la altura del travesaño.
+  const e = OFFICE.eave;
+  const y = yA + transom;
+  b.add("frame", box(-HALF_W - e.depth, HALF_W, y, y + e.thickness, HALF_D, HALF_D + e.depth));
+  b.add("frame", box(-HALF_W - e.depth, -HALF_W, y, y + e.thickness, -HALF_D, HALF_D));
+}
+
 function roofLevel(b: LayoutBuilder, level: Level, y0: number) {
   const yA = y0 + SLAB;
   b.slabBand(y0);
@@ -310,6 +337,7 @@ export function buildBuildingLayout(): BuildingLayout {
     const y0 = levelElevation(level.index);
     if (level.kind === "ground") groundLevel(b, level, y0);
     else if (level.kind === "roof") roofLevel(b, level, y0);
+    else if (level.kind === "office") officeLevel(b, level, y0);
     else residentialLevel(b, level, y0);
   }
 

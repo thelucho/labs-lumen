@@ -5,10 +5,10 @@
 
 export type UnitStatus = "available" | "reserved" | "sold";
 
-/** A = lateral este (con balcón), B = lateral oeste, full = piso completo. */
-export type UnitSide = "A" | "B" | "full";
+/** A = lateral este (con balcón), B = lateral oeste, office = oficina en planta libre (piso entero). */
+export type UnitSide = "A" | "B" | "office";
 
-export type LevelKind = "ground" | "typical" | "full" | "roof";
+export type LevelKind = "ground" | "typical" | "office" | "roof";
 
 export type CommonSpaceId = "pb" | "sum";
 
@@ -53,7 +53,7 @@ export interface Unit {
 
 export interface Level {
   id: string;
-  /** 0 = PB, 1–8 = pisos, 9 = SUM. */
+  /** 0 = PB, 1–8 = departamentos, 9–12 = oficinas, 13 = SUM. */
   index: number;
   kind: LevelKind;
   /** Etiqueta corta para el selector: "PB", "4", "SUM". */
@@ -92,24 +92,29 @@ export const commonEquipment: string[] = [
 export const pricing = {
   /** Superficie ponderada = cubierta + este porcentaje del balcón. */
   balconyWeight: 0.5,
+  /** Departamentos: valor del m² en el piso base y aumento lineal por piso. */
   baseFloor: 2,
   basePricePerM2: 2900,
-  /** Aumento lineal por piso sobre el valor base. */
   stepPerFloor: 0.025,
-  fullFloorPricePerM2: { 1: 3000, 8: 3500 } as Record<number, number>,
+  /** Oficinas: su propio valor del m² desde el primer piso de oficinas, con el mismo aumento. */
+  office: { baseFloor: 9, basePricePerM2: 2600, stepPerFloor: 0.025 },
   roundTo: 1000,
 };
 
 /** SPEC §5.5 — tabla de precios en USD. */
 const priceTable: Record<number, Partial<Record<UnitSide, number>>> = {
-  1: { full: 666_000 },
+  1: { A: 334_000, B: 277_000 },
   2: { A: 342_000, B: 284_000 },
   3: { A: 351_000, B: 291_000 },
   4: { A: 359_000, B: 298_000 },
   5: { A: 368_000, B: 306_000 },
   6: { A: 376_000, B: 313_000 },
   7: { A: 385_000, B: 320_000 },
-  8: { full: 777_000 },
+  8: { A: 394_000, B: 327_000 },
+  9: { office: 744_000 },
+  10: { office: 762_000 },
+  11: { office: 781_000 },
+  12: { office: 799_000 },
 };
 
 /** SPEC §5.6 */
@@ -117,8 +122,10 @@ const statusById: Record<string, UnitStatus> = {
   "2B": "sold",
   "3A": "sold",
   "5B": "sold",
+  "7A": "sold",
   "6A": "reserved",
-  "8": "reserved",
+  "8B": "reserved",
+  "10": "reserved",
 };
 
 type Typology = Omit<Unit, "id" | "floor" | "status" | "price">;
@@ -161,32 +168,36 @@ const typologies: Record<UnitSide, Typology> = {
     hasStorage: true,
     extras: [],
   },
-  full: {
-    side: "full",
-    coveredArea: 210,
-    balconyArea: 24,
-    rooms: 5,
-    bedrooms: 4,
-    ensuites: 2,
-    bathrooms: 3,
-    hasToilette: true,
-    hasLaundry: true,
-    kitchen: "Integrada con isla",
+  /** Oficina en planta libre: un piso entero. `bathrooms` = sanitarios. */
+  office: {
+    side: "office",
+    coveredArea: 286,
+    balconyArea: 0,
+    rooms: 0,
+    bedrooms: 0,
+    ensuites: 0,
+    bathrooms: 2,
+    hasToilette: false,
+    hasLaundry: false,
+    kitchen: "Office con kitchenette",
     view: "Frente, lateral este y lateral oeste",
-    radiantFloor: true,
-    heating: "Losa radiante (caldera dual)",
+    radiantFloor: false,
+    heating: "Sistema VRV frío/calor",
     parkingSpaces: 2,
     hasStorage: true,
-    extras: ["Ascensor con acceso directo a palier privado"],
+    extras: ["Planta libre con sala de reuniones y privado", "Piso técnico y cielorraso registrable"],
   },
 };
 
-const FLOORS = [1, 2, 3, 4, 5, 6, 7, 8];
-const FULL_FLOORS = new Set([1, 8]);
-const LAST_FLOOR = FLOORS[FLOORS.length - 1];
+/** Pisos de departamentos (A y B en cada uno) y de oficinas (planta libre). */
+const HOME_FLOORS = [1, 2, 3, 4, 5, 6, 7, 8];
+const OFFICE_FLOORS = [9, 10, 11, 12];
+const LAST_FLOOR = OFFICE_FLOORS[OFFICE_FLOORS.length - 1];
+/** Nivel del SUM, sobre el último piso. */
+const ROOF_LEVEL = LAST_FLOOR + 1;
 
 function unitId(floor: number, side: UnitSide): string {
-  return side === "full" ? String(floor) : `${floor}${side}`;
+  return side === "office" ? String(floor) : `${floor}${side}`;
 }
 
 function buildUnit(floor: number, side: UnitSide): Unit {
@@ -194,10 +205,7 @@ function buildUnit(floor: number, side: UnitSide): Unit {
   const id = unitId(floor, side);
   const price = priceTable[floor]?.[side];
   if (price === undefined) throw new Error(`Falta precio para ${id}`);
-  const view =
-    side === "full" && floor === LAST_FLOOR
-      ? `${typology.view}; vista abierta`
-      : typology.view;
+  const view = floor === LAST_FLOOR ? `${typology.view}; vista abierta` : typology.view;
   return {
     ...typology,
     view,
@@ -208,11 +216,10 @@ function buildUnit(floor: number, side: UnitSide): Unit {
   };
 }
 
-export const units: Unit[] = FLOORS.flatMap((floor) =>
-  FULL_FLOORS.has(floor)
-    ? [buildUnit(floor, "full")]
-    : [buildUnit(floor, "A"), buildUnit(floor, "B")],
-);
+export const units: Unit[] = [
+  ...HOME_FLOORS.flatMap((floor) => [buildUnit(floor, "A"), buildUnit(floor, "B")]),
+  ...OFFICE_FLOORS.map((floor) => buildUnit(floor, "office")),
+];
 
 /** Ordenados de abajo hacia arriba. Alturas de SPEC §4.1. */
 export const levels: Level[] = [
@@ -225,17 +232,21 @@ export const levels: Level[] = [
     unitIds: [],
     commonSpaceId: "pb",
   },
-  ...FLOORS.map<Level>((floor) => ({
-    id: String(floor),
-    index: floor,
-    kind: FULL_FLOORS.has(floor) ? "full" : "typical",
-    label: String(floor),
-    height: 3,
-    unitIds: units.filter((u) => u.floor === floor).map((u) => u.id),
-  })),
+  ...[...HOME_FLOORS, ...OFFICE_FLOORS].map<Level>((floor) => {
+    const office = OFFICE_FLOORS.includes(floor);
+    return {
+      id: String(floor),
+      index: floor,
+      kind: office ? "office" : "typical",
+      label: String(floor),
+      // Oficinas con más altura libre (piso técnico y cielorraso).
+      height: office ? 3.4 : 3,
+      unitIds: units.filter((u) => u.floor === floor).map((u) => u.id),
+    };
+  }),
   {
     id: "sum",
-    index: 9,
+    index: ROOF_LEVEL,
     kind: "roof",
     label: "SUM",
     height: 3.5,
@@ -253,15 +264,15 @@ export const commonSpaces: Record<CommonSpaceId, CommonSpace> = {
     features: [
       "Hall de acceso doble altura con recepción",
       "Seguridad 24 h y control de acceso con tarjeta",
-      "2 ascensores (uno con acceso directo a pisos completos)",
-      "Subsuelo: 16 cocheras + 14 bauleras",
+      "3 ascensores: dos para departamentos y uno para oficinas",
+      "Subsuelo: 24 cocheras + 20 bauleras",
       "Bicicletero y sala de residuos",
       "Acceso accesible (rampa) y portón automático a cocheras",
     ],
   },
   sum: {
     id: "sum",
-    levelIndex: 9,
+    levelIndex: ROOF_LEVEL,
     title: "SUM y amenities",
     features: [
       "SUM cubierto de 120 m² con cocina y 2 parrillas",
@@ -280,12 +291,12 @@ export const commonSpaces: Record<CommonSpaceId, CommonSpace> = {
 
 /** Una línea de propuesta para el hero. */
 export const tagline =
-  "Departamentos de 3 y 4 ambientes y dos pisos completos, frente al norte, con balcón al este y amenities en la azotea.";
+  "Departamentos de 3 y 4 ambientes y oficinas en planta libre, frente al norte, con balcón al este y amenities en la azotea.";
 
 /** Texto de la sección "El proyecto". */
 export const about: string[] = [
-  "Un edificio de planta baja, ocho pisos y SUM en la azotea sobre un lote de 22 m de frente. Del piso 2 al 7 hay dos unidades por planta: la A, sobre el lateral este, con balcón de 12 m² y losa radiante; la B, sobre el oeste, de 3 ambientes.",
-  "Los pisos 1 y 8 son completos: 210 m² cubiertos, balcón corrido de 24 m² y ascensor con llegada a palier privado. Todas las unidades tienen cochera en el subsuelo y baulera.",
+  "Un edificio de planta baja, doce pisos y SUM en la azotea, de 22 m de frente y retirado 6 m de la línea municipal. Del piso 1 al 8 hay dos departamentos por planta: el A, sobre el lateral este, con balcón de 12 m² y losa radiante; el B, sobre el oeste, de 3 ambientes.",
+  "Del piso 9 al 12, una oficina por planta: 286 m² en planta libre con sala de reuniones, privado, office y sanitarios, y ascensor propio. Todas las unidades tienen cochera en el subsuelo y baulera.",
 ];
 
 export type AmenityId = "pool" | "sauna" | "gym" | "sum" | "solarium";
@@ -298,7 +309,7 @@ export interface Amenity {
 
 /** SPEC §3 y §5.8 */
 export const amenities: Amenity[] = [
-  { id: "pool", name: "Pileta descubierta", detail: "8 × 3,5 m en la terraza del nivel 9." },
+  { id: "pool", name: "Pileta descubierta", detail: "8 × 3,5 m en la terraza de la azotea." },
   { id: "solarium", name: "Solárium", detail: "Deck de madera junto a la pileta, sobre una terraza de 180 m²." },
   { id: "sum", name: "SUM con parrillas", detail: "120 m² cubiertos con cocina, 2 parrillas y vista 360°." },
   { id: "gym", name: "Gimnasio", detail: "45 m² equipados, con vestuarios." },
@@ -368,12 +379,10 @@ const photos = {
   bKitchen: { src: `${IMG}/b-cocina.jpg`, alt: "Cocina clara con ventana grande hacia el verde", caption: "Cocina semi-integrada", credit: "Cat Han" },
   bBedroom: { src: `${IMG}/b-dormitorio.jpg`, alt: "Dormitorio con placard blanco y ventanal", caption: "Dormitorio principal en suite", credit: "Pickawood" },
   bBath: { src: `${IMG}/b-bano.jpg`, alt: "Baño con bañera, mampara de vidrio y mueble de vanitory blanco", caption: "Baño", credit: "Alex Tyson" },
-  fullLiving: { src: `${IMG}/full-living.jpg`, alt: "Living amplio con sillones blancos y cocina de madera al fondo", caption: "Living con cocina integrada", credit: "Clay Banks" },
-  fullDining: { src: `${IMG}/full-comedor.jpg`, alt: "Comedor con mesa de madera y puertas vidriadas al exterior", caption: "Comedor", credit: "Clay Banks" },
-  fullKitchen: { src: `${IMG}/full-cocina.jpg`, alt: "Cocina blanca con isla, mueble de madera y luminarias colgantes", caption: "Cocina con isla", credit: "Clay Banks" },
-  fullSuite: { src: `${IMG}/full-suite.jpg`, alt: "Suite con respaldo de madera y ventanales de piso a techo", caption: "Suite principal", credit: "Hans" },
-  fullBath: { src: `${IMG}/full-bano.jpg`, alt: "Baño con ducha de vidrio y revestimiento símil mármol", caption: "Baño en suite", credit: "Smart Renovations" },
-  fullStudy: { src: `${IMG}/full-estar.jpg`, alt: "Estar con aparador de madera, sillón y plantas", caption: "Estar íntimo", credit: "Julia" },
+  officeOpen: { src: `${IMG}/office-planta.jpg`, alt: "Planta libre con puestos de trabajo, luminarias lineales y ventanas altas", caption: "Planta libre", credit: "Petr" },
+  officeReception: { src: `${IMG}/office-recepcion.jpg`, alt: "Recepción con piso de madera y salas con paredes de vidrio", caption: "Recepción y salas vidriadas", credit: "Deliberate Directions" },
+  officeMeeting: { src: `${IMG}/office-reunion.jpg`, alt: "Sala de reuniones con paredes de vidrio y revestimiento de madera", caption: "Sala de reuniones", credit: "Flipsnack" },
+  officePantry: { src: `${IMG}/office-office.jpg`, alt: "Office con mueble gris, mesada blanca y banquetas", caption: "Office", credit: "Point3D Commercial Imaging" },
   pbReception: { src: `${IMG}/pb-recepcion.jpg`, alt: "Recepción con mostrador de piedra y revestimiento de listones de madera", caption: "Recepción", credit: "Aalo Lens" },
   pbElevators: { src: `${IMG}/pb-ascensores.jpg`, alt: "Palier con dos ascensores de acero y piso de mármol", caption: "Palier de ascensores", credit: "Aalo Lens" },
   sumTerrace: { src: `${IMG}/sum-terraza.jpg`, alt: "Terraza en altura con mesas y vista a la ciudad al atardecer", caption: "Terraza del SUM", credit: "garrett parker" },
@@ -402,42 +411,35 @@ export const showcases: Record<ShowcaseId, Showcase> = {
     cover: photos.bLiving,
     gallery: [photos.bLiving, photos.bDining, photos.bKitchen, photos.bBedroom, photos.bBath],
   },
-  full: {
-    lead: "Piso completo de cinco ambientes, con tres frentes y balcón corrido de 24 m².",
+  office: {
+    lead: "Oficina en planta libre de 286 m², un piso entero con tres frentes vidriados.",
     body: [
-      "Ocupa toda la planta: frente, lateral este y lateral oeste, con luz natural de la mañana a la tarde. El ascensor llega directo a un palier privado.",
-      "Cuatro dormitorios, dos en suite, tres baños, toilette y lavadero independiente. Losa radiante en toda la unidad y dos cocheras en el subsuelo.",
+      "Ocupa toda la planta: frente al norte y laterales este y oeste, con luz natural todo el día. La planta libre se arma a medida; la sala de reuniones y el privado ya están definidos.",
+      "Office con kitchenette, dos sanitarios, piso técnico y cielorraso registrable. Climatización por sistema VRV, ascensor propio y dos cocheras en el subsuelo.",
     ],
-    cover: photos.fullLiving,
-    gallery: [
-      photos.fullLiving,
-      photos.fullDining,
-      photos.fullKitchen,
-      photos.fullStudy,
-      photos.fullSuite,
-      photos.fullBath,
-    ],
+    cover: photos.officeOpen,
+    gallery: [photos.officeOpen, photos.officeReception, photos.officeMeeting, photos.officePantry],
   },
   pb: {
     lead: "Hall de acceso de doble altura, con recepción y seguridad las 24 horas.",
     body: [
-      "La planta baja recibe con un hall vidriado sobre Los Aromos. Desde la recepción se llega a los dos ascensores; uno sube directo a los pisos completos.",
+      "La planta baja recibe con un hall de doble altura detrás de un jardín de acceso sobre Los Aromos. Desde la recepción se llega a los tres ascensores: dos para departamentos y uno para oficinas.",
       "En el subsuelo están las cocheras y las bauleras de todas las unidades. A nivel de vereda, bicicletero, sala de residuos y rampa de acceso.",
     ],
     cover: photos.pbReception,
     gallery: [photos.pbReception, photos.pbElevators],
     figures: [
       { label: "Altura del hall", value: "4,2 m" },
-      { label: "Ascensores", value: "2" },
-      { label: "Cocheras", value: "16" },
-      { label: "Bauleras", value: "14" },
+      { label: "Ascensores", value: "3" },
+      { label: "Cocheras", value: "24" },
+      { label: "Bauleras", value: "20" },
       { label: "Seguridad", value: "24 h" },
     ],
   },
   sum: {
     lead: "Azotea con SUM, pileta, solárium, gimnasio y sauna, con vista 360°.",
     body: [
-      "En el nivel 9, el SUM tiene cocina y dos parrillas y se abre a la terraza, con la pileta descubierta y el deck del solárium.",
+      "En la azotea, sobre el piso 12, el SUM tiene cocina y dos parrillas y se abre a la terraza, con la pileta descubierta y el deck del solárium.",
       "Del otro lado de la azotea están el gimnasio equipado, los vestuarios y el sauna seco.",
     ],
     cover: photos.sumTerrace,
@@ -447,6 +449,98 @@ export const showcases: Record<ShowcaseId, Showcase> = {
       { label: "Terraza", value: "180 m²" },
       { label: "Pileta", value: "8 × 3,5 m" },
       { label: "Gimnasio", value: "45 m²" },
+    ],
+  },
+};
+
+/* ------------------------------------------------------------------------ */
+/* Planos tipo folleto (SPEC §6.1). Esquemas ficticios coherentes con cada   */
+/* tipología: los ambientes suman la superficie cubierta.                    */
+/* ------------------------------------------------------------------------ */
+
+export type PlanRoomKind =
+  | "living"
+  | "kitchen"
+  | "bedroom"
+  | "bath"
+  | "toilet"
+  | "hall"
+  | "corridor"
+  | "dressing"
+  | "storage"
+  | "balcony"
+  | "open"
+  | "meeting"
+  | "reception"
+  | "private"
+  | "pantry";
+
+/** Rectángulo en metros: [x, y, ancho, profundidad]. x de oeste a este; y desde el frente (norte). */
+export type PlanRect = [number, number, number, number];
+
+export interface PlanRoom {
+  name: string;
+  kind: PlanRoomKind;
+  rects: PlanRect[];
+}
+
+export interface FloorPlan {
+  /** Medidas totales de la unidad (sin balcón), en metros. */
+  width: number;
+  depth: number;
+  /** Lados con fachada (ventanas); el resto linda con la otra unidad o el núcleo. */
+  facades: { north: boolean; east: boolean; west: boolean; south: boolean };
+  rooms: PlanRoom[];
+}
+
+export const floorPlans: Record<UnitSide, FloorPlan> = {
+  A: {
+    width: 11.2,
+    depth: 10,
+    facades: { north: true, east: true, west: false, south: false },
+    rooms: [
+      { name: "Living comedor", kind: "living", rects: [[3.8, 0, 7.4, 5]] },
+      { name: "Cocina", kind: "kitchen", rects: [[0, 0, 3.8, 3.2]] },
+      { name: "Toilette", kind: "toilet", rects: [[0, 3.2, 1.6, 1.8]] },
+      { name: "Hall", kind: "hall", rects: [[1.6, 3.2, 2.2, 1.8]] },
+      { name: "Circulación", kind: "corridor", rects: [[0, 5, 7.6, 1.2]] },
+      { name: "Dormitorio 2", kind: "bedroom", rects: [[0, 6.2, 3.4, 3.8]] },
+      { name: "Baño", kind: "bath", rects: [[3.4, 6.2, 1.8, 3.8]] },
+      { name: "Dormitorio 3", kind: "bedroom", rects: [[5.2, 6.2, 2.4, 3.8]] },
+      { name: "Vestidor", kind: "dressing", rects: [[7.6, 5, 1.6, 1.6]] },
+      { name: "Baño en suite", kind: "bath", rects: [[9.2, 5, 2, 1.6]] },
+      { name: "Dormitorio principal", kind: "bedroom", rects: [[7.6, 6.6, 3.6, 3.4]] },
+      { name: "Balcón", kind: "balcony", rects: [[11.2, 0, 1.2, 10]] },
+    ],
+  },
+  B: {
+    width: 9.8,
+    depth: 10,
+    facades: { north: true, east: false, west: true, south: false },
+    rooms: [
+      { name: "Living comedor", kind: "living", rects: [[0, 0, 6.2, 5]] },
+      { name: "Cocina", kind: "kitchen", rects: [[6.2, 0, 3.6, 3.4]] },
+      { name: "Hall", kind: "hall", rects: [[6.2, 3.4, 3.6, 1.6]] },
+      { name: "Baño en suite", kind: "bath", rects: [[0, 5, 2.2, 1.4]] },
+      { name: "Vestidor", kind: "dressing", rects: [[2.2, 5, 1.6, 1.4]] },
+      { name: "Dormitorio principal", kind: "bedroom", rects: [[0, 6.4, 3.8, 3.6]] },
+      { name: "Circulación", kind: "corridor", rects: [[3.8, 5, 6, 1.2]] },
+      { name: "Dormitorio 2", kind: "bedroom", rects: [[3.8, 6.2, 3, 3.8]] },
+      { name: "Baño", kind: "bath", rects: [[6.8, 6.2, 3, 2.2]] },
+      { name: "Guardado", kind: "storage", rects: [[6.8, 8.4, 3, 1.6]] },
+    ],
+  },
+  office: {
+    width: 22,
+    depth: 13,
+    facades: { north: true, east: true, west: true, south: false },
+    rooms: [
+      { name: "Planta libre", kind: "open", rects: [[0, 0, 15, 8.4], [5.2, 8.4, 9.8, 4.6]] },
+      { name: "Sala de reuniones", kind: "meeting", rects: [[0, 8.4, 5.2, 4.6]] },
+      { name: "Recepción", kind: "reception", rects: [[15, 0, 7, 4.4]] },
+      { name: "Privado", kind: "private", rects: [[15, 4.4, 7, 4]] },
+      { name: "Office", kind: "pantry", rects: [[15, 8.4, 3.6, 4.6]] },
+      { name: "Sanitarios", kind: "bath", rects: [[18.6, 8.4, 3.4, 4.6]] },
     ],
   },
 };

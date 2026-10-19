@@ -1,11 +1,11 @@
 import { buildingHeight } from "@/lib/building";
 
 export const TARGET: [number, number, number] = [0, buildingHeight() * 0.5, 0];
-export const DISTANCE = 88;
-export const ELEVATION = 10;
+export const DISTANCE = 120;
+export const ELEVATION = 14;
 export const FOV = 30;
 /** Tope de distancia: más lejos el edificio se vuelve un punto en mobile angosto. */
-export const MAX_DISTANCE = 210;
+export const MAX_DISTANCE = 280;
 
 /**
  * Niebla relativa a la distancia de cámara: empieza un poco detrás del edificio

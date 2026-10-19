@@ -52,7 +52,7 @@ export function unitSpanX(side: UnitSide): [number, number] {
 }
 
 /** Largo del balcón sobre el lateral este; la profundidad sale de la superficie. */
-const BALCONY_LENGTH: Record<UnitSide, number> = { A: 10, B: 0, full: project.footprint.depth };
+const BALCONY_LENGTH: Record<UnitSide, number> = { A: 10, B: 0, office: 0 };
 
 export function balconyGeometry(unit: Unit): { length: number; depth: number } {
   const length = BALCONY_LENGTH[unit.side];
@@ -101,6 +101,9 @@ export const GROUND = {
   garageHeight: 2.8,
   doorHead: 2.6,
 } as const;
+
+/** Oficinas: travesaño alto (vidrio casi de piso a techo) y aleros de grafito en frente y oeste. */
+export const OFFICE = { transom: 2.75, eave: { depth: 0.75, thickness: 0.09 } } as const;
 
 /** Marco de hormigón saliente alrededor de las unidades A del frente (pisos tipo). */
 export const FRONT_FRAME = { depth: 0.9, thickness: 0.45 } as const;

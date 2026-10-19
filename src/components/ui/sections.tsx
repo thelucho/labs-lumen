@@ -44,12 +44,14 @@ function Section({
   );
 }
 
-const residentialFloors = levels.filter((l) => l.unitIds.length > 0).length;
+const floors = levels.filter((l) => l.unitIds.length > 0).length;
+const homes = units.filter((u) => u.side !== "office").length;
+const offices = units.length - homes;
 
 export function ProjectSection() {
   const stats = [
-    { label: "Pisos", value: String(residentialFloors), note: "+ PB y SUM" },
-    { label: "Unidades", value: String(units.length), note: "3 y 4 amb. y pisos completos" },
+    { label: "Pisos", value: String(floors), note: "+ PB y SUM" },
+    { label: "Unidades", value: String(units.length), note: `${homes} deptos. de 3 y 4 amb. y ${offices} oficinas` },
     { label: "Entrega", value: formatDeliveryShort(project.delivery), note: "estimada" },
     { label: "Orientación", value: project.orientation.replace("Frente ", "").replace(/^\w/, (c) => c.toUpperCase()), note: "frente; balcones al este" },
   ];
@@ -58,7 +60,7 @@ export function ProjectSection() {
       id="proyecto"
       index={1}
       eyebrow="El proyecto"
-      title={`${residentialFloors} pisos sobre un lote de ${project.footprint.width} m de frente`}
+      title={`${floors} pisos con ${project.footprint.width} m de frente`}
     >
       <div className="max-w-2xl space-y-4 text-[17px] leading-relaxed">
         {about.map((paragraph) => (
@@ -88,7 +90,7 @@ const amenityIcons: Record<AmenityId, Icon> = {
 
 export function AmenitiesSection() {
   return (
-    <Section id="amenities" index={2} eyebrow="Amenities" title="Nivel 9: terraza, pileta y SUM">
+    <Section id="amenities" index={2} eyebrow="Amenities" title="Azotea: terraza, pileta y SUM">
       <ul className="border-t border-stone">
         {amenities.map((amenity) => {
           const AmenityIcon = amenityIcons[amenity.id];

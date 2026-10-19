@@ -141,3 +141,13 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Jardín de acceso (`frontYardLayout.ts`): solado, entrada vehicular, canteros con flores, balizas, tótem y árbol columnar; con tests.
 
 **Verificación:** capturas desde la cámara inicial, frente, contrafrente y lateral oeste, con recortes ampliados del acceso. Lighthouse desktop: Performance 95, Accesibilidad 96, Buenas prácticas 100, CLS 0.
+
+## Fase 15 — 12 pisos con oficinas y planos tipo folleto
+- [x] Datos: pisos 1–8 con departamentos A/B (16), pisos 9–12 con una oficina en planta libre (4); SUM en el nivel 13. Precios por regla (oficinas con base propia), estados, cocheras y bauleras (SPEC §5).
+- [x] 3D: niveles de oficina con vidrio casi de piso a techo y aleros de grafito; cámara más lejos para el edificio de 45 m.
+- [x] Ficha de oficina: cifras, ficha técnica y fotos propias (Unsplash, en `public/`).
+- [x] Plano tipo folleto en SVG (`FloorPlanBrochure`) desde `floorPlans`: ambientes con m² y medidas, muebles, ventanas, cotas, balcón y norte; planilla de superficies.
+- [x] Textos de la landing, README e imagen Open Graph actualizados.
+- [x] Tests de datos reescritos y tests de planos (superficies, superposición, dormitorios y baños).
+
+**Verificación:** capturas del hero (desktop y mobile) y de los planos de A, B y oficina. Lighthouse desktop: Performance 96, Accesibilidad 96, Buenas prácticas 100, CLS 0.

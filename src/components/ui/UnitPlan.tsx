@@ -15,7 +15,7 @@ export function UnitPlan({ unit }: { unit: Unit }) {
   const balcony = unit.balconyArea > 0 ? balconyGeometry(unit) : null;
   const width = HALF_W * 2 + PAD * 2 + 2;
   const height = HALF_D * 2 + PAD * 2 + ARROW_SPACE;
-  const typical = unit.side !== "full";
+  const typical = unit.side !== "office";
 
   return (
     <figure>
@@ -24,7 +24,7 @@ export function UnitPlan({ unit }: { unit: Unit }) {
         className="w-full text-graphite"
         role="img"
         aria-label={`Planta del piso ${unit.floor}: ${
-          unit.side === "full" ? "piso completo" : `unidad ${unit.side} resaltada`
+          unit.side === "office" ? "oficina en planta libre" : `unidad ${unit.side} resaltada`
         }, frente al norte${balcony ? ", balcón sobre el lateral este" : ""}`}
       >
         {/* Unidad resaltada */}
