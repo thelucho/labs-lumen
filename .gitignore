@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# skills: enlaces locales a .agents/skills (los crea npx skills add)
+.claude/skills/
