@@ -1,9 +1,6 @@
-"use client";
-
 import { project, tagline, units } from "@/data/building";
 import { minAvailablePrice } from "@/lib/building";
 import { formatDeliveryShort, formatPrice } from "@/lib/format";
-import { selectIsDark, useUIStore } from "@/lib/store";
 
 const facts = [
   { label: "Unidades", value: String(units.length) },
@@ -12,34 +9,26 @@ const facts = [
 ];
 
 /**
- * Bloque editorial del hero. Debajo del edificio hasta lg; desde lg
- * a la izquierda, sobre el 3D.
+ * Bloque editorial del hero. Debajo del edificio hasta lg; desde lg a la
+ * izquierda, sobre el 3D, en una caja `paper` como el selector y el slider:
+ * se lee igual sobre el barrio, de día o de noche.
  */
 export function HeroIntro() {
-  // Desde lg el texto va sobre el 3D: con la escena oscura (luz del día) pasa a claro.
-  const isDark = useUIStore(selectIsDark);
-
   return (
     <div
-      data-dark={isDark || undefined}
       className={[
-        "group px-4 pt-8 pb-14 sm:px-8",
-        "lg:pointer-events-none lg:absolute lg:top-1/2 lg:left-8 lg:w-[21rem] lg:-translate-y-1/2 lg:p-0",
-        "lg:transition-colors lg:duration-200 motion-reduce:transition-none lg:data-dark:text-paper",
+        "px-4 pt-8 pb-14 sm:px-8",
+        "lg:absolute lg:top-[45%] lg:left-8 lg:w-[21rem] lg:-translate-y-1/2 lg:rounded-xs lg:border lg:border-stone lg:bg-paper lg:px-5 lg:py-6",
       ].join(" ")}
     >
-      <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate lg:group-data-dark:text-stone">
-        {project.address}
-      </p>
-      <h1 className="mt-3 font-serif text-5xl leading-[0.95] lg:text-6xl">{project.name}</h1>
+      <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate">{project.address}</p>
+      <h1 className="mt-3 font-serif text-5xl leading-[0.95] lg:text-[3.25rem]">{project.name}</h1>
       <p className="mt-5 max-w-sm text-[15px] leading-relaxed">{tagline}</p>
       <dl className="mt-8 grid grid-cols-3 border-t border-stone">
         {facts.map((fact) => (
           <div key={fact.label} className="border-r border-stone pt-3 pr-3 last:border-r-0 [&:not(:first-child)]:pl-3">
-            <dt className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate lg:group-data-dark:text-stone">
-              {fact.label}
-            </dt>
-            <dd className="mt-1 text-sm font-medium tabular-nums">{fact.value}</dd>
+            <dt className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate">{fact.label}</dt>
+            <dd className="mt-1 text-sm font-medium whitespace-nowrap tabular-nums">{fact.value}</dd>
           </div>
         ))}
       </dl>

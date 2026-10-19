@@ -102,3 +102,17 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Tests: cada ficha tiene portada en su galería y todas las fotos existen.
 
 **Verificación:** capturas de 4° A, piso 1, PB y SUM en desktop y mobile; Esc cierra modal → visor → ficha en ese orden; el foco vuelve al selector de pisos.
+
+## Fase 11 — Maqueta rica y entorno urbano
+- [x] Texturas procedurales en canvas con proyección triplanar en coordenadas de mundo (hormigón, madera, asfalto, baldosa, revoque, pasto).
+- [x] Trazado urbano generado por código (`cityLayout.ts`): calles al frente, costados y atrás; veredas con cordón; grilla de manzanas.
+- [x] Señalización vial (sendas, detención, línea central), tapas y bocas de tormenta; columnas de alumbrado que se encienden de noche; bancos y canteros.
+- [x] Casas bajas con techos planos o de tejas y ventanas (algunas encendidas de noche); autos estacionados.
+- [x] Árboles con copas de varios lóbulos y oclusión; arbolado de vereda y de patios; jardín del edificio dentro del lote.
+- [x] Silueta de ciudad en el horizonte (en el shader del cielo).
+- [x] Frente despejado y anillo bajo de 60 m para que la PB se vea también desde la cámara lejana de mobile.
+- [x] Bloque editorial del hero en caja `paper`.
+- [x] Lighthouse ≥ 90: de 30 a 20 programas de shader (color por instancia siempre, suelo instanciado, sin mapa de entorno, sin `flatShading`) y canvas con `willReadFrequently`.
+- [x] Tests del trazado (`cityLayout.test.ts`) y del jardín.
+
+**Verificación:** capturas de día, atardecer y noche, vista frontal, lateral este y contrafrente, desktop y mobile. Lighthouse desktop sobre build de producción: Performance 96, Accesibilidad 96, Buenas prácticas 100.

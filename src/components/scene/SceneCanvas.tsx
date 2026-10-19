@@ -7,7 +7,7 @@ import { useUIStore } from "@/lib/store";
 import { BuildingDetail, BuildingShell } from "./Building";
 import { FOV, cameraPosition, readAzimuth } from "./camera";
 import { Controls } from "./Controls";
-import { GroundShadows, SceneBackdrop, SceneLights, SkyDecor } from "./Environment";
+import { GroundShadows, Neighborhood, SceneBackdrop, SceneLights, SkyDecor } from "./Environment";
 import { getShadowVersion } from "./shadowCache";
 import { Vegetation } from "./Vegetation";
 
@@ -77,7 +77,7 @@ function Precompiled({ children, onReady }: { children: ReactNode; onReady: () =
  * aparte y la siguiente arranca cuando la anterior está lista, en lugar de
  * compilar todo en una sola tarea larga en el primer cuadro.
  */
-const STAGES = [SceneBackdrop, BuildingShell, BuildingDetail, Vegetation, SkyDecor];
+const STAGES = [SceneBackdrop, BuildingShell, BuildingDetail, Neighborhood, Vegetation, SkyDecor];
 
 function Stages() {
   const [ready, setReady] = useState(0);
@@ -113,6 +113,10 @@ export default function SceneCanvas({ active = true }: { active?: boolean }) {
       camera={{ fov: FOV, near: 1, far: 1500, position }}
       gl={{ antialias: true, toneMapping: NeutralToneMapping }}
       onPointerMissed={closeDetail}
+      onCreated={({ gl }) => {
+        // Solo en desarrollo: el renderer a mano para medir programas y llamadas de dibujo.
+        if (process.env.NODE_ENV !== "production") (window as unknown as { __lumenGl?: typeof gl }).__lumenGl = gl;
+      }}
     >
       <SceneLights />
       <Stages />

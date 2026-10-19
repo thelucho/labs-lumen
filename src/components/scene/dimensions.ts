@@ -67,6 +67,22 @@ export const ROOF = {
   machineRoom: { x: [6.5, 10.2], z: [-6.6, -4.4], height: 2.4 },
 } as const;
 
+/**
+ * Trazado urbano: el edificio ocupa una manzana chica con jardín, rodeada de
+ * calles; alrededor, manzanas de casas bajas en una grilla regular.
+ */
+export const URBAN = {
+  sidewalk: 4,
+  street: 9,
+  curb: 0.2,
+  /** Altura de vereda sobre la calzada. */
+  curbHeight: 0.15,
+  /** Lote del edificio: frente sobre la línea municipal (el frente norte del edificio). */
+  lot: { x: [-26, 26], z: [-25, HALF_D] },
+  /** Radio hasta donde se generan manzanas (más allá, la niebla ya tapa todo). */
+  radius: 290,
+} as const;
+
 /** PB: acceso con marquesina y portón de cocheras sobre el frente norte. */
 export const GROUND = {
   canopy: { x: [-7.5, -1.5], y: 3, thickness: 0.45, depth: 2.2 },

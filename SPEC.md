@@ -37,6 +37,7 @@ Todo es estático: **sin backend, sin API, sin envío de emails, sin servicios e
 
 ### 4.2 Nivel de detalle y estilo
 Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maqueta arquitectónica digital limpia.
+- *Decisión (fase 11)*: "maqueta rica". Mismo lenguaje de maqueta pero con materia: texturas procedurales generadas en canvas (hormigón con juntas de encofrado, madera en tablas, asfalto con árido, bacheos y fisuras, baldosa vainilla de vereda, revoque, pasto) proyectadas en coordenadas de mundo (triplanar), sin archivos ni modelos externos. Se descartaron el mapa de entorno (reflejos) y el postprocesado: suman programas de shader y bajaban Lighthouse por debajo de 90.
 - Losas visibles en el canto de cada piso (bandas horizontales de hormigón claro).
 - Carpinterías con montantes finos, vidrios levemente tintados y semitransparentes que dejan ver un interior simple (piso, pared de fondo, tabique divisorio entre A y B) para que la luz interior se lea.
 - Balcones con losa en voladizo y baranda de vidrio o barrotes finos.
@@ -47,11 +48,17 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 - Bordes suaves (bevel leve o `RoundedBox` donde ayude), sombras suaves.
 
 ### 4.3 Entorno
-- Suelo simple: plano amplio color piedra/césped desaturado, vereda frente al edificio, borde que se funde con el fondo (fog o gradiente).
+- *Decisión (fase 11)*: el edificio se ve como un plano 3D de varias manzanas. Ocupa una manzana chica con jardín (lote de 52 × 32 m), con **calle al frente, a los dos costados y atrás** (calzada de 9 m, veredas de 4 m con cordón). Alrededor, una grilla regular de manzanas hasta ~290 m, donde la niebla ya tapa todo.
+- Suelo: pasto desaturado que se funde con el horizonte por la niebla; encima, calzadas de asfalto y veredas de baldosa.
+- **Calles**: sendas peatonales (cebra) y línea de detención en cada cruce, línea central discontinua, tapas de servicio y bocas de tormenta. Columnas de alumbrado cuyo cabezal se enciende de noche con el slider (emisivo, sin luces reales: se mantiene una sola luz puntual). Bancos y canteros en las veredas de la manzana del edificio. Autos estacionados contra el cordón, en colores apagados; nunca frente al acceso ni al portón de cocheras. La pintura, los autos y el mobiliario llegan hasta 150 m del centro.
+- **Manzanas vecinas**: casas bajas de una o dos plantas sobre los lados largos, en lotes de 8–11 m con retiro variable, azotea plana o techo de tejas, ventanas a la calle (algunas encendidas de noche) y árboles en los patios. Coherente con §3 Ubicación: barrio de casas bajas, sin vecinos en altura.
+- **Anillo bajo** de 60 m alrededor del edificio: casas de una planta y árboles de hasta 6,5 m. En mobile la cámara se aleja hasta ~210 m y la visual a la PB pasa a pocos metros del suelo al cruzar las manzanas vecinas.
+- **Frente despejado**: sin árboles ni columnas en la vereda del edificio, la calle de enfrente ni la vereda opuesta; sin árboles en las veredas laterales (se leen los balcones al este).
+- **Horizonte**: silueta de ciudad lejana dibujada en el shader del cielo (más alta hacia el sur, baja hacia el norte), apenas más oscura que el horizonte y siguiendo la hora.
 - **Sol** con una `directionalLight` cálida alineada a él que proyecta sombras. Su posición depende de la hora elegida en el control "Luz del día" (§4.5); el disco y la luz siempre coinciden.
   - *Decisión (fase 9)*: reemplaza la licencia de encuadre anterior (disco del sol en un lugar y luz en otro). A la hora por defecto el sol queda **detrás de la cámara inicial** (azimut 35°, ≈ 10:44 h): ilumina frente y balcones y el disco no se ve hasta girar o cambiar la hora.
 - 3–5 **nubes** low-poly (sin texturas externas), con movimiento lento.
-- **Vegetación** low-poly, sin exceso: 14 árboles dispersos (copa redondeada y columnar) y 24 arbustos. Sin árboles en la vereda. Distribución determinística, fuera del edificio, la vereda y la calle, y a no más de 60 m del centro para no invadir el primer plano.
+- **Vegetación** low-poly: copas de varios lóbulos con superficie irregular y oclusión pintada (más oscuras abajo). En el jardín del edificio, 8 árboles (copa redondeada y columnar) y 18 arbustos en laterales y contrafrente; además, arbolado de vereda cada ~10 m y árboles en los patios vecinos. Todo determinístico (semilla fija) y testeado.
 - Cielo con gradiente suave (no azul saturado).
 - `ContactShadows` o sombra real bajo el edificio.
 
@@ -69,7 +76,7 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 - Debajo, 4 referencias con ícono Phosphor (peso *light*): **Mañana** 07:30, **Mediodía** 13:00, **Tarde** 18:00, **Noche** 21:30. Solo orientan; al hacer click llevan el slider a esa hora.
 - Recorrido del sol en Buenos Aires (modelo simple, sin estaciones): sale por el este (06:30), al mediodía solar (13:00) está al norte a 58° de altura y se pone por el oeste (19:30).
 - Al mover el slider la escena acompaña con una transición corta (inmediata con `prefers-reduced-motion`): posición, color e intensidad del sol (más cálido y tenue cerca del horizonte), sombras, cielo, niebla, nubes y luz ambiente. De noche, luz de luna fría y tenue (sin sombras) y cielo grafito azulado.
-- Con la escena oscura, el texto del hero que va sobre el 3D (desktop) pasa a `paper`/`stone`.
+- *Decisión (fase 11)*: desde lg el bloque editorial del hero va en una caja `paper` con borde fino, como el selector y el slider, para leerse igual sobre el barrio de día o de noche (reemplaza el cambio de color del texto con la escena oscura). La indicación de uso sí pasa a `stone` de noche.
 - Ubicación: desde lg, abajo a la izquierda alineado con el bloque editorial, sobre fondo `paper` con borde fino (como el selector de pisos); en mobile, debajo del 3D.
 
 ## 5. Datos (ficticios pero coherentes)

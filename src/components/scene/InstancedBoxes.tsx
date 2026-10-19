@@ -1,20 +1,41 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
-import { Matrix4, Quaternion, Vector3, type InstancedMesh, type Material } from "three";
+import {
+  Color,
+  Matrix4,
+  Quaternion,
+  Vector3,
+  type BufferGeometry,
+  type InstancedMesh,
+  type Material,
+} from "three";
 import type { Box } from "./layout";
 import { unitBox } from "./materials";
 import { invalidateShadows } from "./shadowCache";
+
+const WHITE = new Color("#ffffff");
 
 interface Props {
   boxes: Box[];
   material: Material;
   castShadow?: boolean;
   receiveShadow?: boolean;
+  /** Color por instancia (multiplica el del material). */
+  colors?: Color[];
+  /** Geometría unitaria centrada (por defecto, el cubo compartido). */
+  geometry?: BufferGeometry;
 }
 
 /** Todas las cajas de un mismo material en un único InstancedMesh. */
-export function InstancedBoxes({ boxes, material, castShadow = true, receiveShadow = true }: Props) {
+export function InstancedBoxes({
+  boxes,
+  material,
+  castShadow = true,
+  receiveShadow = true,
+  colors,
+  geometry = unitBox,
+}: Props) {
   const ref = useRef<InstancedMesh>(null);
 
   useLayoutEffect(() => {
@@ -27,18 +48,22 @@ export function InstancedBoxes({ boxes, material, castShadow = true, receiveShad
     boxes.forEach((b, i) => {
       matrix.compose(position.set(...b.p), rotation, scale.set(...b.s));
       mesh.setMatrixAt(i, matrix);
+      // Siempre con color por instancia (blanco si no hay): todas las mallas
+      // instanciadas comparten variante de shader y se compila menos al cargar.
+      mesh.setColorAt(i, colors?.[i] ?? WHITE);
     });
     mesh.instanceMatrix.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     mesh.computeBoundingSphere();
     invalidateShadows();
     return invalidateShadows;
-  }, [boxes]);
+  }, [boxes, colors]);
 
   if (boxes.length === 0) return null;
   return (
     <instancedMesh
       ref={ref}
-      args={[unitBox, material, boxes.length]}
+      args={[geometry, material, boxes.length]}
       castShadow={castShadow}
       receiveShadow={receiveShadow}
     />

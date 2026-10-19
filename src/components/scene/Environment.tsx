@@ -1,23 +1,22 @@
 "use client";
 
 import { ContactShadows } from "@react-three/drei";
-import { project } from "@/data/building";
+import { CircleGeometry, MeshStandardMaterial } from "three";
 import { DISTANCE, fogRange } from "./camera";
+import { CityBlocks, CityGround } from "./City";
 import { Clouds } from "./Clouds";
 import { Daylight } from "./Daylight";
+import type { Box } from "./layout";
+import { InstancedBoxes } from "./InstancedBoxes";
 import { palette3D } from "./materials";
 import { useShadowVersion } from "./shadowCache";
 import { skyMaterial } from "./sky";
 import { Sun } from "./Sun";
+import { worldMapped } from "./textures";
 import { UnitLight } from "./unitLight";
 
 const SKY_RADIUS = 600;
 const GROUND_RADIUS = 320;
-
-const HALF_D = project.footprint.depth / 2;
-const SIDEWALK = { width: 4, height: 0.12 };
-const STREET_WIDTH = 9;
-const FRONTAGE = 90;
 
 function Sky() {
   return (
@@ -27,26 +26,17 @@ function Sky() {
   );
 }
 
-/** Suelo amplio que se funde con el horizonte por la niebla, vereda y calle al frente. */
+/**
+ * Suelo amplio (pasto) que se funde con el horizonte por la niebla; las calles
+ * van encima. Instanciado (una sola instancia) para compartir programa de
+ * shader con el resto de las piezas texturizadas: menos compilación al cargar.
+ */
+const groundGeometry = new CircleGeometry(GROUND_RADIUS, 64).rotateX(-Math.PI / 2);
+const groundMaterial = worldMapped(new MeshStandardMaterial({ color: palette3D.ground, roughness: 1 }), "grass", 9);
+const groundBox: Box[] = [{ p: [0, 0, 0], s: [1, 1, 1] }];
+
 function Ground() {
-  const sidewalkZ = HALF_D + SIDEWALK.width / 2;
-  const streetZ = HALF_D + SIDEWALK.width + STREET_WIDTH / 2;
-  return (
-    <group>
-      <mesh rotation-x={-Math.PI / 2} receiveShadow>
-        <circleGeometry args={[GROUND_RADIUS, 64]} />
-        <meshStandardMaterial color={palette3D.ground} roughness={1} />
-      </mesh>
-      <mesh position={[0, SIDEWALK.height / 2, sidewalkZ]} receiveShadow>
-        <boxGeometry args={[FRONTAGE, SIDEWALK.height, SIDEWALK.width]} />
-        <meshStandardMaterial color={palette3D.sidewalk} roughness={0.95} />
-      </mesh>
-      <mesh position={[0, 0.01, streetZ]} rotation-x={-Math.PI / 2} receiveShadow>
-        <planeGeometry args={[FRONTAGE, STREET_WIDTH]} />
-        <meshStandardMaterial color={palette3D.street} roughness={1} />
-      </mesh>
-    </group>
-  );
+  return <InstancedBoxes boxes={groundBox} geometry={groundGeometry} material={groundMaterial} castShadow={false} />;
 }
 
 /**
@@ -63,14 +53,20 @@ export function SceneLights() {
   );
 }
 
-/** Cielo y suelo: la primera etapa visible. */
+/** Cielo (con la silueta del horizonte), suelo y calles: la primera etapa visible. */
 export function SceneBackdrop() {
   return (
     <>
       <Sky />
       <Ground />
+      <CityGround />
     </>
   );
+}
+
+/** Manzanas vecinas: casas, autos y mobiliario. */
+export function Neighborhood() {
+  return <CityBlocks />;
 }
 
 /** Sol y nubes: decorado, se suma en una etapa posterior. */
@@ -84,17 +80,18 @@ export function SkyDecor() {
 }
 
 /**
- * Sombras de contacto: se calculan una sola vez (frames=1), así que se montan
- * cuando el edificio ya está en escena, y se vuelven a montar (key) si cambia
- * algo que proyecta sombra; si no, quedarían sombras de objetos quitados.
+ * Sombras de contacto bajo el edificio (sobre el jardín): se calculan una sola
+ * vez (frames=1), así que se montan cuando el edificio ya está en escena, y se
+ * vuelven a montar (key) si cambia algo que proyecta sombra; si no, quedarían
+ * sombras de objetos quitados.
  */
 export function GroundShadows() {
   const version = useShadowVersion();
   return (
     <ContactShadows
       key={version}
-      position={[0, SIDEWALK.height + 0.01, 0]}
-      scale={60}
+      position={[0, 0.01, 0]}
+      scale={44}
       resolution={1024}
       blur={2.4}
       far={12}

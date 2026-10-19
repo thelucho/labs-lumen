@@ -13,16 +13,19 @@ import { useUIStore } from "@/lib/store";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 import { INITIAL_AZIMUTH, skyPoint } from "./camera";
 import { cloudMaterial } from "./Clouds";
-import { palette3D } from "./materials";
+import { cityMaterials, palette3D } from "./materials";
 import { skyMaterial } from "./sky";
 
-const SUN_DISTANCE = 70;
-const SHADOW_EXTENT = 38;
+const SUN_DISTANCE = 90;
+/** Cubre la manzana del edificio y las calles que la rodean. */
+const SHADOW_EXTENT = 58;
 /** Por debajo de esta altura la luz deja de bajar: evita sombras infinitas al ras. */
 const MIN_LIGHT_ELEVATION = 3;
 const SUN_INTENSITY = 1.9;
 const MOON_INTENSITY = 0.55;
-const HEMI_INTENSITY = 2.4;
+const HEMI_INTENSITY = 2.3;
+const LAMP_INTENSITY = 2.2;
+const WINDOW_INTENSITY = 0.9;
 /** Luna fija, alta y a un costado de la cámara inicial: de noche se leen los volúmenes. */
 const MOON_POSITION = skyPoint(INITIAL_AZIMUTH - 70, 38, SUN_DISTANCE);
 /** Qué tan rápido la escena alcanza la hora del slider. */
@@ -46,6 +49,7 @@ const c = {
   groundNight: new Color(palette3D.groundNight),
   cloud: new Color(palette3D.cloud),
   cloudNight: new Color(palette3D.cloudNight),
+  skyline: new Color(palette3D.skyline),
 };
 
 /** Mezcla día/noche y, encima, el tono cálido del sol bajo. */
@@ -90,13 +94,20 @@ export function Daylight() {
     hemi.current.groundColor.copy(c.groundNight).lerp(c.ground, day);
     hemi.current.intensity = HEMI_INTENSITY * (0.4 + 0.6 * day) * (0.85 + 0.15 * high);
 
-    const { top, horizon } = skyMaterial.uniforms;
+    const { top, horizon, skyline } = skyMaterial.uniforms;
     skyTone(top.value, c.skyTop, c.skyTopDusk, c.skyTopNight, day, dusk);
     skyTone(horizon.value, c.skyHorizon, c.skyHorizonDusk, c.skyHorizonNight, day, dusk);
+    // Silueta de la ciudad: apenas más oscura que el horizonte.
+    skyline.value.copy(horizon.value).lerp(c.skyline, 0.15 * day).multiplyScalar(0.94 - 0.1 * (1 - day));
 
     cloudMaterial.color.copy(c.cloudNight).lerp(c.cloud, day);
     cloudMaterial.emissive.copy(cloudMaterial.color);
     cloudMaterial.emissiveIntensity = 0.15 + 0.3 * day;
+
+    // Luces de calle y ventanas de las casas al anochecer.
+    const night = 1 - day;
+    cityMaterials.lamp.emissiveIntensity = LAMP_INTENSITY * night;
+    cityMaterials.windowLit.emissiveIntensity = WINDOW_INTENSITY * night;
 
     const { scene, gl } = get();
     if (scene.fog instanceof Fog) scene.fog.color.copy(horizon.value);
