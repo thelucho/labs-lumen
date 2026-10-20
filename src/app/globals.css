@@ -51,18 +51,35 @@ html[data-intro="pending"] {
   overflow: hidden;
 }
 
+/*
+ * Transición loader → escena, en capas encadenadas y con curvas suaves:
+ * 1. el contenido del loader (isologo y texto) se desvanece y sube apenas (0–600 ms);
+ * 2. el fondo del loader se disuelve despacio (250–1550 ms) mientras
+ * 3. la escena aparece con un fundido largo (300–2500 ms);
+ * 4. los paneles entran cuando la escena ya está casi visible (desde ~900 ms).
+ * Solo opacidad y desplazamientos chicos: nada que redimensione el canvas.
+ */
 [data-loader] {
   transition:
-    opacity 700ms cubic-bezier(0.4, 0, 0.2, 1),
-    visibility 0s linear 700ms;
+    opacity 1300ms cubic-bezier(0.45, 0, 0.25, 1) 250ms,
+    visibility 0s linear 1550ms;
 }
 html[data-intro="go"] [data-loader] {
   opacity: 0;
   visibility: hidden;
 }
+[data-loader-content] {
+  transition:
+    opacity 600ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+html[data-intro="go"] [data-loader-content] {
+  opacity: 0;
+  transform: translateY(-8px);
+}
 
 [data-scene-fade] {
-  transition: opacity 1400ms cubic-bezier(0.22, 1, 0.36, 1) 150ms;
+  transition: opacity 2200ms cubic-bezier(0.33, 0, 0.2, 1) 300ms;
 }
 html[data-intro="pending"] [data-scene-fade],
 html[data-intro="pending"] [data-intro] {
@@ -71,7 +88,7 @@ html[data-intro="pending"] [data-intro] {
 
 @media (prefers-reduced-motion: no-preference) {
   html[data-intro="go"] [data-intro] {
-    animation: intro-in 1000ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: intro-in 1300ms cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-delay: var(--intro-delay, 0ms);
   }
 
@@ -88,6 +105,7 @@ html[data-intro="pending"] [data-intro] {
 
 @media (prefers-reduced-motion: reduce) {
   [data-loader],
+  [data-loader-content],
   [data-scene-fade] {
     transition: none;
   }

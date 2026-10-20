@@ -32,7 +32,7 @@ export function SunControl() {
   return (
     <div
       data-intro
-      style={introStyle(620, -40, 0)}
+      style={introStyle(1200, -28, 0)}
       className="px-4 pt-6 sm:px-8 lg:absolute lg:bottom-8 lg:left-8 lg:w-[23rem] lg:rounded-xs lg:border lg:border-stone lg:bg-paper lg:px-4 lg:pt-3 lg:pb-1"
     >
       <div className="flex items-baseline justify-between">

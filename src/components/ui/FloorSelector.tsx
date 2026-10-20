@@ -22,7 +22,7 @@ function accessibleLabel(id: SelectableId): string {
 }
 
 /** Demora de la primera fila (PB) y paso entre filas, en ms: acompaña la subida del edificio. */
-const ROW_START = 450;
+const ROW_START = 1000;
 const ROW_STEP = 40;
 
 const dotClass = { available: "bg-sage", reserved: "bg-clay", sold: "bg-slate" } as const;
@@ -71,7 +71,7 @@ export function FloorSelector() {
   return (
     <nav
       data-intro
-      style={introStyle(300, 40, 0)}
+      style={introStyle(900, 28, 0)}
       aria-label="Selector de pisos"
       className="absolute top-1/2 right-3 -translate-y-1/2 rounded-xs border border-stone bg-paper px-3 py-3 sm:right-8"
     >

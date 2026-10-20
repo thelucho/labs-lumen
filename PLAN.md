@@ -168,3 +168,9 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Panel izquierdo (y luz del día) de 21 a 23rem: "Desde" ya no toca el separador de "Entrega".
 
 **Verificación:** estados capturados adelantando animaciones y transiciones (0, 300, 700, 1400 ms) sobre el build de producción; página sin JS. Lighthouse desktop en 3 corridas: Performance 93 / 95 / 94, Accesibilidad 96, Buenas prácticas 100, LCP 0,5–0,6 s (título del loader), CLS 0. Nota: el `next dev` que estaba corriendo servía un CSS global viejo (no recargó globals.css); hay que reiniciarlo para ver estos cambios.
+
+## Fase 18 — Transición suave entre el loader y la escena
+- [x] Capas encadenadas: contenido del loader (600 ms) → fondo del loader (1,3 s) mientras la escena aparece con un fundido de 2,2 s → paneles desde ~0,9 s (1,3 s, desplazamientos de 28 px) → indicación de uso al final.
+- [x] Solo opacidad y desplazamientos chicos (nada que redimensione el canvas); sin transiciones con `prefers-reduced-motion`.
+
+**Verificación:** estados capturados adelantando animaciones y transiciones (0, 400, 900, 1500, 2600 ms) sobre el build de producción.

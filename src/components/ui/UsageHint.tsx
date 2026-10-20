@@ -10,7 +10,7 @@ export function UsageHint() {
   return (
     <p
       data-intro
-      style={introStyle(900, 0, 8)}
+      style={introStyle(1700, 0, 8)}
       aria-hidden={hasInteracted}
       className={[
         // En el layout apilado no llega a la columna del selector.
