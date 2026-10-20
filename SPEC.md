@@ -11,17 +11,21 @@ Todo es estático: **sin backend, sin API, sin envío de emails, sin servicios e
 - **three.js** vía **@react-three/fiber** + **@react-three/drei** (OrbitControls, ContactShadows, Clouds o equivalente).
 - **Lenis** (paquete `lenis`) para scroll suave de la página.
 - Íconos: **Phosphor Icons** (`@phosphor-icons/react`), peso *light* o *regular*, consistente en todo el sitio.
-- Tipografías vía `next/font/google`: **Instrument Serif** (títulos) + **Manrope** (texto, UI y datos con `font-variant-numeric: tabular-nums`).
+- Tipografías vía `next/font/google` (*fase 19*, `docs/DESIGN.md`): **Archivo** variable con eje de ancho (titulares; en mayúsculas anchas), **Inter Tight** (texto y UI) y **JetBrains Mono** (labels, numeración y metadatos). Datos con `font-variant-numeric: tabular-nums`.
 - **Zustand** para el estado de UI compartido entre el canvas y la interfaz.
 - **Vitest** (devDependency) para el test de datos (`npm test`).
 - Sin librerías de componentes prefabricados (nada de shadcn por defecto, nada de templates).
 
 ## 3. Estructura de la página
-1. **Hero (100vh)**: edificio 3D centrado. A la izquierda, bloque editorial breve (nombre del proyecto, dirección, 1 línea de propuesta, 3 datos clave). A la derecha del edificio, un **selector vertical de pisos** (SUM, 12…1, PB) que funciona como alternativa accesible al 3D y como navegación en mobile. Indicación sutil de uso: "Arrastrá para girar · Click en una unidad para ver su ficha".
-2. **El proyecto**: texto corto + 3 o 4 datos (pisos, unidades, entrega, orientación).
-3. **Amenities**: pileta, sauna, gimnasio, SUM con parrillas, solárium (lista con íconos, no cards genéricas).
+0. *Decisión (fase 19)*: navegación sobre el hero, en pills translúcidas (logo en círculo + nombre, links a las secciones y "Consultar" como botón primario); en mobile, botón circular que abre un overlay negro con los links grandes.
+1. **Hero (100vh)**: *fase 19*: el 3D va dentro de una **tarjeta** con radio de 28 px y 12 px de margen al viewport (variante A de `docs/DESIGN.md`). Edificio 3D centrado. A la izquierda, bloque editorial breve (nombre del proyecto, dirección, 1 línea de propuesta, 3 datos clave). A la derecha del edificio, un **selector vertical de pisos** (SUM, 12…1, PB) que funciona como alternativa accesible al 3D y como navegación en mobile. Indicación sutil de uso: "Arrastrá para girar · Click en una unidad para ver su ficha".
+2. **El proyecto**: texto corto + grilla 2×2 de cifras con conteo al entrar en pantalla (pisos, unidades, disponibles, entrega) y el sticker giratorio "Elegí tu unidad" que vuelve al 3D.
+3. **Amenities**: bento con la foto de la azotea (abre la ficha del SUM) y una tarjeta por amenity con su ícono.
 4. **Ubicación**: dirección ficticia + bloque estático tipo plano/mapa ilustrado (sin Google Maps ni servicios externos).
-5. **Contacto / footer**: datos ficticios de la desarrolladora y aviso "Demo — información ilustrativa".
+5. **Cómo comprar** (*fase 19*): lista de proceso en pills (consulta, visita, reserva y boleto, posesión), desde `purchaseSteps` de `building.ts`.
+6. **Contacto / footer**: fondo ink, CTA grande al showroom, datos ficticios de la desarrolladora, aviso "Demo — información ilustrativa" y el wordmark gigante recortado por el borde inferior.
+
+Todas las secciones tienen encabezado asimétrico (label numerado en mono a la izquierda, título en dos tonos a la derecha) y aparecen al hacer scroll.
 
 ## 4. El edificio 3D
 
@@ -45,7 +49,7 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 - PB: hall vidriado doble altura, marquesina de acceso, número de calle.
 - Azotea: SUM como volumen más liviano (más vidrio), pileta con agua (material azul con algo de reflejo), deck, baranda perimetral, sala de máquinas pequeña.
 - Materiales: hormigón claro, revestimiento cálido (símil madera o porcelanato) en algunos paños, carpintería grafito. Nada saturado.
-- Paleta de materiales 3D: los tokens de §6.3 rigen la UI; el 3D usa su propia paleta desaturada (hormigón, madera, grafito, vidrio, agua, cielo, césped y vegetación: `foliage`, `foliageLight`, `foliageDark`, `shrub`, `trunk`, verdes emparentados con `sage`) definida en un único archivo de materiales. La luz de las unidades es cálida (≈ #F2C27B), en línea con `brass`.
+- Paleta de materiales 3D: los tokens de §6.3 rigen la UI; el 3D usa su propia paleta desaturada (hormigón, madera, grafito, vidrio, agua, cielo, césped y vegetación: `foliage`, `foliageLight`, `foliageDark`, `shrub`, `trunk`, verdes desaturados) definida en un único archivo de materiales. La luz de las unidades es cálida (≈ #F2C27B), en línea con el acento ámbar de la UI.
 - Bordes suaves (bevel leve o `RoundedBox` donde ayude), sombras suaves.
 - *Decisión (fase 14)*: más arquitectura, sin cambiar los volúmenes de las unidades.
   - **Marco de hormigón saliente** (0,9 m) que abraza las unidades A del frente en los pisos tipo: esa parte "sale" respecto del resto de la fachada.
@@ -71,7 +75,7 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 - `ContactShadows` o sombra real bajo el edificio.
 
 ### 4.4 Interacción
-- *Decisión (fase 17, reemplaza la de la fase 16)*: **loader y entrada con fundido**. Al cargar, un loader a pantalla completa muestra el isologo (el dibujo del favicon: torre, pisos y una unidad encendida en `brass`, con los pisos trazándose y la ventana encendiéndose), "Lumen Residencias", la dirección y una línea con el avance real de la escena (etapas compiladas). Mientras tanto no se muestra nada del 3D (sin silueta de placeholder). Con todo compilado y las sombras calculadas, la transición es en capas encadenadas (*fase 18*): primero sale el contenido del loader (se desvanece y sube 8 px, 600 ms), después se disuelve su fondo (1,3 s) mientras la escena aparece con un fundido largo (2,2 s), y recién con la escena casi visible entran los paneles (desde ~0,9 s, 1,3 s cada uno, desplazamientos de 28 px): el bloque editorial y la luz del día desde la izquierda, el selector desde la derecha con sus filas de abajo hacia arriba, y la indicación de uso al final. Respaldo: el loader se va igual a los 8 s; sin JS, un `<noscript>` muestra todo. Sin animaciones con `prefers-reduced-motion`. El título del loader es el LCP (0,5–0,6 s).
+- *Decisión (fase 17, reemplaza la de la fase 16)*: **loader y entrada con fundido**. Al cargar, un loader a pantalla completa muestra el isologo (*fase 19*: torre escalonada de dos volúmenes con una unidad encendida en el acento, el mismo dibujo que el favicon; los pisos se trazan y la ventana se enciende), "Lumen Residencias" en dos tonos, la desarrolladora y la dirección como labels técnicos, y el avance real de la escena (etapas compiladas) en porcentaje mono y una línea de 1 px. Mientras tanto no se muestra nada del 3D (sin silueta de placeholder). Con todo compilado y las sombras calculadas, la transición es en capas encadenadas (*fase 18*): primero sale el contenido del loader (se desvanece y sube 8 px, 600 ms), después se disuelve su fondo (1,3 s) mientras la escena aparece con un fundido largo (2,2 s), y recién con la escena casi visible entran los paneles (desde ~0,9 s, 1,3 s cada uno, desplazamientos de 28 px): el bloque editorial y la luz del día desde la izquierda, el selector desde la derecha con sus filas de abajo hacia arriba, y la indicación de uso al final. Respaldo: el loader se va igual a los 8 s; sin JS, un `<noscript>` muestra todo. Sin animaciones con `prefers-reduced-motion`. El título del loader es el LCP (0,5–0,6 s).
 - **Rotación**: OrbitControls solo en el eje horizontal (o con ángulo polar muy limitado), sin pan, zoom limitado o deshabilitado. Rotación inicial mostrando frente + lateral este (balcones). Damping activado. Auto-rotación muy lenta mientras no hay interacción (se detiene al primer hover/drag).
 - **Hover** (desktop): al apuntar una unidad se "prende su luz" — interior con emisivo cálido (≈ #F2C27B) + una luz puntual dentro de esa unidad. Solo una unidad encendida a la vez; al moverse a otra, la anterior se apaga con transición corta (~150 ms). Cursor `pointer` sobre unidades. Tooltip pequeño con nombre de la unidad ("4° A").
 - **Click**: selecciona la unidad (queda encendida aunque el mouse salga) y abre la **ficha fullscreen** (§6.1). Un drag de rotación **no** debe contar como click (umbral de movimiento).
@@ -85,8 +89,8 @@ Estilizado arquitectónico: **ni realista ni caricaturesco**. Referencia: maquet
 - Debajo, 4 referencias con ícono Phosphor (peso *light*): **Mañana** 07:30, **Mediodía** 13:00, **Tarde** 18:00, **Noche** 21:30. Solo orientan; al hacer click llevan el slider a esa hora.
 - Recorrido del sol en Buenos Aires (modelo simple, sin estaciones): sale por el este (06:30), al mediodía solar (13:00) está al norte a 58° de altura y se pone por el oeste (19:30).
 - Al mover el slider la escena acompaña con una transición corta (inmediata con `prefers-reduced-motion`): posición, color e intensidad del sol (más cálido y tenue cerca del horizonte), sombras, cielo, niebla, nubes y luz ambiente. De noche, luz de luna fría y tenue (sin sombras) y cielo grafito azulado.
-- *Decisión (fase 11)*: desde lg el bloque editorial del hero va en una caja `paper` con borde fino, como el selector y el slider, para leerse igual sobre el barrio de día o de noche (reemplaza el cambio de color del texto con la escena oscura). La indicación de uso sí pasa a `stone` de noche.
-- Ubicación: desde lg, abajo a la izquierda alineado con el bloque editorial, sobre fondo `paper` con borde fino (como el selector de pisos); en mobile, debajo del 3D.
+- *Decisión (fase 11, actualizada en la 19)*: desde lg el bloque editorial del hero va en una tarjeta blanca con borde fino, como el selector y el slider, para leerse igual sobre el barrio de día o de noche. La indicación de uso y la navegación van en pills translúcidas por el mismo motivo.
+- Ubicación: desde lg, abajo a la izquierda alineado con el bloque editorial, en tarjeta blanca (como el selector de pisos); en mobile, debajo de la tarjeta del 3D.
 
 ## 5. Datos (ficticios pero coherentes)
 Todos los datos viven en `src/data/building.ts`, tipados. Ningún dato hardcodeado en componentes.
@@ -172,12 +176,12 @@ Regla: superficie ponderada = cubierta + 50 % del balcón. Departamentos: el val
 ## 6. UI
 
 ### 6.1 Ficha fullscreen (unidad, PB y SUM)
-*Decisión (fase 10)*: reemplaza al panel lateral / bottom sheet. Cada unidad, PB y SUM tiene una mini landing a pantalla completa, con el contenido centrado en un contenedor (máx. 1152 px).
+*Decisión (fase 10)*: reemplaza al panel lateral / bottom sheet. Cada unidad, PB y SUM tiene una mini landing a pantalla completa, con el contenido en el contenedor del sitio (máx. 1440 px, margen lateral fluido).
 - `<dialog>` nativo con `showModal()`: el resto de la página queda inerte, Esc cierra y el foco vuelve a donde estaba. La página reserva siempre el lugar de la barra de scroll (`scrollbar-gutter: stable`): al abrir y cerrar no se corre nada. El 3D deja de dibujarse mientras está abierta. Scroll propio con `data-lenis-prevent`.
 - Barra fija arriba: "Volver al edificio", nombre del proyecto y unidad, y navegación piso anterior / siguiente (mantiene el lado A/B).
-- Orden: ubicación ("Piso 4 · Lateral este") y título grande en serif ("4° A"), línea de presentación, estado como etiqueta discreta, precio en USD con separador de miles (`USD 359.000`) y "Solicitar información" (oculto si está vendida; en el SUM, "Consultar por amenities") → **portada** (foto ilustrativa del espacio principal) → cifras destacadas en serif (superficies, ambientes, dormitorios, baños; en PB y SUM, las suyas) → descripción + ficha técnica (lista etiqueta/valor, números tabulares, separadores finos, íconos Phosphor solo donde aportan) → **galería** de espacios → mini plano de planta (SVG) y corte esquemático del edificio con la unidad resaltada + equipamiento común → cierre con consulta y tarjetas de piso anterior/siguiente (estado y precio).
+- Orden: ubicación ("Piso 4 · Lateral este") y título grande en mayúsculas anchas ("4° A"), línea de presentación, estado como chip (lleno, contorno o apagado), precio en USD con separador de miles (`USD 359.000`) y "Solicitar información" (oculto si está vendida; en el SUM, "Consultar por amenities") → **portada** (foto ilustrativa del espacio principal) → cifras destacadas en peso regular (superficies, ambientes, dormitorios, baños; en PB y SUM, las suyas) → descripción + ficha técnica (lista etiqueta/valor, números tabulares, separadores finos, íconos Phosphor solo donde aportan) → **galería** de espacios → mini plano de planta (SVG) y corte esquemático del edificio con la unidad resaltada + equipamiento común → cierre oscuro (ink) con consulta y tarjetas de piso anterior/siguiente (estado y precio).
 - Galería: grilla de fotos numeradas con el nombre del espacio; cada una abre un visor a pantalla completa (flechas, Esc cierra solo el visor, el foco vuelve a la foto).
-- *Decisión (fase 12)*: movimiento suave y sobrio, con la Web Animations API (sin dependencias). La ficha entra con un fundido y sube 24 px (650 ms, curva *ease-out* larga); el fondo se funde desde el edificio. Sale con un fundido de 300 ms y recién entonces se cierra el diálogo (con un respaldo por tiempo si el navegador no corre la animación). El contenido aparece escalonado (70 ms entre piezas): textos que suben 18 px, la portada que se descubre de abajo hacia arriba con un zoom de 1,08 a 1, y lo que está más abajo, al entrar en pantalla con el scroll. Al cambiar de piso el contenido vuelve a entrar. El visor de fotos entra con un fundido y cada foto se asienta apenas. Todo se omite con `prefers-reduced-motion`.
+- *Decisión (fase 12)*: movimiento suave y sobrio, con la Web Animations API (sin dependencias). La ficha entra con un fundido y sube 24 px (650 ms, curva *ease-out* larga); el fondo se funde desde el edificio. Sale con un fundido de 300 ms y recién entonces se cierra el diálogo (con un respaldo por tiempo si el navegador no corre la animación). El contenido aparece escalonado (70 ms entre piezas): textos que suben 18 px, la portada que se abre desde un recorte centrado con su radio y un zoom de 1,1 a 1 (*fase 19*), y lo que está más abajo, al entrar en pantalla con el scroll. Al cambiar de piso el contenido vuelve a entrar. El visor de fotos entra con un fundido y cada foto se asienta apenas. Todo se omite con `prefers-reduced-motion`.
 - Textos, fotos y cifras viven en `showcases` de `src/data/building.ts`, por tipología (A, B, oficina) y por espacio común.
 - *Decisión (fase 15)*: **plano tipo folleto** de cada unidad, dibujado en SVG a partir de `floorPlans` de `building.ts` (no imágenes de stock, que no coincidirían con las superficies): muros, ventanas sobre las fachadas, muebles esquemáticos, nombre, m² y medidas de cada ambiente, cotas totales, balcón rayado y norte, con la planilla de superficies debajo. Los ambientes suman exactamente la superficie cubierta (112, 98 y 286 m²); un test lo verifica. El esquema de ubicación en la planta del piso queda como referencia chica junto al corte del edificio.
 - Fotos: ilustrativas, de Unsplash (licencia libre), descargadas a `public/images/units` y servidas con `next/image` (sin requests a servicios externos). Aviso visible: "Imágenes ilustrativas de referencia: no corresponden a la unidad", con los autores.
@@ -188,26 +192,35 @@ Campos: nombre y apellido, email, teléfono, unidad (precargada, solo lectura), 
 - Al enviar: `preventDefault`, **no se envía nada**, se muestra un estado de confirmación con el aviso "Esto es una demo: el formulario no envía datos".
 - Focus trap, Esc para cerrar, foco devuelto al botón que lo abrió. Lenis detenido mientras el modal está abierto.
 
-### 6.3 Dirección visual (anti "AI slop")
-Tono: **estudio de arquitectura / desarrolladora premium**, editorial, sobrio.
+### 6.3 Dirección visual: "Hormigón y luz"
+*Decisión (fase 19)*: reemplaza la dirección anterior (Instrument Serif + Manrope, paleta paper/stone/graphite/slate/brass/sage/clay, radios chicos). La fuente de verdad es `docs/DESIGN.md` (con las referencias `docs/referencia01–03.webp`); acá, el resumen y las elecciones.
 
-Paleta (definir como tokens de Tailwind):
+Tono: **estudio de arquitectura / desarrolladora premium**, editorial, sobrio. La imagen (el 3D y las fotos) manda y la interfaz se retira.
+
+Paleta (tokens de Tailwind en `globals.css`; solo existen estos):
 | Token | Hex | Uso |
 |---|---|---|
-| `paper` | #F2EFEA | Fondo principal |
-| `stone` | #D9D3C7 | Fondos secundarios, bordes |
-| `graphite` | #23262A | Texto principal, carpinterías |
-| `slate` | #6B6F73 | Texto secundario |
-| `brass` | #B8833E | Acento: luz encendida, CTA, selección |
-| `sage` | #5E6B5A | Estado "Disponible" |
-| `clay` | #A2643F | Estado "Reservada" |
+| `ink` | #111110 | Texto principal, botones primarios, fondos oscuros |
+| `ink-soft` | #1C1B19 | Hover de botones oscuros |
+| `paper` | #FAFAF8 | Fondo de página |
+| `white` | #FFFFFF | Tarjetas, botones secundarios |
+| `stone-50` / `100` | #F4F3F0 / #ECEAE5 | Tarjetas bento, secciones alternas, chips |
+| `stone-200` | #DEDBD4 | Bordes y divisores de 1 px |
+| `stone-400` | #A9A59C | Segunda parte de los titulares en dos tonos |
+| `stone-600` / `800` | #6E6A62 / #3A3833 | Texto secundario / texto suave |
+| `accent` | #E9A23B | Acento único (opción A, ámbar "luz interior"): la unidad apuntada en el selector, la ventana del isologo, el lote en el plano, el sticker. Texto encima siempre ink. |
 
-Reglas:
-- Prohibido: gradientes violeta/azul, glassmorphism, emojis, "✨", sombras grandes en todo, cards con `rounded-2xl` repetidas, hero con texto centrado en gradiente, frases de marketing genéricas ("Descubrí tu hogar ideal", "Viví la experiencia").
-- Sí: líneas finas de 1 px, mucho espacio en blanco, etiquetas en versalitas pequeñas con tracking amplio, cifras grandes en serif, radios chicos (2–4 px) o rectos, animaciones cortas y sobrias.
+Elecciones de `docs/DESIGN.md`:
+- Tipografía: combinación Archivo + Inter Tight + JetBrains Mono (no la de Fontshare). Titulares en mayúsculas anchas (`display-wide`: wdth 118, peso 700) y en dos tonos; cifras grandes en peso regular; labels en mono, mayúsculas, 11 px.
+- Botón primario en **pill** (ink con →); secundario con borde; sobre fondos oscuros, blanco sólido. Links de texto con ↗.
+- Radios: 6 px (inputs), 12 px (miniaturas), 20 px (tarjetas), 28 px (hero, portadas, bloques). Bordes de 1 px; sin sombras.
+- Estados de las unidades sin colores propios (un solo acento): disponible = punto/chip lleno en ink, reservada = contorno, vendida = gris y tachada.
+- Hero en tarjeta (variante A). Sin palabra gigante detrás del edificio (necesitaría tocar el 3D).
+- Sin dependencias nuevas: shadcn, Motion, Embla y fontsource no hacen falta (`next/font`, CSS y Web Animations).
+- Prohibido: gradientes de color, emojis, sombras flotantes, bordes de color, frases de marketing genéricas. Solo se permite el overlay oscuro sutil sobre fotos y el blur en pills chicas sobre la escena 3D.
 - Textos escritos como los de una desarrolladora real: concretos, con datos.
-- El acento `brass` es el mismo color que la luz de las unidades: conecta 3D y UI.
-- *Decisión (fase 8)*: `slate` sobre `paper` (4,42:1) y `clay` sobre `paper` (4,13:1) quedan por debajo del contraste AA (4,5:1) en texto chico. Se mantienen los hex de la tabla a propósito; se evaluó oscurecerlos (`#686C70`, `#975E3B`) y se descartó.
+- El acento ámbar es pariente de la luz cálida de las unidades: conecta 3D y UI.
+- *Decisión (fase 19)*: `stone-400` sobre `paper` (≈2,4:1) no llega al contraste AA; se usa solo en la segunda parte de titulares grandes, como pide el sistema. El texto chico usa `stone-600` (≈5,2:1) o más oscuro.
 
 ## 7. Requisitos no funcionales
 - Lighthouse (desktop) ≥ 90 en Performance, Accessibility y Best Practices.

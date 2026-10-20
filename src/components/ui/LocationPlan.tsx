@@ -31,35 +31,35 @@ export function LocationPlan() {
     <figure>
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="w-full text-graphite"
+        className="w-full rounded-sm font-mono text-ink"
         role="img"
         aria-label={`Plano ilustrativo: el lote de ${project.address} frente a la calle ${location.street}, con la plaza a dos cuadras al este y la estación hacia el oeste.`}
       >
         {/* Fondo de calles */}
-        <rect width={W} height={H} className="fill-stone/45" />
+        <rect width={W} height={H} className="fill-stone-200" />
         {blocks.map((b) => (
-          <rect key={b.key} x={b.x} y={b.y} width={b.w} height={b.h} className="fill-paper" stroke="currentColor" strokeOpacity={0.25} strokeWidth={0.75} />
+          <rect key={b.key} x={b.x} y={b.y} width={b.w} height={b.h} className="fill-white" stroke="currentColor" strokeOpacity={0.15} strokeWidth={0.75} />
         ))}
         {/* Plaza */}
-        <rect x={plaza.x + 8} y={plaza.y + 8} width={plaza.w - 16} height={plaza.h - 16} className="fill-sage/20 stroke-sage" strokeWidth={0.75} />
-        <text x={plaza.x + plaza.w / 2} y={plaza.y + plaza.h / 2} textAnchor="middle" dominantBaseline="central" fontSize={11} letterSpacing={1.5} className="fill-sage">
+        <rect x={plaza.x + 8} y={plaza.y + 8} width={plaza.w - 16} height={plaza.h - 16} className="fill-stone-100 stroke-stone-400" strokeDasharray="3 3" strokeWidth={0.75} />
+        <text x={plaza.x + plaza.w / 2} y={plaza.y + plaza.h / 2} textAnchor="middle" dominantBaseline="central" fontSize={11} letterSpacing={1.5} className="fill-stone-600">
           PLAZA
         </text>
         {/* Arbolado sobre Los Aromos */}
         {Array.from({ length: 22 }, (_, i) => 20 + i * 27).map((x) => (
-          <circle key={x} cx={x} cy={mainStreet - STREET / 2 - 4} r={2.5} className="fill-sage/60" />
+          <circle key={x} cx={x} cy={mainStreet - STREET / 2 - 4} r={2.5} className="fill-stone-400" />
         ))}
         {/* Lote */}
-        <rect x={lot.x} y={lot.y} width={lot.w} height={lot.h} className="fill-brass" />
-        <text x={lot.x + lot.w / 2} y={lot.y + lot.h + 16} textAnchor="middle" fontSize={11} fontWeight={600} className="fill-graphite">
+        <rect x={lot.x} y={lot.y} width={lot.w} height={lot.h} className="fill-accent" />
+        <text x={lot.x + lot.w / 2} y={lot.y + lot.h + 16} textAnchor="middle" fontSize={11} fontWeight={600} className="fill-ink">
           {project.address.match(/\d+/)?.[0]}
         </text>
         {/* Nombre de la calle principal */}
-        <text x={30} y={mainStreet + 4} fontSize={10} letterSpacing={2} className="fill-graphite">
+        <text x={30} y={mainStreet + 4} fontSize={10} letterSpacing={2} className="fill-ink">
           {location.street.toUpperCase()}
         </text>
         {/* Hacia la estación */}
-        <g className="fill-slate stroke-slate">
+        <g className="fill-stone-600 stroke-stone-600">
           <line x1={150} y1={rows[2]} x2={20} y2={rows[2]} strokeWidth={1} />
           <path d={`M 26 ${rows[2] - 4} L 20 ${rows[2]} L 26 ${rows[2] + 4}`} fill="none" strokeWidth={1} />
           <text x={30} y={rows[2] - 6} fontSize={10} letterSpacing={1} stroke="none">
@@ -67,15 +67,15 @@ export function LocationPlan() {
           </text>
         </g>
         {/* Norte */}
-        <g transform={`translate(${W - 24} 22)`} className="stroke-graphite">
+        <g transform={`translate(${W - 24} 22)`} className="stroke-ink">
           <line x1={0} y1={22} x2={0} y2={2} strokeWidth={1} />
           <path d="M -4 8 L 0 0 L 4 8" fill="none" strokeWidth={1} />
-          <text y={36} textAnchor="middle" fontSize={10} stroke="none" className="fill-graphite">
+          <text y={36} textAnchor="middle" fontSize={10} stroke="none" className="fill-ink">
             N
           </text>
         </g>
       </svg>
-      <figcaption className="mt-2 text-[11px] text-slate">Plano ilustrativo, sin escala.</figcaption>
+      <figcaption className="label-tech mt-4 text-stone-600">Plano ilustrativo, sin escala.</figcaption>
     </figure>
   );
 }

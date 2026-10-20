@@ -23,10 +23,12 @@ Landing de una página con un edificio 3D interactivo para vender una demo a un 
 - **Sin backend, sin API routes, sin fetch a servicios externos, sin envío de emails.** El formulario hace `preventDefault` y muestra un estado de demo.
 
 ## Reglas de diseño (no negociables)
-- Usar solo los tokens de color de SPEC §6.3. Tipografías: Instrument Serif (títulos) y Manrope (resto).
-- Íconos: solo Phosphor, un único peso.
-- Nada de gradientes llamativos, glassmorphism, emojis, sombras grandes, cards `rounded-2xl` repetidas ni frases de marketing genéricas.
-- Estética editorial de arquitectura: líneas finas, espacio en blanco, números tabulares, radios chicos.
+- El sistema visual es `docs/DESIGN.md` ("Hormigón y luz"), resumido en SPEC §6.3. Leelo antes de tocar la UI.
+- Usar solo los tokens de `globals.css` (ink, paper, white, stone-50…800, un único acento ámbar). Tipografías: Archivo (titulares), Inter Tight (texto y UI) y JetBrains Mono (labels, numeración y metadatos).
+- Íconos: solo Phosphor, peso *light*. Flechas ↗ y → como motivo.
+- Nada de gradientes llamativos (solo el overlay oscuro sutil sobre fotos), emojis, sombras, bordes de color ni frases de marketing genéricas. El blur translúcido queda solo para las pills chicas sobre la escena 3D.
+- Tarjetas con radios grandes (20–28 px), botones y chips en pill, bordes de 1 px, el acento como máximo una vez por vista.
+- No tocar el render 3D al cambiar la UI: la paleta 3D vive en `src/components/scene/materials.ts`.
 - Textos en español rioplatense, concretos y con datos.
 
 ## Estructura sugerida

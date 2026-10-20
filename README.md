@@ -31,7 +31,7 @@ The rest of the page is a fictional development (Lumen Residencias, Los Aromos 1
 | [Tailwind CSS](https://tailwindcss.com) | Styling |
 | [Lenis](https://lenis.darkroom.engineering) | Smooth scrolling |
 | [Phosphor Icons](https://phosphoricons.com) | Icons |
-| Instrument Serif + Manrope | Type, loaded via `next/font/google` |
+| Archivo + Inter Tight + JetBrains Mono | Type, loaded via `next/font/google` (see `docs/DESIGN.md`) |
 | [Vitest](https://vitest.dev) | Tests for building data and layout |
 
 ---

@@ -3,6 +3,7 @@
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 import { useEffect } from "react";
+import { registerLenis } from "@/lib/scroll";
 import { useUIStore } from "@/lib/store";
 import { usePrefersReducedMotion } from "@/lib/usePrefersReducedMotion";
 
@@ -17,6 +18,7 @@ export function SmoothScroll() {
   useEffect(() => {
     if (reducedMotion) return;
     const lenis = new Lenis({ autoRaf: true });
+    registerLenis(lenis);
     const sync = ({ isDetailOpen, isModalOpen }: { isDetailOpen: boolean; isModalOpen: boolean }) => {
       if (isDetailOpen || isModalOpen) lenis.stop();
       else lenis.start();
@@ -25,6 +27,7 @@ export function SmoothScroll() {
     const unsubscribe = useUIStore.subscribe(sync);
     return () => {
       unsubscribe();
+      registerLenis(null);
       lenis.destroy();
     };
   }, [reducedMotion]);

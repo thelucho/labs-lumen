@@ -33,14 +33,14 @@ export function SunControl() {
     <div
       data-intro
       style={introStyle(1200, -28, 0)}
-      className="px-4 pt-6 sm:px-8 lg:absolute lg:bottom-8 lg:left-8 lg:w-[23rem] lg:rounded-xs lg:border lg:border-stone lg:bg-paper lg:px-4 lg:pt-3 lg:pb-1"
+      className="px-2 pt-8 sm:px-3 lg:absolute lg:bottom-9 lg:left-9 lg:w-[23rem] lg:rounded-md lg:border lg:border-stone-200 lg:bg-white lg:px-6 lg:pt-4 lg:pb-1.5"
     >
       <div className="flex items-baseline justify-between">
-        <label htmlFor="sun-hour" className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate">
+        <label htmlFor="sun-hour" className="label-tech text-stone-600">
           Luz del día
         </label>
-        <output htmlFor="sun-hour" className="text-sm font-medium tabular-nums">
-          {formatHour(hour)}
+        <output htmlFor="sun-hour" className="font-mono text-sm tabular-nums">
+          {formatHour(hour)} h
         </output>
       </div>
       <input
@@ -54,11 +54,11 @@ export function SunControl() {
         onChange={(e) => setHour(Number(e.target.value) / 60)}
         className={[
           "mt-3 block h-5 w-full cursor-pointer appearance-none bg-transparent",
-          "[&::-webkit-slider-runnable-track]:h-px [&::-webkit-slider-runnable-track]:bg-graphite/40",
-          "[&::-webkit-slider-thumb]:-mt-[7px] [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border [&::-webkit-slider-thumb]:border-paper [&::-webkit-slider-thumb]:bg-brass",
-          "[&::-moz-range-track]:h-px [&::-moz-range-track]:bg-graphite/40",
-          "[&::-moz-range-thumb]:size-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border [&::-moz-range-thumb]:border-paper [&::-moz-range-thumb]:bg-brass",
-          "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-graphite",
+          "[&::-webkit-slider-runnable-track]:h-px [&::-webkit-slider-runnable-track]:bg-stone-400",
+          "[&::-webkit-slider-thumb]:-mt-[7px] [&::-webkit-slider-thumb]:size-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-ink [&::-webkit-slider-thumb]:outline [&::-webkit-slider-thumb]:outline-1 [&::-webkit-slider-thumb]:outline-ink",
+          "[&::-moz-range-track]:h-px [&::-moz-range-track]:bg-stone-400",
+          "[&::-moz-range-thumb]:size-3.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:bg-ink [&::-moz-range-thumb]:outline [&::-moz-range-thumb]:outline-1 [&::-moz-range-thumb]:outline-ink",
+          "rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink",
         ].join(" ")}
       />
       <ul className="relative mt-1 h-10">
@@ -74,10 +74,10 @@ export function SunControl() {
                 type="button"
                 onClick={() => setHour(mark.hour)}
                 aria-label={`${mark.label}, ${formatHour(mark.hour)} h`}
-                className="flex flex-col items-center gap-1 rounded-xs px-1 text-slate transition-colors duration-150 hover:text-graphite focus-visible:outline-2 focus-visible:outline-graphite"
+                className="flex flex-col items-center gap-1 rounded-xs px-1 text-stone-600 transition-colors duration-200 hover:text-ink focus-visible:outline-2 focus-visible:outline-ink"
               >
                 <MarkIcon size={16} weight="light" aria-hidden />
-                <span className="text-[10px] font-medium uppercase tracking-[0.14em]">{mark.label}</span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.08em]">{mark.label}</span>
               </button>
             </li>
           );

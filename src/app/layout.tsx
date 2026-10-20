@@ -1,16 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Manrope } from "next/font/google";
+import { Archivo, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { project, tagline } from "@/data/building";
 import "./globals.css";
 
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
+/** Titulares: grotesca variable con eje de ancho (mayúsculas anchas, DESIGN §3). */
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  weight: "400",
+  axes: ["wdth"],
 });
 
-const manrope = Manrope({
-  variable: "--font-manrope",
+/** Texto y UI. */
+const interTight = Inter_Tight({
+  variable: "--font-inter-tight",
+  subsets: ["latin"],
+});
+
+/** Labels, numeración y metadatos técnicos. */
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
@@ -42,7 +50,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f2efea",
+  themeColor: "#fafaf8",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -50,9 +58,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="es-AR"
       data-intro="pending"
-      className={`${instrumentSerif.variable} ${manrope.variable} h-full antialiased`}
+      className={`${archivo.variable} ${interTight.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-paper font-sans text-graphite">
+      <body className="flex min-h-full flex-col bg-paper font-sans text-ink">
         {/* Sin JS no hay loader ni entrada animada: todo visible de entrada. */}
         <noscript dangerouslySetInnerHTML={{ __html: "<style>html[data-intro]{overflow:auto}[data-loader]{display:none}html[data-intro] [data-intro],html[data-intro] [data-scene-fade]{opacity:1}</style>" }} />
         {children}

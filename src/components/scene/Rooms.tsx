@@ -139,7 +139,7 @@ export function Rooms({ rooms }: Props) {
           zIndexRange={[20, 0]}
           style={{ pointerEvents: "none" }}
         >
-          <div className="whitespace-nowrap rounded-xs bg-graphite px-2 py-1 text-xs font-medium tracking-wide text-paper tabular-nums">
+          <div className="whitespace-nowrap rounded-full bg-ink px-3 py-1.5 font-mono text-[11px] tracking-[0.04em] text-white tabular-nums">
             {selectableLabel(hoveredId)}
           </div>
         </Html>

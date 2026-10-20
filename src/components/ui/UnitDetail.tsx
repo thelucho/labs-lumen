@@ -2,6 +2,7 @@
 
 import {
   ArrowLeft,
+  ArrowRight,
   Bathtub,
   Bed,
   CaretDown,
@@ -44,30 +45,43 @@ import { UnitPlan } from "./UnitPlan";
 
 const ICON = { size: 16, weight: "light" as const, "aria-hidden": true };
 
-const statusTone = { available: "text-sage", reserved: "text-clay", sold: "text-slate" } as const;
+/** Estado como chip (un solo acento): lleno, contorno o apagado. */
+const statusChip = {
+  available: "border-ink bg-ink text-white",
+  reserved: "border-ink text-ink",
+  sold: "border-stone-200 bg-stone-100 text-stone-600",
+} as const;
 
-const container = "mx-auto w-full max-w-6xl px-4 sm:px-8";
+const container = "container-arch";
 
 const primaryButton =
-  "inline-flex items-center justify-center rounded-xs bg-brass px-6 py-3 text-sm font-medium text-graphite transition-colors hover:bg-graphite hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-graphite";
+  "group inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm text-white transition-colors duration-200 hover:bg-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+
+/** Sobre el cierre oscuro: blanco sólido con texto ink. */
+const lightButton =
+  "group inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm text-ink transition-colors duration-200 hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
+
+function ButtonArrow() {
+  return <ArrowRight size={18} weight="light" aria-hidden className="transition-transform duration-200 ease-arch group-hover:translate-x-1" />;
+}
 
 function Eyebrow({ children }: { children: ReactNode }) {
-  return <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate">{children}</p>;
+  return <p className="label-tech text-stone-600">{children}</p>;
 }
 
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="mb-6">
       <Eyebrow>{eyebrow}</Eyebrow>
-      <h3 className="mt-2 font-serif text-3xl leading-tight sm:text-4xl">{title}</h3>
+      <h3 className="mt-3 font-display text-heading font-medium">{title}</h3>
     </div>
   );
 }
 
 function Row({ icon, label, value }: { icon?: ReactNode; label: string; value: ReactNode }) {
   return (
-    <div className="flex items-baseline justify-between gap-6 border-b border-stone py-3 text-sm">
-      <dt className="flex items-center gap-2 text-slate">
+    <div className="flex items-baseline justify-between gap-6 border-b border-stone-200 py-3 text-sm">
+      <dt className="flex items-center gap-2 text-stone-600">
         {icon}
         {label}
       </dt>
@@ -79,14 +93,14 @@ function Row({ icon, label, value }: { icon?: ReactNode; label: string; value: R
 function Figures({ figures }: { figures: Figure[] }) {
   return (
     <dl
-      className={`grid grid-cols-2 border-t border-stone sm:grid-cols-3 ${
+      className={`grid grid-cols-2 border-t border-stone-200 sm:grid-cols-3 ${
         figures.length > 5 ? "lg:grid-cols-6" : "lg:grid-cols-5"
       }`}
     >
       {figures.map((figure) => (
-        <div data-reveal key={figure.label} className="border-b border-stone py-5 pr-4 lg:border-b-0 lg:border-r lg:pl-5 lg:first:pl-0 lg:last:border-r-0">
-          <dt className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate">{figure.label}</dt>
-          <dd className="mt-2 font-serif text-3xl tabular-nums sm:text-4xl">{figure.value}</dd>
+        <div data-reveal key={figure.label} className="border-b border-stone-200 py-6 pr-4 lg:border-b-0 lg:border-r lg:pl-6 lg:first:pl-0 lg:last:border-r-0">
+          <dt className="label-tech text-stone-600">{figure.label}</dt>
+          <dd className="mt-3 font-display text-4xl font-normal tracking-[-0.04em] tabular-nums sm:text-5xl">{figure.value}</dd>
         </div>
       ))}
     </dl>
@@ -95,7 +109,7 @@ function Figures({ figures }: { figures: Figure[] }) {
 
 function OfficeSpecs({ unit }: { unit: Unit }) {
   return (
-    <dl className="grid border-t border-stone sm:grid-cols-2 sm:gap-x-10">
+    <dl className="grid border-t border-stone-200 sm:grid-cols-2 sm:gap-x-10">
       <Row icon={<Ruler {...ICON} />} label="Superficie cubierta" value={formatArea(unit.coveredArea)} />
       <Row label="Planta libre" value={formatArea(planArea(unit, "open"))} />
       <Row label="Sala de reuniones" value={formatArea(planArea(unit, "meeting"))} />
@@ -116,7 +130,7 @@ function OfficeSpecs({ unit }: { unit: Unit }) {
 function UnitSpecs({ unit }: { unit: Unit }) {
   if (unit.side === "office") return <OfficeSpecs unit={unit} />;
   return (
-    <dl className="grid border-t border-stone sm:grid-cols-2 sm:gap-x-10">
+    <dl className="grid border-t border-stone-200 sm:grid-cols-2 sm:gap-x-10">
       <Row icon={<Ruler {...ICON} />} label="Superficie cubierta" value={formatArea(unit.coveredArea)} />
       <Row
         icon={<SunHorizon {...ICON} />}
@@ -150,10 +164,10 @@ function Intro({ id, showcase, cta, onCta }: { id: SelectableId; showcase: Showc
         <div data-reveal="fade">
           <Eyebrow>{selectableEyebrow(id)}</Eyebrow>
         </div>
-        <h2 data-reveal id="unit-detail-title" tabIndex={-1} className="mt-3 font-serif text-6xl leading-[0.95] outline-none sm:text-7xl lg:text-8xl">
+        <h2 data-reveal id="unit-detail-title" tabIndex={-1} className="display-wide mt-5 text-display-xl outline-none">
           {selectableHeadline(id)}
         </h2>
-        <p data-reveal className="mt-6 max-w-xl text-lg leading-relaxed">
+        <p data-reveal className="mt-6 max-w-[48ch] text-body-lg text-stone-800">
           {showcase.lead}
         </p>
       </div>
@@ -161,14 +175,14 @@ function Intro({ id, showcase, cta, onCta }: { id: SelectableId; showcase: Showc
         {unit && (
           <div data-reveal className="flex flex-col lg:items-end">
             <p
-              className={`self-start rounded-xs border border-current px-1.5 py-0.5 text-[11px] font-medium uppercase tracking-[0.16em] lg:self-end ${statusTone[unit.status]}`}
+              className={`label-tech self-start rounded-full border px-3.5 py-1.5 lg:self-end ${statusChip[unit.status]}`}
             >
               {statusLabels[unit.status]}
             </p>
-            <p className={`mt-4 font-serif text-5xl tabular-nums sm:text-6xl ${sold ? "text-slate" : ""}`}>
+            <p className={`mt-5 font-display text-stat font-normal tabular-nums ${sold ? "text-stone-400" : ""}`}>
               {sold ? "Vendida" : formatPrice(unit.price)}
             </p>
-            <p className="mt-2 text-sm text-slate">
+            <p className="mt-2 text-sm text-stone-600">
               {sold ? "Podés ver la ficha como referencia." : `Entrega estimada: ${project.delivery}`}
             </p>
           </div>
@@ -176,6 +190,7 @@ function Intro({ id, showcase, cta, onCta }: { id: SelectableId; showcase: Showc
         {cta && (
           <button data-reveal type="button" onClick={onCta} className={`${primaryButton} mt-6 self-start lg:self-end`}>
             {cta}
+            <ButtonArrow />
           </button>
         )}
       </div>
@@ -198,17 +213,17 @@ function AdjacentLink({ id, direction }: { id: SelectableId | null; direction: "
     <button
       type="button"
       onClick={() => select(id)}
-      className={`group flex flex-col gap-1 rounded-xs border border-stone px-5 py-4 transition-colors hover:border-brass focus-visible:outline-2 focus-visible:outline-graphite ${
+      className={`group flex flex-col gap-1 rounded-md border border-white/20 px-5 py-4 transition-colors duration-200 hover:border-white/60 focus-visible:outline-2 focus-visible:outline-white ${
         direction === "up" ? "items-end text-right" : "items-start text-left"
       }`}
     >
-      <span className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.16em] text-slate">
+      <span className="label-tech flex items-center gap-1.5 text-white/60">
         {direction === "down" && <Icon size={12} weight="light" aria-hidden />}
         {direction === "down" ? "Piso anterior" : "Piso siguiente"}
         {direction === "up" && <Icon size={12} weight="light" aria-hidden />}
       </span>
-      <span className="font-serif text-2xl">{selectableLabel(id)}</span>
-      <span className="text-xs tabular-nums text-slate">{detail}</span>
+      <span className="mt-2 font-display text-2xl font-medium tracking-[-0.02em]">{selectableLabel(id)}</span>
+      <span className="text-xs tabular-nums text-white/60">{detail}</span>
     </button>
   );
 }
@@ -238,7 +253,7 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
             type="button"
             onClick={() => onOpenPhoto(coverIndex)}
             aria-label={`Ampliar: ${showcase.cover.caption}`}
-            className="group relative block aspect-[4/3] w-full overflow-hidden rounded-xs bg-stone focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-graphite sm:aspect-[16/9] lg:aspect-[21/9]"
+            className="group relative block aspect-[4/3] w-full overflow-hidden rounded-lg bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink sm:aspect-[16/9] lg:aspect-[21/9]"
           >
             <Image
               src={showcase.cover.src}
@@ -246,10 +261,10 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
               fill
               preload
               sizes="(min-width: 1152px) 1088px, 100vw"
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02] motion-reduce:transition-none"
+              className="object-cover transition-transform duration-[600ms] ease-arch group-hover:scale-[1.04] motion-reduce:transition-none"
             />
           </button>
-          <figcaption data-reveal="fade" className="mt-3 flex justify-between gap-4 text-xs text-slate">
+          <figcaption data-reveal="fade" className="label-tech mt-4 flex justify-between gap-4 text-stone-600">
             <span>{showcase.cover.caption}</span>
             <span>Imagen ilustrativa</span>
           </figcaption>
@@ -265,10 +280,10 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
         <section className="mt-20 grid gap-12 lg:grid-cols-12" aria-labelledby="detail-about">
           <div data-reveal className="lg:col-span-5">
             <Eyebrow>{unit ? (unit.side === "office" ? "La oficina" : "La unidad") : "El espacio"}</Eyebrow>
-            <h3 id="detail-about" className="mt-2 font-serif text-3xl leading-tight sm:text-4xl">
+            <h3 id="detail-about" className="mt-3 font-display text-heading font-medium">
               {unit ? unit.view : space?.title}
             </h3>
-            <div className="mt-6 space-y-4 text-[15px] leading-relaxed">
+            <div className="mt-6 max-w-[65ch] space-y-4 leading-relaxed text-stone-800">
               {showcase.body.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
@@ -280,9 +295,9 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
               {unit ? (
                 <UnitSpecs unit={unit} />
               ) : (
-                <ul className="border-t border-stone">
+                <ul className="border-t border-stone-200">
                   {space?.features.map((feature) => (
-                    <li key={feature} className="border-b border-stone py-3 text-sm tabular-nums">
+                    <li key={feature} className="border-b border-stone-200 py-3 text-sm tabular-nums">
                       {feature}
                     </li>
                   ))}
@@ -297,11 +312,11 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
           <div data-reveal className="mb-6 flex items-end justify-between gap-4">
             <div>
               <Eyebrow>Galería</Eyebrow>
-              <h3 id="detail-gallery" className="mt-2 font-serif text-3xl leading-tight sm:text-4xl">
+              <h3 id="detail-gallery" className="mt-3 font-display text-heading font-medium">
                 Espacios
               </h3>
             </div>
-            <p className="text-xs tabular-nums text-slate">{showcase.gallery.length} imágenes</p>
+            <p className="label-tech tabular-nums text-stone-600">{String(showcase.gallery.length).padStart(2, "0")} imágenes</p>
           </div>
           <PhotoGallery photos={showcase.gallery} onOpen={onOpenPhoto} />
         </section>
@@ -309,7 +324,7 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
         {/* Planta y ubicación */}
         <section className="mt-24 grid gap-12 lg:grid-cols-12" aria-label="Planta y ubicación">
           {unit && (
-            <div data-reveal className="lg:col-span-7">
+            <div data-reveal className="rounded-lg bg-stone-50 p-5 sm:p-8 lg:col-span-7">
               <SectionTitle eyebrow="Plano" title={unit.side === "office" ? "Planta libre" : "Distribución"} />
               <FloorPlanBrochure unit={unit} />
             </div>
@@ -330,9 +345,9 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
                 <div className="mt-10">
                   <Eyebrow>Equipamiento de todas las unidades</Eyebrow>
                 </div>
-                <ul className="mt-3 border-t border-stone text-sm">
+                <ul className="mt-3 border-t border-stone-200 text-sm">
                   {commonEquipment.map((item) => (
-                    <li key={item} className="border-b border-stone py-3">
+                    <li key={item} className="border-b border-stone-200 py-3">
                       {item}
                     </li>
                   ))}
@@ -344,16 +359,17 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
       </div>
 
       {/* Cierre: consulta y pisos vecinos */}
-      <section className="mt-24 border-t border-stone bg-stone/30 py-14" aria-label="Consulta y otros pisos">
+      <section className="mt-24 bg-ink py-20 text-white sm:py-28" aria-label="Consulta y otros pisos">
         <div className={`${container} grid gap-10 lg:grid-cols-12 lg:items-end`}>
           <div data-reveal className="lg:col-span-6">
-            <Eyebrow>{project.name}</Eyebrow>
-            <p className="mt-3 font-serif text-4xl leading-tight sm:text-5xl">
+            <p className="label-tech text-white/60">{project.name}</p>
+            <p className="display-wide mt-5 text-display-lg">
               {cta ? `Consultá por ${unit ? `${unit.side === "office" ? "la" : "el"} ${selectableLabel(id)}` : "las amenities"}` : selectableHeadline(id)}
             </p>
             {cta && (
-              <button type="button" onClick={openModal} className={`${primaryButton} mt-6`}>
+              <button type="button" onClick={openModal} className={`${lightButton} mt-8`}>
                 {cta}
+                <ButtonArrow />
               </button>
             )}
           </div>
@@ -362,7 +378,7 @@ function DetailContent({ id, onOpenPhoto }: { id: SelectableId; onOpenPhoto: (in
             <AdjacentLink id={above} direction="up" />
           </nav>
         </div>
-        <p data-reveal="fade" className={`${container} mt-12 text-[11px] text-slate`}>
+        <p data-reveal="fade" className={`${container} mt-16 text-xs text-white/60`}>
           {photoNotice} Autores: {credits}.
         </p>
       </section>
@@ -448,7 +464,7 @@ export function UnitDetail() {
   const select = useUIStore((s) => s.select);
 
   const barButton =
-    "flex items-center gap-1.5 rounded-xs px-2 py-1.5 text-slate transition-colors hover:text-graphite disabled:invisible focus-visible:outline-2 focus-visible:outline-graphite";
+    "flex h-10 items-center gap-1.5 rounded-full border border-stone-200 bg-white px-3.5 text-stone-800 transition-colors duration-200 hover:border-ink hover:text-ink disabled:invisible focus-visible:outline-2 focus-visible:outline-ink";
 
   return (
     <dialog
@@ -462,20 +478,20 @@ export function UnitDetail() {
         if (photoIndex !== null) setPhotoIndex(null);
         else closeDetail();
       }}
-      className="m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto overscroll-contain bg-paper p-0 text-graphite backdrop:bg-paper"
+      className="m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto overscroll-contain bg-paper p-0 text-ink backdrop:bg-paper"
     >
       {shownId && showcase && (
         <>
-          <header className="sticky top-0 z-10 border-b border-stone bg-paper">
-            <div className={`${container} flex h-14 items-center justify-between gap-4 text-sm`}>
-              <button type="button" onClick={closeDetail} className={`${barButton} -ml-2 text-graphite`}>
+          <header className="sticky top-0 z-10 border-b border-stone-200 bg-paper/85 backdrop-blur-md">
+            <div className={`${container} flex h-16 items-center justify-between gap-4 text-sm`}>
+              <button type="button" onClick={closeDetail} className={`${barButton} text-ink`}>
                 <ArrowLeft size={16} weight="light" aria-hidden />
                 Volver al edificio
               </button>
-              <p className="hidden text-[11px] font-medium uppercase tracking-[0.2em] text-slate md:block">
+              <p className="label-tech hidden text-stone-600 md:block">
                 {project.name} · {selectableLabel(shownId)}
               </p>
-              <nav aria-label="Pisos" className="-mr-2 flex items-center gap-1 text-xs">
+              <nav aria-label="Pisos" className="flex items-center gap-2 text-xs">
                 <button type="button" disabled={!below} onClick={() => below && select(below)} className={barButton}>
                   <CaretDown size={14} weight="light" aria-hidden />
                   <span className="sr-only sm:not-sr-only">{below ? selectableLabel(below) : ""}</span>

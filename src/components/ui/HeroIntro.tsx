@@ -1,7 +1,8 @@
-import { project, tagline, units } from "@/data/building";
+import { location, project, tagline, units } from "@/data/building";
 import { minAvailablePrice } from "@/lib/building";
 import { formatDeliveryShort, formatPrice } from "@/lib/format";
 import { introStyle } from "@/lib/ui";
+import { ArrowLink } from "./ArrowLink";
 
 const facts = [
   { label: "Unidades", value: String(units.length) },
@@ -9,10 +10,12 @@ const facts = [
   { label: "Entrega", value: formatDeliveryShort(project.delivery) },
 ];
 
+const [nameFirst, ...nameRest] = project.name.split(" ");
+
 /**
- * Bloque editorial del hero. Debajo del edificio hasta lg; desde lg a la
- * izquierda, sobre el 3D, en una caja `paper` como el selector y el slider:
- * se lee igual sobre el barrio, de día o de noche.
+ * Bloque editorial del hero. Debajo de la tarjeta del edificio hasta lg; desde
+ * lg, a la izquierda y dentro de la tarjeta, en una caja blanca: se lee igual
+ * sobre el barrio, de día o de noche.
  */
 export function HeroIntro() {
   return (
@@ -20,21 +23,28 @@ export function HeroIntro() {
       data-intro
       style={introStyle(1000, -28, 0)}
       className={[
-        "px-4 pt-8 pb-14 sm:px-8",
-        "lg:absolute lg:top-[45%] lg:left-8 lg:w-[23rem] lg:-translate-y-1/2 lg:rounded-xs lg:border lg:border-stone lg:bg-paper lg:px-5 lg:py-6",
+        "px-2 pt-10 pb-12 sm:px-3",
+        "lg:absolute lg:top-[calc(50%-3rem)] lg:left-9 lg:w-[23rem] lg:-translate-y-1/2 lg:rounded-md lg:border lg:border-stone-200 lg:bg-white lg:p-6",
       ].join(" ")}
     >
-      <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate">{project.address}</p>
-      <h1 className="mt-3 font-serif text-5xl leading-[0.95] lg:text-[3.25rem]">{project.name}</h1>
-      <p className="mt-5 max-w-sm text-[15px] leading-relaxed">{tagline}</p>
-      <dl className="mt-8 grid grid-cols-3 border-t border-stone">
+      <p className="label-tech text-stone-600">
+        {project.address} · {location.neighborhood}
+      </p>
+      <h1 className="display-wide mt-4 text-[2.75rem] leading-[0.9] tracking-[-0.04em] sm:text-6xl lg:text-[2.5rem]">
+        {nameFirst} <span className="text-stone-400">{nameRest.join(" ")}</span>
+      </h1>
+      <p className="mt-5 max-w-[65ch] text-[15px] leading-relaxed text-stone-800">{tagline}</p>
+      <dl className="mt-7 grid grid-cols-3 border-t border-stone-200">
         {facts.map((fact) => (
-          <div key={fact.label} className="border-r border-stone pt-3 pr-3 last:border-r-0 [&:not(:first-child)]:pl-3">
-            <dt className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate">{fact.label}</dt>
-            <dd className="mt-1 text-sm font-medium whitespace-nowrap tabular-nums">{fact.value}</dd>
+          <div key={fact.label} className="border-r border-stone-200 pt-3 pr-3 last:border-r-0 [&:not(:first-child)]:pl-3">
+            <dt className="label-tech text-stone-600">{fact.label}</dt>
+            <dd className="mt-1.5 font-display text-[15px] font-medium whitespace-nowrap tabular-nums">{fact.value}</dd>
           </div>
         ))}
       </dl>
+      <ArrowLink href="#proyecto" className="mt-6">
+        Conocé el proyecto
+      </ArrowLink>
     </div>
   );
 }

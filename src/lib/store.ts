@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { SelectableId } from "@/data/building";
-import { DEFAULT_HOUR, clampHour, daylightFactor } from "@/lib/daylight";
+import { DEFAULT_HOUR, clampHour } from "@/lib/daylight";
 
 interface UIState {
   /** Unidad, PB o SUM bajo el puntero (3D o selector). */
@@ -49,8 +49,6 @@ export const useUIStore = create<UIState>()((set) => ({
  */
 export const selectLitId = (s: UIState): SelectableId | null => s.hoveredId ?? s.selectedId;
 
-/** Escena oscura: el texto que va sobre el 3D pasa a claro para seguir leyéndose. */
-export const selectIsDark = (s: UIState): boolean => daylightFactor(s.hour) < 0.2;
 
 // Solo en desarrollo: acceso al store desde la consola y las pruebas automatizadas.
 if (process.env.NODE_ENV !== "production" && typeof window !== "undefined") {

@@ -21,7 +21,7 @@ export function UnitPlan({ unit }: { unit: Unit }) {
     <figure>
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="w-full text-graphite"
+        className="w-full font-mono text-ink"
         role="img"
         aria-label={`Planta del piso ${unit.floor}: ${
           unit.side === "office" ? "oficina en planta libre" : `unidad ${unit.side} resaltada`
@@ -33,7 +33,7 @@ export function UnitPlan({ unit }: { unit: Unit }) {
           y={sy(HALF_D)}
           width={x1 - x0}
           height={HALF_D * 2}
-          className="fill-brass/20"
+          className="fill-accent/20"
         />
         {/* Contorno de planta */}
         <rect
@@ -78,7 +78,7 @@ export function UnitPlan({ unit }: { unit: Unit }) {
                 textAnchor="middle"
                 dominantBaseline="central"
                 fontSize={1.8}
-                className={side === unit.side ? "fill-graphite" : "fill-slate"}
+                className={side === unit.side ? "fill-ink" : "fill-stone-600"}
               >
                 {side}
               </text>
@@ -91,19 +91,19 @@ export function UnitPlan({ unit }: { unit: Unit }) {
           textAnchor="middle"
           fontSize={0.95}
           letterSpacing={0.18}
-          className="fill-slate"
+          className="fill-stone-600"
         >
           {`FRENTE · ${street}`}
         </text>
         <g transform={`translate(${width - 1.6} ${1.4})`}>
           <line x1={0} y1={2.2} x2={0} y2={0.2} stroke="currentColor" strokeWidth={0.1} />
           <path d="M -0.45 0.9 L 0 0 L 0.45 0.9" fill="none" stroke="currentColor" strokeWidth={0.1} />
-          <text y={3.3} textAnchor="middle" fontSize={0.95} className="fill-graphite">
+          <text y={3.3} textAnchor="middle" fontSize={0.95} className="fill-ink">
             N
           </text>
         </g>
       </svg>
-      <figcaption className="mt-2 text-[11px] text-slate">
+      <figcaption className="mt-3 text-xs text-stone-600">
         Esquema ilustrativo, sin escala.{balcony ? " Línea punteada: balcón al este." : ""}
       </figcaption>
     </figure>

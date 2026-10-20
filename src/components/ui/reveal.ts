@@ -23,17 +23,19 @@ export const FADE_OUT: Keyframe[] = [{ opacity: 1 }, { opacity: 0 }];
 /**
  * Tipos de aparición (atributo `data-reveal`):
  * - `up` (por defecto): sube 18 px y aparece.
- * - `cover`: la foto se descubre de abajo hacia arriba y se asienta (zoom suave).
+ * - `cover`: la foto se abre desde un recorte centrado con el radio de su caja
+ *   y se asienta (zoom de 1,1 a 1), como en DESIGN §8 Imágenes.
  * - `fade`: solo opacidad (líneas, textos chicos).
  */
-function play(el: HTMLElement, delay: number): Animation[] {
+export function play(el: HTMLElement, delay: number): Animation[] {
   const kind = el.dataset.reveal || "up";
   if (kind === "cover") {
+    const radius = getComputedStyle(el).borderTopLeftRadius || "0px";
     const animations = [
       el.animate(
         [
-          { clipPath: "inset(14% 0 0 0)", opacity: 0 },
-          { clipPath: "inset(0 0 0 0)", opacity: 1 },
+          { clipPath: `inset(10% 10% 10% 10% round ${radius})`, opacity: 0 },
+          { clipPath: `inset(0% 0% 0% 0% round ${radius})`, opacity: 1 },
         ],
         { duration: 1100, delay, easing: EASE_OUT, fill: "backwards" },
       ),
@@ -41,7 +43,7 @@ function play(el: HTMLElement, delay: number): Animation[] {
     const img = el.querySelector("img");
     if (img) {
       animations.push(
-        img.animate([{ transform: "scale(1.08)" }, { transform: "scale(1)" }], {
+        img.animate([{ transform: "scale(1.1)" }, { transform: "scale(1)" }], {
           duration: 1600,
           delay,
           easing: EASE_OUT,

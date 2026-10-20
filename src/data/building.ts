@@ -556,3 +556,19 @@ export const contact = {
   whatsapp: "+54 9 11 5555-0123",
   email: "ventas@thelucho.example",
 };
+
+export type PurchaseStepId = "consult" | "visit" | "reserve" | "handover";
+
+export interface PurchaseStep {
+  id: PurchaseStepId;
+  title: string;
+  detail: string;
+}
+
+/** Sección "Cómo comprar": pasos y condiciones ficticias de la desarrolladora. */
+export const purchaseSteps: PurchaseStep[] = [
+  { id: "consult", title: "Consulta", detail: "Te mandamos planos, precios y disponibilidad del día por WhatsApp o email." },
+  { id: "visit", title: "Visita al showroom y a la obra", detail: "Con un asesor, en Los Aromos 1240, de lunes a sábados de 10 a 18 h." },
+  { id: "reserve", title: "Reserva y boleto", detail: "Reserva del 5 % y boleto con 30 % de anticipo; el saldo, en 24 cuotas en dólares." },
+  { id: "handover", title: "Posesión y escritura", detail: "Entrega estimada en diciembre 2027, con cochera y baulera asignadas." },
+];

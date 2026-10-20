@@ -173,7 +173,7 @@ export function FloorPlanBrochure({ unit }: { unit: Unit }) {
     <figure>
       <svg
         viewBox={vb}
-        className="w-full text-graphite"
+        className="w-full text-ink"
         role="img"
         aria-label={`Plano ilustrativo de la unidad: ${rooms.map((r) => `${r.name} ${formatNumber(roomArea(r))} m²`).join(", ")}${
           balcony ? `, balcón ${formatNumber(roomArea(balcony))} m²` : ""
@@ -181,7 +181,7 @@ export function FloorPlanBrochure({ unit }: { unit: Unit }) {
       >
         <defs>
           <pattern id={`hatch-${unit.side}`} width={0.25} height={0.25} patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <line x1={0} y1={0} x2={0} y2={0.25} stroke="currentColor" strokeWidth={0.02} className="text-slate" />
+            <line x1={0} y1={0} x2={0} y2={0.25} stroke="currentColor" strokeWidth={0.02} className="text-stone-600" />
           </pattern>
         </defs>
 
@@ -194,9 +194,9 @@ export function FloorPlanBrochure({ unit }: { unit: Unit }) {
         {rooms.map((room) => (
           <g key={room.name}>
             {room.rects.map(([x, y, w, d]) => (
-              <rect key={`${x}-${y}`} x={x} y={y} width={w} height={d} className={WET.has(room.kind) ? "fill-stone/45" : "fill-paper"} />
+              <rect key={`${x}-${y}`} x={x} y={y} width={w} height={d} className={WET.has(room.kind) ? "fill-stone-100" : "fill-white"} />
             ))}
-            <g className="text-slate">
+            <g className="text-stone-600">
               <Furniture room={room} s={s} />
             </g>
           </g>
@@ -211,7 +211,7 @@ export function FloorPlanBrochure({ unit }: { unit: Unit }) {
         <rect x={0} y={0} width={width} height={depth} fill="none" stroke="currentColor" strokeWidth={wall} />
         {windows.map((wdw) => (
           <g key={wdw.key}>
-            <line x1={wdw.x1} y1={wdw.y1} x2={wdw.x2} y2={wdw.y2} className="stroke-paper" strokeWidth={wall * 0.9} />
+            <line x1={wdw.x1} y1={wdw.y1} x2={wdw.x2} y2={wdw.y2} className="stroke-white" strokeWidth={wall * 0.9} />
             <line x1={wdw.x1} y1={wdw.y1} x2={wdw.x2} y2={wdw.y2} stroke="currentColor" strokeWidth={0.025} />
           </g>
         ))}
@@ -228,10 +228,10 @@ export function FloorPlanBrochure({ unit }: { unit: Unit }) {
           if (small) {
             return (
               <g key={`l-${room.name}`}>
-                <text x={cx} y={cy - 0.06 * s} {...label(0.17)} letterSpacing={0.02 * s} className="fill-slate">
+                <text x={cx} y={cy - 0.06 * s} {...label(0.17)} letterSpacing={0.02 * s} className="fill-stone-600">
                   {room.name.toUpperCase()}
                 </text>
-                <text x={cx} y={cy + 0.2 * s} {...label(0.22)} fontWeight={600} className="fill-graphite">
+                <text x={cx} y={cy + 0.2 * s} {...label(0.22)} fontWeight={600} className="fill-ink">
                   {formatNumber(roomArea(room))} m²
                 </text>
               </g>
@@ -239,14 +239,14 @@ export function FloorPlanBrochure({ unit }: { unit: Unit }) {
           }
           return (
             <g key={`l-${room.name}`}>
-              <text x={cx} y={cy - 0.28 * s} {...label(0.24)} letterSpacing={0.03 * s} className="fill-slate">
+              <text x={cx} y={cy - 0.28 * s} {...label(0.24)} letterSpacing={0.03 * s} className="fill-stone-600">
                 {room.name.toUpperCase()}
               </text>
-              <text x={cx} y={cy + 0.1 * s} {...label(0.34)} fontWeight={600} className="fill-graphite">
+              <text x={cx} y={cy + 0.1 * s} {...label(0.34)} fontWeight={600} className="fill-ink">
                 {formatNumber(roomArea(room))} m²
               </text>
               {room.rects.length === 1 && (
-                <text x={cx} y={cy + 0.42 * s} {...label(0.2)} className="fill-slate">
+                <text x={cx} y={cy + 0.42 * s} {...label(0.2)} className="fill-stone-600">
                   {meters(w)} × {meters(d)}
                 </text>
               )}
@@ -257,7 +257,7 @@ export function FloorPlanBrochure({ unit }: { unit: Unit }) {
           <text
             {...label(0.26)}
             transform={`translate(${width + extraEast / 2} ${depth / 2}) rotate(-90)`}
-            className="fill-graphite"
+            className="fill-ink"
             fontWeight={600}
           >
             BALCÓN · {formatNumber(roomArea(balcony))} m²
@@ -265,7 +265,7 @@ export function FloorPlanBrochure({ unit }: { unit: Unit }) {
         )}
 
         {/* Cotas totales */}
-        <g className="text-slate" stroke="currentColor" strokeWidth={0.025}>
+        <g className="text-stone-600" stroke="currentColor" strokeWidth={0.025}>
           <line x1={0} y1={-0.7 * s} x2={width} y2={-0.7 * s} />
           <line x1={0} y1={-0.9 * s} x2={0} y2={-0.5 * s} />
           <line x1={width} y1={-0.9 * s} x2={width} y2={-0.5 * s} />
@@ -273,52 +273,52 @@ export function FloorPlanBrochure({ unit }: { unit: Unit }) {
           <line x1={-0.9 * s} y1={0} x2={-0.5 * s} y2={0} />
           <line x1={-0.9 * s} y1={depth} x2={-0.5 * s} y2={depth} />
         </g>
-        <text x={width / 2} y={-0.85 * s} {...label(0.26)} className="fill-slate">
+        <text x={width / 2} y={-0.85 * s} {...label(0.26)} className="fill-stone-600">
           {meters(width)} m
         </text>
-        <text {...label(0.26)} transform={`translate(${-0.85 * s} ${depth / 2}) rotate(-90)`} className="fill-slate">
+        <text {...label(0.26)} transform={`translate(${-0.85 * s} ${depth / 2}) rotate(-90)`} className="fill-stone-600">
           {meters(depth)} m
         </text>
 
         {/* Norte y frente */}
-        <g transform={`translate(${width + extraEast + 0.55 * s} ${-1.1 * s})`} className="text-graphite">
+        <g transform={`translate(${width + extraEast + 0.55 * s} ${-1.1 * s})`} className="text-ink">
           <line x1={0} y1={0.9 * s} x2={0} y2={0} stroke="currentColor" strokeWidth={0.03 * s} />
           <path d={`M ${-0.18 * s} ${0.32 * s} L 0 0 L ${0.18 * s} ${0.32 * s}`} fill="none" stroke="currentColor" strokeWidth={0.03 * s} />
-          <text y={1.25 * s} {...label(0.26)} className="fill-graphite">
+          <text y={1.25 * s} {...label(0.26)} className="fill-ink">
             N
           </text>
         </g>
-        <text x={width / 2} y={-1.3 * s} {...label(0.22)} letterSpacing={0.05 * s} className="fill-slate">
+        <text x={width / 2} y={-1.3 * s} {...label(0.22)} letterSpacing={0.05 * s} className="fill-stone-600">
           FRENTE
         </text>
       </svg>
 
       {/* Planilla de superficies */}
-      <dl className="mt-6 grid border-t border-stone text-sm sm:grid-cols-2 sm:gap-x-8">
+      <dl className="mt-6 grid border-t border-stone-200 text-sm sm:grid-cols-2 sm:gap-x-8">
         {rooms.map((room) => (
-          <div key={room.name} className="flex items-baseline justify-between gap-4 border-b border-stone py-2">
-            <dt className="text-slate">{room.name}</dt>
+          <div key={room.name} className="flex items-baseline justify-between gap-4 border-b border-stone-200 py-2">
+            <dt className="text-stone-600">{room.name}</dt>
             <dd className="tabular-nums">{formatArea(Math.round(roomArea(room) * 10) / 10)}</dd>
           </div>
         ))}
       </dl>
       <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-1 text-sm tabular-nums">
         <div className="flex gap-2">
-          <dt className="text-slate">Cubierta</dt>
+          <dt className="text-stone-600">Cubierta</dt>
           <dd className="font-medium">{formatArea(unit.coveredArea)}</dd>
         </div>
         {unit.balconyArea > 0 && (
           <div className="flex gap-2">
-            <dt className="text-slate">Balcón</dt>
+            <dt className="text-stone-600">Balcón</dt>
             <dd className="font-medium">{formatArea(unit.balconyArea)}</dd>
           </div>
         )}
         <div className="flex gap-2">
-          <dt className="text-slate">Total</dt>
+          <dt className="text-stone-600">Total</dt>
           <dd className="font-medium">{formatArea(unit.coveredArea + unit.balconyArea)}</dd>
         </div>
       </dl>
-      <figcaption className="mt-3 text-[11px] text-slate">
+      <figcaption className="mt-3 text-[11px] text-stone-600">
         Plano ilustrativo de referencia, sin escala. Medidas aproximadas en metros, entre ejes de muros.
       </figcaption>
     </figure>

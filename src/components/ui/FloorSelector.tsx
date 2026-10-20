@@ -25,7 +25,12 @@ function accessibleLabel(id: SelectableId): string {
 const ROW_START = 1000;
 const ROW_STEP = 40;
 
-const dotClass = { available: "bg-sage", reserved: "bg-clay", sold: "bg-slate" } as const;
+/** Estado por forma, no por color (un solo acento): lleno, contorno, gris. */
+const dotClass = {
+  available: "bg-ink",
+  reserved: "border border-ink",
+  sold: "bg-stone-400",
+} as const;
 
 /**
  * Selector vertical de pisos: alternativa accesible al 3D y navegación
@@ -73,14 +78,14 @@ export function FloorSelector() {
       data-intro
       style={introStyle(900, 28, 0)}
       aria-label="Selector de pisos"
-      className="absolute top-1/2 right-3 -translate-y-1/2 rounded-xs border border-stone bg-paper px-3 py-3 sm:right-8"
+      className="absolute top-[calc(50%+1.75rem)] right-3 -translate-y-1/2 rounded-md border border-stone-200 bg-white p-3 sm:right-6 sm:px-4"
     >
-      <p className="mb-3 text-[11px] font-medium uppercase tracking-[0.2em] text-slate">Pisos</p>
+      <p className="label-tech mb-3 text-stone-600">Pisos</p>
       <ul className="flex flex-col gap-1">
         {rows.map(({ level, ids }, r) => (
           // Las filas aparecen de abajo hacia arriba, como el edificio.
           <li key={level.id} data-intro style={introStyle(ROW_START + (rows.length - 1 - r) * ROW_STEP, 0, 8)} className="flex items-center gap-2">
-            <span className="w-9 text-right text-xs font-medium tabular-nums text-slate">
+            <span className="w-8 text-right font-mono text-[11px] tabular-nums text-stone-600">
               {level.label}
             </span>
             <span className="flex gap-1">
@@ -109,18 +114,18 @@ export function FloorSelector() {
                     onMouseEnter={() => setHovered(id)}
                     onMouseLeave={() => release(id)}
                     className={[
-                      "flex h-7 min-w-8 items-center justify-center gap-1.5 rounded-xs border px-2 text-xs font-medium transition-colors duration-150",
-                      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-graphite",
+                      "flex h-6 min-w-9 items-center justify-center gap-1.5 rounded-full border px-2.5 text-xs transition-colors duration-200",
+                      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink",
                       selected
-                        ? "border-brass bg-brass text-graphite"
+                        ? "border-ink bg-ink text-white"
                         : lit
-                          ? "border-brass bg-paper text-graphite"
-                          : "border-stone bg-paper text-graphite hover:border-brass",
-                      unit?.status === "sold" && !selected ? "text-slate line-through" : "",
+                          ? "border-accent bg-accent text-accent-ink"
+                          : "border-stone-200 bg-white text-ink hover:border-ink",
+                      unit?.status === "sold" && !selected && !lit ? "text-stone-600 line-through" : "",
                     ].join(" ")}
                   >
                     {unit && (
-                      <span aria-hidden className={`size-1.5 rounded-full ${dotClass[unit.status]}`} />
+                      <span aria-hidden className={`size-1.5 rounded-full ${selected ? "border-white bg-white" : dotClass[unit.status]}`} />
                     )}
                     {chipLabel(id)}
                   </button>
@@ -130,7 +135,7 @@ export function FloorSelector() {
           </li>
         ))}
       </ul>
-      <ul className="mt-4 flex flex-col gap-1 text-[11px] text-slate">
+      <ul className="mt-4 flex flex-col gap-1 border-t border-stone-200 pt-3 text-[11px] text-stone-600">
         {(Object.keys(dotClass) as (keyof typeof dotClass)[]).map((status) => (
           <li key={status} className="flex items-center gap-1.5">
             <span aria-hidden className={`size-1.5 rounded-full ${dotClass[status]}`} />

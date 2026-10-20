@@ -174,3 +174,15 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] Solo opacidad y desplazamientos chicos (nada que redimensione el canvas); sin transiciones con `prefers-reduced-motion`.
 
 **Verificación:** estados capturados adelantando animaciones y transiciones (0, 400, 900, 1500, 2600 ms) sobre el build de producción.
+
+## Fase 19 — Rediseño de la UI: "Hormigón y luz" (docs/DESIGN.md)
+- [x] Tokens nuevos en `globals.css` (ink, paper, white, stone-50…800, acento ámbar #E9A23B), radios de 6/12/20/28 px, escala tipográfica `display-*`, `heading`, `stat`, `label` y utilidades `label-tech`, `display-wide`, `container-arch`, `section-y`. Fuera graphite/slate/brass/sage/clay.
+- [x] Tipografías Archivo (eje de ancho) + Inter Tight + JetBrains Mono vía `next/font/google`.
+- [x] Isologo nuevo (torre escalonada con una unidad encendida en ámbar), favicon y loader en clave de ficha técnica (wordmark en dos tonos, porcentaje en mono, línea de 1 px).
+- [x] Hero en tarjeta con radio de 28 px y 12 px de margen; navegación en pills con logo en círculo y "Consultar"; menú mobile en overlay negro. Paneles en tarjetas blancas; selector con chips en pill y estados por forma (lleno, contorno, tachado). Indicación de uso en pill, centrada en la franja libre.
+- [x] Secciones con encabezado asimétrico (label numerado + título en dos tonos), cifras 2×2 con conteo, sticker giratorio, bento de amenities con la foto de la azotea, plano en tarjeta, nueva sección "Cómo comprar" (`purchaseSteps`) y footer negro con CTA al showroom y wordmark recortado. Aparición al hacer scroll.
+- [x] Ficha fullscreen, galería, visor, modal y planos con el sistema nuevo: botones en pill con →, chips de estado, cierre oscuro, portada que se abre desde un recorte con radio.
+- [x] Sin cambios en el render 3D (solo el tooltip HTML de la unidad, que es UI). Sin dependencias nuevas.
+- [x] SPEC (§2, §3, §4.4, §4.5, §6.1, §6.3), CLAUDE.md, README e imagen Open Graph actualizados.
+
+**Verificación:** capturas del build de producción a 1440, 1024 y 390 px (loader, hero, cada sección, menú mobile, ficha, modal con errores). Lighthouse escritorio: Accessibility 100, Best Practices 100; Performance 65–67 con TBT alto, igual que el commit anterior medido en el mismo momento (69–70): la máquina estaba cargada. LCP 1,1 s (antes 0,6 s) por la fuente Archivo con eje de ancho.

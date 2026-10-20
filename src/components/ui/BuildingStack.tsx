@@ -20,15 +20,15 @@ export function BuildingStack({ activeId }: { activeId: SelectableId }) {
           );
           return (
             <li key={level.id} className="flex items-center gap-3">
-              <span className="w-8 text-right text-[11px] font-medium tabular-nums text-slate">{level.label}</span>
+              <span className="w-8 text-right font-mono text-[11px] tabular-nums text-stone-600">{level.label}</span>
               <span className={`flex h-4 flex-1 gap-1 ${level.kind === "roof" ? "px-[18%]" : ""}`}>
                 {ids.map((id) => (
                   <span
                     key={id}
                     aria-hidden
                     className={[
-                      "flex-1 rounded-xs border",
-                      id === activeId ? "border-brass bg-brass" : "border-stone bg-stone/40",
+                      "flex-1 rounded-full border",
+                      id === activeId ? "border-accent bg-accent" : "border-stone-200 bg-white",
                     ].join(" ")}
                   />
                 ))}
@@ -37,7 +37,7 @@ export function BuildingStack({ activeId }: { activeId: SelectableId }) {
           );
         })}
       </ul>
-      <figcaption className="mt-3 flex justify-between pl-11 text-[11px] uppercase tracking-[0.16em] text-slate">
+      <figcaption className="label-tech mt-3 flex justify-between pl-11 text-stone-600">
         <span>Oeste</span>
         <span>Este</span>
       </figcaption>

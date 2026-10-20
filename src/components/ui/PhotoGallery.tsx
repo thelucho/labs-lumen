@@ -1,6 +1,6 @@
 "use client";
 
-import { CaretLeft, CaretRight, X } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, X } from "@phosphor-icons/react";
 import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef, type KeyboardEvent } from "react";
 import type { Photo } from "@/data/building";
@@ -27,19 +27,19 @@ export function PhotoGallery({ photos, onOpen }: { photos: Photo[]; onOpen: (ind
             type="button"
             onClick={() => onOpen(i)}
             aria-label={`Ampliar: ${photo.caption}`}
-            className="group block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-graphite"
+            className="group block w-full text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
           >
-            <span className="relative block aspect-[4/3] overflow-hidden rounded-xs bg-stone">
+            <span className="relative block aspect-[4/3] overflow-hidden rounded-md bg-stone-100">
               <Image
                 src={photo.src}
                 alt={photo.alt}
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] motion-reduce:transition-none"
+                className="object-cover transition-transform duration-[600ms] ease-arch group-hover:scale-[1.04] motion-reduce:transition-none"
               />
             </span>
-            <span className="mt-2 flex items-baseline gap-3 text-sm">
-              <span className="text-[11px] font-medium tabular-nums text-slate">
+            <span className="mt-3 flex items-baseline gap-3 text-sm">
+              <span className="label-tech tabular-nums text-stone-600">
                 {String(i + 1).padStart(2, "0")}
               </span>
               {photo.caption}
@@ -110,7 +110,7 @@ export function Lightbox({
   }
 
   const navButton =
-    "rounded-xs p-2 text-stone transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-paper";
+    "flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-ink transition-colors duration-200 hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
 
   return (
     <div
@@ -119,31 +119,31 @@ export function Lightbox({
       aria-label={`${photo.caption}, foto ${index + 1} de ${count}`}
       ref={root}
       onKeyDown={handleKeyDown}
-      className="fixed inset-0 z-20 flex flex-col bg-graphite text-paper"
+      className="fixed inset-0 z-20 flex flex-col bg-ink text-white"
     >
       <div className="flex items-center justify-between gap-4 px-4 py-3 sm:px-8">
         <p className="text-sm">
-          <span className="mr-3 text-[11px] font-medium tabular-nums text-stone">
+          <span className="label-tech mr-3 tabular-nums text-white/60">
             {index + 1} / {count}
           </span>
           {photo.caption}
         </p>
         <button ref={closeButton} type="button" onClick={onClose} aria-label="Cerrar visor" className={navButton}>
-          <X size={22} weight="light" aria-hidden />
+          <X size={20} weight="light" aria-hidden />
         </button>
       </div>
       <div className="flex min-h-0 flex-1 items-center gap-2 px-2 sm:gap-4 sm:px-6">
         <button type="button" onClick={() => go(-1)} aria-label="Foto anterior" className={navButton}>
-          <CaretLeft size={26} weight="light" aria-hidden />
+          <ArrowLeft size={20} weight="light" aria-hidden />
         </button>
         <div ref={frame} className="relative h-full flex-1">
           <Image key={photo.src} src={photo.src} alt={photo.alt} fill sizes="100vw" className="object-contain" />
         </div>
         <button type="button" onClick={() => go(1)} aria-label="Foto siguiente" className={navButton}>
-          <CaretRight size={26} weight="light" aria-hidden />
+          <ArrowRight size={20} weight="light" aria-hidden />
         </button>
       </div>
-      <p className="px-4 py-4 text-center text-[11px] text-stone sm:px-8">
+      <p className="label-tech px-4 py-4 text-center text-white/60 sm:px-8">
         Foto: {photo.credit} · Unsplash · Imagen ilustrativa
       </p>
     </div>

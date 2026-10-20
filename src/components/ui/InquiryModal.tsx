@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "@phosphor-icons/react";
+import { ArrowRight, WarningCircle, X } from "@phosphor-icons/react";
 import {
   useEffect,
   useId,
@@ -52,7 +52,12 @@ function suggestedMessage(id: SelectableId): string {
 }
 
 const inputClass =
-  "mt-1.5 w-full rounded-xs border bg-paper px-3 py-2.5 text-sm text-graphite outline-none transition-colors placeholder:text-slate focus:border-graphite";
+  "mt-2 w-full rounded-xs border px-3.5 py-3 text-sm text-ink outline-none transition-colors duration-200 placeholder:text-stone-400 focus:border-ink";
+
+const labelClass = "label-tech text-stone-600";
+
+const submitButton =
+  "group flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-sm text-white transition-colors duration-200 hover:bg-ink-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
 
 function Field({
   id,
@@ -69,16 +74,17 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate">
+      <label htmlFor={id} className={labelClass}>
         {label}
       </label>
       {children}
       {error ? (
-        <p id={`${id}-error`} className="mt-1 text-xs text-clay">
+        <p id={`${id}-error`} className="mt-1.5 flex items-center gap-1.5 text-xs text-ink">
+          <WarningCircle size={14} weight="light" aria-hidden />
           {error}
         </p>
       ) : hint ? (
-        <p id={`${id}-hint`} className="mt-1 text-xs text-slate">
+        <p id={`${id}-hint`} className="mt-1.5 text-xs text-stone-600">
           {hint}
         </p>
       ) : null}
@@ -136,26 +142,26 @@ function InquiryForm({ targetId, onClose }: { targetId: SelectableId; onClose: (
   }
 
   const describedBy = (key: keyof Values) => (errors[key] ? `${ids[key as keyof typeof ids]}-error` : undefined);
-  const borderFor = (key: keyof Values) => (errors[key] ? "border-clay" : "border-stone");
+  const borderFor = (key: keyof Values) => (errors[key] ? "border-ink bg-stone-50" : "border-stone-200 bg-white");
 
   if (sent) {
     return (
       <div className="px-6 py-8 sm:px-8">
-        <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate">{selectableTitle(targetId)}</p>
-        <h2 ref={doneHeading} tabIndex={-1} className="mt-2 font-serif text-3xl leading-tight outline-none">
+        <p className={labelClass}>{selectableTitle(targetId)}</p>
+        <h2 ref={doneHeading} tabIndex={-1} className="mt-3 font-display text-heading font-medium outline-none">
           Gracias, {values.name.trim().split(/\s+/)[0]}.
         </h2>
         <p className="mt-4 text-sm leading-relaxed">
           En un sitio real, {project.developer} te contactaría por {values.contact.toLowerCase()} al{" "}
           {values.contact === "Email" ? values.email : values.phone} para responder tu consulta.
         </p>
-        <p role="status" className="mt-6 border-l-2 border-brass py-1 pl-3 text-sm">
+        <p role="status" className="mt-6 rounded-sm bg-stone-50 px-4 py-3 text-sm">
           Esto es una demo: el formulario no envía datos.
         </p>
         <button
           type="button"
           onClick={onClose}
-          className="mt-8 w-full rounded-xs bg-graphite px-4 py-3 text-sm font-medium text-paper transition-colors hover:bg-brass hover:text-graphite focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-graphite"
+          className={`${submitButton} mt-8`}
         >
           Cerrar
         </button>
@@ -219,19 +225,19 @@ function InquiryForm({ targetId, onClose }: { targetId: SelectableId; onClose: (
           name="unit"
           readOnly
           value={selectableTitle(targetId)}
-          className={`${inputClass} border-stone bg-stone/40 text-slate`}
+          className={`${inputClass} border-stone-200 bg-stone-50 text-stone-600`}
         />
       </Field>
 
       <fieldset>
-        <legend className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate">
+        <legend className={labelClass}>
           Cómo preferís que te contactemos
         </legend>
         <div className="mt-2 flex flex-wrap gap-2">
           {CONTACT_OPTIONS.map((option) => (
             <label
               key={option}
-              className="flex cursor-pointer items-center gap-2 rounded-xs border border-stone px-3 py-2 text-sm has-checked:border-graphite has-focus-visible:outline-2 has-focus-visible:outline-graphite"
+              className="flex cursor-pointer items-center gap-2 rounded-full border border-stone-200 bg-white px-4 py-2 text-sm transition-colors duration-200 has-checked:border-ink has-checked:bg-ink has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ink"
             >
               <input
                 type="radio"
@@ -239,7 +245,7 @@ function InquiryForm({ targetId, onClose }: { targetId: SelectableId; onClose: (
                 value={option}
                 checked={values.contact === option}
                 onChange={() => update("contact", option)}
-                className="accent-graphite"
+                className="sr-only"
               />
               {option}
             </label>
@@ -254,7 +260,7 @@ function InquiryForm({ targetId, onClose }: { targetId: SelectableId; onClose: (
           rows={3}
           value={values.message}
           onChange={(e) => update("message", e.target.value)}
-          className={`${inputClass} border-stone resize-none leading-relaxed`}
+          className={`${inputClass} border-stone-200 bg-white resize-none leading-relaxed`}
         />
       </Field>
 
@@ -268,12 +274,13 @@ function InquiryForm({ targetId, onClose }: { targetId: SelectableId; onClose: (
             onChange={(e) => update("accepted", e.target.checked)}
             aria-invalid={!!errors.accepted}
             aria-describedby={describedBy("accepted")}
-            className="mt-0.5 size-4 accent-graphite"
+            className="mt-0.5 size-4 accent-ink"
           />
           <span>Acepto que {project.developer} me contacte para responder esta consulta.</span>
         </label>
         {errors.accepted && (
-          <p id={`${ids.accepted}-error`} className="mt-1 pl-7 text-xs text-clay">
+          <p id={`${ids.accepted}-error`} className="mt-1.5 flex items-center gap-1.5 pl-7 text-xs text-ink">
+            <WarningCircle size={14} weight="light" aria-hidden />
             {errors.accepted}
           </p>
         )}
@@ -281,11 +288,12 @@ function InquiryForm({ targetId, onClose }: { targetId: SelectableId; onClose: (
 
       <button
         type="submit"
-        className="w-full rounded-xs bg-brass px-4 py-3 text-sm font-medium text-graphite transition-colors hover:bg-graphite hover:text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-graphite"
+        className={submitButton}
       >
         Enviar consulta
+        <ArrowRight size={18} weight="light" aria-hidden className="transition-transform duration-200 ease-arch group-hover:translate-x-1" />
       </button>
-      <p className="-mt-2 text-center text-xs text-slate">Demo: el formulario no envía datos.</p>
+      <p className="-mt-2 text-center text-xs text-stone-600">Demo: el formulario no envía datos.</p>
     </form>
   );
 }
@@ -347,14 +355,14 @@ export function InquiryModal() {
         // Click en el fondo (fuera de la caja) cierra.
         if (e.target === e.currentTarget) closeModal();
       }}
-      className="m-auto max-h-[92svh] w-[calc(100%-2rem)] max-w-lg overflow-y-auto overscroll-contain rounded-xs border border-stone bg-paper p-0 text-graphite backdrop:bg-graphite/45"
+      className="m-auto max-h-[92svh] w-[calc(100%-2rem)] max-w-lg overflow-y-auto overscroll-contain rounded-lg bg-paper p-0 text-ink backdrop:bg-ink/55"
     >
       {target && (
         <>
-          <header className="flex items-start justify-between gap-4 border-b border-stone px-6 pt-6 pb-5 sm:px-8">
+          <header className="flex items-start justify-between gap-4 border-b border-stone-200 px-6 pt-6 pb-5 sm:px-8">
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-slate">{project.name}</p>
-              <h2 id={titleId} className="mt-1 font-serif text-3xl leading-tight">
+              <p className={labelClass}>{project.name}</p>
+              <h2 id={titleId} className="mt-3 font-display text-heading font-medium">
                 {isUnit ? "Solicitar información" : "Consultar por amenities"}
               </h2>
             </div>
@@ -362,7 +370,7 @@ export function InquiryModal() {
               type="button"
               onClick={closeModal}
               aria-label="Cerrar formulario"
-              className="-mr-2 rounded-xs p-2 text-slate hover:text-graphite focus-visible:outline-2 focus-visible:outline-graphite"
+              className="flex size-11 shrink-0 items-center justify-center rounded-full border border-stone-200 text-ink transition-colors duration-200 hover:border-ink focus-visible:outline-2 focus-visible:outline-ink"
             >
               <X size={20} weight="light" aria-hidden />
             </button>
