@@ -40,7 +40,7 @@ function SectionLabel({ index, children, className = "" }: { index: number; chil
   return (
     <p className={`label-tech flex items-center gap-3 ${className}`}>
       <span className="tabular-nums">{pad(index)}</span>
-      <span aria-hidden className="h-px w-12 bg-current" />
+      <span aria-hidden className="h-px w-12 bg-accent" />
       {children}
     </p>
   );
@@ -94,7 +94,7 @@ export function ProjectSection() {
   const stats = [
     { label: "Pisos\nde altura", value: floors, count: true, note: "+ PB y SUM en la azotea" },
     { label: "Unidades\nen total", value: units.length, count: true, note: `${homes} departamentos y ${offices} oficinas` },
-    { label: "Unidades\ndisponibles", value: available, count: true, note: "El resto, vendidas o reservadas" },
+    { label: "Unidades\ndisponibles", value: available, count: true, highlight: true, note: "El resto, vendidas o reservadas" },
     {
       label: "Entrega\nestimada",
       value: Number(deliveryYear),
@@ -129,10 +129,11 @@ export function ProjectSection() {
                   "flex min-h-56 flex-col justify-between gap-8 py-6 sm:px-6",
                   i < 3 ? "border-b border-stone-200" : "",
                   i === 2 ? "sm:border-b-0" : "",
-                  i % 2 === 0 ? "sm:border-r sm:pl-0" : "sm:pr-0",
+                  i % 2 === 0 ? "sm:border-r" : "",
+                  stat.highlight ? "rounded-md border-transparent bg-accent px-6 text-accent-ink" : i % 2 === 0 ? "sm:pl-0" : "sm:pr-0",
                 ].join(" ")}
               >
-                <dt className="flex items-start justify-between gap-4 text-sm leading-snug whitespace-pre-line text-stone-600">
+                <dt className={`flex items-start justify-between gap-4 text-sm leading-snug whitespace-pre-line ${stat.highlight ? "text-accent-ink" : "text-stone-600"}`}>
                   {stat.label}
                   <ArrowUpRight size={24} weight="light" aria-hidden className="text-ink" />
                 </dt>
@@ -140,7 +141,7 @@ export function ProjectSection() {
                   <span className="block font-display text-stat font-normal">
                     {stat.count ? <CountUp value={stat.value} pad={2} /> : stat.value}
                   </span>
-                  <span className="mt-2 block text-sm text-stone-600">{stat.note}</span>
+                  <span className={`mt-2 block text-sm ${stat.highlight ? "text-stone-800" : "text-stone-600"}`}>{stat.note}</span>
                 </dd>
               </div>
             ))}
@@ -185,7 +186,7 @@ export function AmenitiesSection() {
               <span className="label-tech block text-white/80">Piso 13 · {commonSpaces.sum.title}</span>
               <span className="mt-3 block max-w-md font-display text-heading font-medium">{showcases.sum.lead}</span>
             </span>
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-ink transition-transform duration-200 ease-arch group-hover:rotate-45">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent text-accent-ink transition-transform duration-200 ease-arch group-hover:rotate-45">
               <ArrowUpRight size={20} weight="light" aria-hidden />
             </span>
           </span>
@@ -280,7 +281,7 @@ export function PurchaseSection() {
                   <span className="block text-body-lg">{step.title}</span>
                   <span className="block text-sm text-stone-600">{step.detail}</span>
                 </span>
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-ink font-mono text-xs text-white tabular-nums">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent font-mono text-xs text-accent-ink tabular-nums">
                   {pad(i + 1)}
                 </span>
               </li>
@@ -318,7 +319,7 @@ export function SiteFooter() {
             Obra, terminaciones y unidades disponibles, {contact.hours.charAt(0).toLowerCase() + contact.hours.slice(1)}. O elegí
             tu unidad en el edificio 3D.
           </p>
-          <PillLink href="#inicio" variant="light" className="mt-10">
+          <PillLink href="#inicio" variant="accent" className="mt-10">
             Ver el edificio en 3D
           </PillLink>
         </div>
@@ -341,10 +342,23 @@ export function SiteFooter() {
         </div>
       </div>
       {/* Wordmark gigante recortado por el borde inferior. */}
-      <div aria-hidden className="container-arch h-[13vw] overflow-hidden select-none">
-        <p className="display-wide text-center text-[20vw] leading-[0.8] tracking-[-0.05em] text-white">
-          {brandFirst}
-        </p>
+      {/*
+        Wordmark gigante a todo el ancho del contenedor. En SVG con textLength:
+        ocupa exactamente el ancho disponible a cualquier tamaño (no se corta
+        la última letra con la barra de scroll ni con la fuente de respaldo).
+      */}
+      <div aria-hidden className="container-arch pb-[clamp(16px,3vw,40px)] select-none">
+        <svg viewBox="0 0 1000 205" className="block w-full">
+          <text
+            x="0"
+            y="200"
+            textLength="1000"
+            lengthAdjust="spacingAndGlyphs"
+            className="display-wide fill-white text-[272px]"
+          >
+            {brandFirst}
+          </text>
+        </svg>
       </div>
     </footer>
   );

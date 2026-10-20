@@ -24,19 +24,21 @@ export function HeroIntro() {
       style={introStyle(1000, -28, 0)}
       className={[
         "px-2 pt-10 pb-12 sm:px-3",
-        "lg:absolute lg:top-[calc(50%-3rem)] lg:left-9 lg:w-[23rem] lg:-translate-y-1/2 lg:rounded-md lg:border lg:border-stone-200 lg:bg-white lg:p-6",
+        "lg:absolute lg:top-[calc(50%-3rem)] lg:left-9 lg:w-[25rem] lg:-translate-y-1/2 lg:rounded-md lg:border lg:border-stone-200 lg:bg-white lg:p-6",
       ].join(" ")}
     >
       <p className="label-tech text-stone-600">
         {project.address} · {location.neighborhood}
       </p>
       <h1 className="display-wide mt-4 text-[2.75rem] leading-[0.9] tracking-[-0.04em] sm:text-6xl lg:text-[2.5rem]">
-        {nameFirst} <span className="text-stone-400">{nameRest.join(" ")}</span>
+        {nameFirst}{" "}
+        {/* Cinta en el acento (texto ink encima, como pide el sistema). */}
+        <span className="mt-1 inline-block bg-accent px-1.5 pt-1 text-accent-ink">{nameRest.join(" ")}</span>
       </h1>
       <p className="mt-5 max-w-[65ch] text-[15px] leading-relaxed text-stone-800">{tagline}</p>
-      <dl className="mt-7 grid grid-cols-3 border-t border-stone-200">
+      <dl className="mt-7 grid grid-cols-[0.8fr_1.35fr_1fr] border-t border-stone-200">
         {facts.map((fact) => (
-          <div key={fact.label} className="border-r border-stone-200 pt-3 pr-3 last:border-r-0 [&:not(:first-child)]:pl-3">
+          <div key={fact.label} className="border-r border-stone-200 pt-3 pr-4 last:border-r-0 [&:not(:first-child)]:pl-4">
             <dt className="label-tech text-stone-600">{fact.label}</dt>
             <dd className="mt-1.5 font-display text-[15px] font-medium whitespace-nowrap tabular-nums">{fact.value}</dd>
           </div>

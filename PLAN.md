@@ -186,3 +186,10 @@ Una fase por vez. Al terminar cada fase: correr `npm run build` y `npm run lint`
 - [x] SPEC (§2, §3, §4.4, §4.5, §6.1, §6.3), CLAUDE.md, README e imagen Open Graph actualizados.
 
 **Verificación:** capturas del build de producción a 1440, 1024 y 390 px (loader, hero, cada sección, menú mobile, ficha, modal con errores). Lighthouse escritorio: Accessibility 100, Best Practices 100; Performance 65–67 con TBT alto, igual que el commit anterior medido en el mismo momento (69–70): la máquina estaba cargada. LCP 1,1 s (antes 0,6 s) por la fuente Archivo con eje de ancho.
+
+## Fase 20 — Ajustes del rediseño
+- [x] Wordmark del footer en SVG con `textLength`: entra completo a cualquier ancho.
+- [x] Bloque editorial del hero y luz del día de 23 a 25rem; columna de "Desde" más ancha y separadores con más aire. Encuadre 3D e indicación de uso ajustados al ancho nuevo.
+- [x] Más acento ámbar en piezas puntuales: cinta de "Residencias", slider de luz del día (control y tramo recorrido), línea de los labels de sección, celda de unidades disponibles, botón de la foto de la azotea, números de "Cómo comprar" y CTA del footer.
+
+**Verificación:** capturas del build de producción a 1440 y 390 px (hero, cifras, cómo comprar, footer).

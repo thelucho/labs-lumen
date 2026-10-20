@@ -27,7 +27,7 @@ Landing de una página con un edificio 3D interactivo para vender una demo a un 
 - Usar solo los tokens de `globals.css` (ink, paper, white, stone-50…800, un único acento ámbar). Tipografías: Archivo (titulares), Inter Tight (texto y UI) y JetBrains Mono (labels, numeración y metadatos).
 - Íconos: solo Phosphor, peso *light*. Flechas ↗ y → como motivo.
 - Nada de gradientes llamativos (solo el overlay oscuro sutil sobre fotos), emojis, sombras, bordes de color ni frases de marketing genéricas. El blur translúcido queda solo para las pills chicas sobre la escena 3D.
-- Tarjetas con radios grandes (20–28 px), botones y chips en pill, bordes de 1 px, el acento como máximo una vez por vista.
+- Tarjetas con radios grandes (20–28 px), botones y chips en pill, bordes de 1 px. El acento ámbar va en puntos concretos (ver SPEC §6.3), nunca en grandes superficies ni como color de texto sobre fondos claros.
 - No tocar el render 3D al cambiar la UI: la paleta 3D vive en `src/components/scene/materials.ts`.
 - Textos en español rioplatense, concretos y con datos.
 

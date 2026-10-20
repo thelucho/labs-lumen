@@ -208,18 +208,20 @@ Paleta (tokens de Tailwind en `globals.css`; solo existen estos):
 | `stone-200` | #DEDBD4 | Bordes y divisores de 1 px |
 | `stone-400` | #A9A59C | Segunda parte de los titulares en dos tonos |
 | `stone-600` / `800` | #6E6A62 / #3A3833 | Texto secundario / texto suave |
-| `accent` | #E9A23B | Acento único (opción A, ámbar "luz interior"): la unidad apuntada en el selector, la ventana del isologo, el lote en el plano, el sticker. Texto encima siempre ink. |
+| `accent` | #E9A23B | Acento único (opción A, ámbar "luz interior"). Texto encima siempre ink. |
 
 Elecciones de `docs/DESIGN.md`:
 - Tipografía: combinación Archivo + Inter Tight + JetBrains Mono (no la de Fontshare). Titulares en mayúsculas anchas (`display-wide`: wdth 118, peso 700) y en dos tonos; cifras grandes en peso regular; labels en mono, mayúsculas, 11 px.
 - Botón primario en **pill** (ink con →); secundario con borde; sobre fondos oscuros, blanco sólido. Links de texto con ↗.
 - Radios: 6 px (inputs), 12 px (miniaturas), 20 px (tarjetas), 28 px (hero, portadas, bloques). Bordes de 1 px; sin sombras.
 - Estados de las unidades sin colores propios (un solo acento): disponible = punto/chip lleno en ink, reservada = contorno, vendida = gris y tachada.
-- Hero en tarjeta (variante A). Sin palabra gigante detrás del edificio (necesitaría tocar el 3D).
+- Hero en tarjeta (variante A). *Fase 20*: bloque editorial y luz del día de 25rem, para que "Desde" respire respecto del separador.
+- *Fase 20*: el wordmark del footer es un SVG con `textLength`: ocupa exactamente el ancho del contenedor y se ve completo (antes se cortaba la última letra según el ancho de la barra de scroll). Sin palabra gigante detrás del edificio (necesitaría tocar el 3D).
 - Sin dependencias nuevas: shadcn, Motion, Embla y fontsource no hacen falta (`next/font`, CSS y Web Animations).
 - Prohibido: gradientes de color, emojis, sombras flotantes, bordes de color, frases de marketing genéricas. Solo se permite el overlay oscuro sutil sobre fotos y el blur en pills chicas sobre la escena 3D.
 - Textos escritos como los de una desarrolladora real: concretos, con datos.
 - El acento ámbar es pariente de la luz cálida de las unidades: conecta 3D y UI.
+- *Decisión (fase 20)*: más presencia del acento, a pedido, siempre en piezas puntuales y con texto ink encima: "Residencias" como cinta en el bloque del hero, el control y el tramo recorrido del slider de luz del día, la unidad apuntada en el selector, la ventana del isologo, la línea de los labels de sección, la celda de unidades disponibles, el botón de la foto de la azotea, los números de "Cómo comprar", el lote en el plano, el sticker y el CTA del footer. Nunca como color de texto sobre fondos claros (no llega al contraste).
 - *Decisión (fase 19)*: `stone-400` sobre `paper` (≈2,4:1) no llega al contraste AA; se usa solo en la segunda parte de titulares grandes, como pide el sistema. El texto chico usa `stone-600` (≈5,2:1) o más oscuro.
 
 ## 7. Requisitos no funcionales

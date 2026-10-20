@@ -20,7 +20,7 @@ const GUTTER_BREAKPOINT = 640;
  * margen (p-3) y el bloque editorial va a 36 px del borde (lg:left-9).
  */
 const INTRO_LEFT = 24;
-const INTRO_WIDTH = 368; // lg:w-[23rem]
+const INTRO_WIDTH = 400; // lg:w-[25rem]
 const SELECTOR_WIDTH = 160;
 const GAP = 24;
 const GAP_STACKED = 8;

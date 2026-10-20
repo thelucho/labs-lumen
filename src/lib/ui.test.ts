@@ -4,7 +4,7 @@ import { freeBand } from "@/lib/ui";
 describe("franja libre para el edificio en el hero", () => {
   it("escritorio: entre el bloque editorial y el selector", () => {
     const { left, right } = freeBand(1440);
-    expect(left).toBeGreaterThanOrEqual(24 + 368);
+    expect(left).toBeGreaterThanOrEqual(24 + 400);
     expect(right).toBeLessThanOrEqual(1440 - 24 - 160);
   });
 

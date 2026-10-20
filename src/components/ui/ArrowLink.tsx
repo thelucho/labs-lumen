@@ -25,12 +25,14 @@ export function PillLink({
   href: string;
   children: ReactNode;
   className?: string;
-  variant?: "primary" | "light";
+  variant?: "primary" | "light" | "accent";
 }) {
   const tone =
     variant === "light"
       ? "bg-white text-ink hover:bg-stone-100 focus-visible:outline-white"
-      : "bg-ink text-white hover:bg-ink-soft focus-visible:outline-ink";
+      : variant === "accent"
+        ? "bg-accent text-accent-ink hover:bg-white focus-visible:outline-white"
+        : "bg-ink text-white hover:bg-ink-soft focus-visible:outline-ink";
   return (
     <a
       href={href}

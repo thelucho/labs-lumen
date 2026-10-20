@@ -17,7 +17,7 @@ export function UsageHint() {
       aria-hidden={hasInteracted}
       className={[
         "pointer-events-none absolute right-[11.5rem] bottom-3 left-3 flex sm:right-[12.5rem]",
-        "lg:right-[12.5rem] lg:bottom-6 lg:left-[26rem] lg:justify-center",
+        "lg:right-[12.5rem] lg:bottom-6 lg:left-[28rem] lg:justify-center",
         "transition-opacity duration-500 motion-reduce:transition-none",
         hasInteracted ? "opacity-0" : "opacity-100",
       ].join(" ")}
